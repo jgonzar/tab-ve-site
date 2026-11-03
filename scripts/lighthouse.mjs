@@ -12,9 +12,12 @@
 // Chrome comes from CHROME_PATH, or else Playwright's Chromium (install it with
 // `pnpm exec playwright install chromium`). Reports land in lighthouse-report/.
 //
-// One audit is set aside on a preview only: `is-crawlable`, because Vercel
-// sends `X-Robots-Tag: noindex` on every preview on purpose. Production and
-// the local run keep it, so SEO must reach 100 there with every audit.
+// Two SEO audits are set aside on a preview only, both because previews are
+// protected on purpose: `is-crawlable`, since Vercel sends `X-Robots-Tag:
+// noindex` on every preview, and `robots-txt`, since Lighthouse fetches
+// robots.txt from inside the page without the bypass header, so Vercel
+// Authentication refuses it. Production and the local run keep both, so SEO
+// must reach 100 there with every audit.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { chromium } from "@playwright/test";
@@ -30,6 +33,8 @@ const BUDGETS = {
   totalBytes: 400 * 1024,
   categories: { accessibility: 1, "best-practices": 1, seo: 1 },
 };
+
+const PREVIEW_ONLY_SKIPS = ["is-crawlable", "robots-txt"];
 
 const urlFlag = process.argv.indexOf("--url");
 const remote = urlFlag > -1 ? process.argv[urlFlag + 1]?.replace(/\/$/, "") : undefined;
@@ -110,7 +115,7 @@ for (const path of ["/en/", "/es/"]) {
   for (const [id, min] of Object.entries(BUDGETS.categories)) {
     const category = lhr.categories[id];
     // Recompute the score without the audits set aside on a preview
-    const skip = preview && id === "seo" ? new Set(["is-crawlable"]) : new Set();
+    const skip = preview && id === "seo" ? new Set(PREVIEW_ONLY_SKIPS) : new Set();
     const refs = category.auditRefs.filter((r) => r.weight > 0 && !skip.has(r.id));
     const weight = refs.reduce((sum, r) => sum + r.weight, 0);
     const score = refs.reduce((sum, r) => sum + r.weight * (audit(r.id).score ?? 0), 0) / weight;
@@ -132,7 +137,7 @@ chrome.kill();
 server?.close();
 
 console.log(
-  `Lighthouse on ${remote ?? "dist/ (local)"}${preview ? " (preview: is-crawlable set aside)" : ""}`,
+  `Lighthouse on ${remote ?? "dist/ (local)"}${preview ? ` (preview: ${PREVIEW_ONLY_SKIPS.join(", ")} set aside)` : ""}`,
 );
 console.log(rows.join("\n"));
 if (failures.length) {
