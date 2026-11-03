@@ -1,0 +1,112 @@
+<script lang="ts">
+  // The close: row 8 as the big line, with "three people" in an outlined
+  // pill, the second "Try the demo", the sample-data note and the real icon.
+  import DemoButton from "./DemoButton.svelte";
+  import Picture from "./Picture.svelte";
+  import type { PictureData } from "../../images";
+
+  interface Props {
+    line: string;
+    /** The words inside the line to set in the pill */
+    pill: string;
+    cta: string;
+    demo: string;
+    note: string;
+    icon: PictureData;
+  }
+
+  let { line, pill, cta, demo, note, icon }: Props = $props();
+
+  const at = $derived(line.indexOf(pill));
+  const parts = $derived(
+    at < 0 ? [line, "", ""] : [line.slice(0, at), pill, line.slice(at + pill.length)],
+  );
+</script>
+
+<section class="closing">
+  <div class="closing__icon">
+    <Picture image={icon} alt="" />
+  </div>
+  <p class="closing__line">
+    {parts[0]}{#if parts[1]}<span class="closing__pill">{parts[1]}</span>{/if}{parts[2]}
+  </p>
+  <div class="closing__cta">
+    <DemoButton href={demo} label={cta} />
+  </div>
+  <p class="closing__note">{note}</p>
+</section>
+
+<style>
+  .closing {
+    position: relative;
+    margin-block: 4px 30px;
+    padding: 28px 22px;
+    overflow: hidden;
+    border-radius: var(--radius-band);
+    background: var(--soft);
+  }
+
+  .closing__icon {
+    width: 56px;
+    margin-bottom: 16px;
+  }
+
+  .closing__icon :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+  }
+
+  .closing__line {
+    margin: 0;
+    max-width: 20ch;
+    font-size: clamp(1.65rem, 5vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .closing__pill {
+    padding: 0 0.35em;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .closing__cta {
+    margin-top: 22px;
+  }
+
+  .closing__note {
+    margin: 14px 0 0;
+    max-width: 60ch;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  @media (min-width: 720px) {
+    .closing {
+      margin-block: 4px 40px;
+      padding: 40px 44px;
+    }
+
+    /* The icon sits in the band's corner, the line keeps the left */
+    .closing__icon {
+      position: absolute;
+      right: 44px;
+      bottom: 40px;
+      width: 96px;
+      margin: 0;
+    }
+
+    .closing__icon :global(img) {
+      border-radius: 26px;
+    }
+
+    .closing__note {
+      max-width: calc(100% - 140px);
+    }
+  }
+</style>

@@ -4,8 +4,14 @@
     "description": "A household ride tracker that converts every total to bolívares at the BCV rate. Try the demo."
   },
   "lang": {
-    "en": { "short": "EN", "name": "English" },
-    "es": { "short": "ES", "name": "Español" }
+    "en": {
+      "short": "EN",
+      "name": "English"
+    },
+    "es": {
+      "short": "ES",
+      "name": "Español"
+    }
   },
   "skip": "Skip to content",
   "hero": {
@@ -13,6 +19,7 @@
     "headline": "Every ride, who owes what, in one place.",
     "before": "Ride payments tracked from memory, in dollars, against a rate that changes daily.",
     "sub": "Built for three people. Try it with sample data.",
+    "subPill": "three people",
     "alt": "Tab's home screen: quick routes, the pending total in dollars and bolívares, and the rides waiting to be paid."
   },
   "demo": {

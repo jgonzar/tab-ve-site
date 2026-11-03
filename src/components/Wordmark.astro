@@ -1,8 +1,8 @@
 ---
 // The "tab." wordmark, inline so it takes the theme's colours. The paths are
 // copied verbatim from the Tab repo's design/brand/wordmark.svg (through its
-// Wordmark.svelte). The letters follow currentColor (off-white by default); the
-// period is lime. Size it with a class from the caller: the SVG keeps its ratio.
+// Wordmark.svelte). The letters follow currentColor (navy ink by default); the
+// period is violet, since lime on the white page would be 1.08:1. Size it with a class from the caller: the SVG keeps its ratio.
 interface Props {
   class?: string;
   label?: string;
@@ -34,10 +34,10 @@ const { class: className, label = "Tab" } = Astro.props;
   .wordmark {
     width: auto;
     flex-shrink: 0;
-    color: var(--tab-text);
+    color: var(--ink);
   }
 
   .wordmark__period {
-    color: var(--tab-lime);
+    color: var(--violet);
   }
 </style>

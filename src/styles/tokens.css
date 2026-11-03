@@ -1,54 +1,52 @@
-/* Tab brand tokens, copied from the Tab app's theme (src/app.css in the Tab repo,
-   the `tab` DaisyUI theme) and its brand sources (design/brand/README.md).
+/* The highlighter sheet (plan decision 16): a white page, navy ink, lime as a
+   highlighter behind the words that matter, violet only as the pressed edge
+   under the main action. Brand colours from the Tab repo's design/brand.
 
-   Contrast rule (WCAG 2.2 AA): no text below 4.5:1 and no UI border below 3:1
-   on any of the three surfaces. The app's low-alpha whites (0.2 and 0.25 on
-   the raised surface, 1.80:1 and 2.15:1) fail, so the site uses solid colours
-   instead. Ratios are listed against page / raised / deep. */
+   Contrast (WCAG 2.2 AA): every text is at least 4.5:1 and every control's
+   border at least 3:1 on the surface it sits on. Real colours, never
+   opacity. Ratios are listed beside each token. */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Surfaces */
-  --tab-page: #0b0a29; /* base-100 */
-  --tab-raised: #13113f; /* base-200: cards, bars */
-  --tab-deep: #1f1b62; /* base-300: the deepest surface step */
-  --tab-indigo: #1c1a9b; /* brand Indigo, the app's summary bar */
+  /* The sheet */
+  --paper: #ffffff;
+  --soft: #ecebf3; /* the closing band and the receipt */
+  --ink: #0b0a29; /* text, outlines, fills. 19.27 on paper, 16.28 on soft */
+  --muted: #4a4868; /* secondary text. 8.68 on paper, 7.34 on soft */
+  --dim: #5b5a78; /* the inactive language. 6.61 on paper */
 
-  /* Brand */
-  --tab-violet: #4342f5; /* primary. Fill only: 3.06:1 as text on the page, so never text on dark */
-  --tab-on-violet: #f8f8f8; /* 5.93:1 on violet */
-  --tab-lime: #d7fe65; /* accent. 16.75 / 15.47 / 13.12 */
-  --tab-on-lime: #0b0a29;
+  /* On the navy surfaces (the middle card, the stack band) */
+  --on-ink: #ffffff; /* 19.27 on ink */
+  --on-ink-muted: #c9c8e3; /* 11.80 on ink */
+  --on-ink-line: #7a77c2; /* chip outlines. 4.81 on ink */
+  --on-ink-frame: #2a2870; /* the screenshot frame inside a navy card, decorative */
 
-  /* Text */
-  --tab-text: #f8f8f8; /* off-white. 18.15 / 16.76 / 14.21 */
-  --tab-text-muted: #b9b8d9; /* 10.02 / 9.26 / 7.85 */
+  /* Brand accents */
+  --lime: #d7fe65; /* highlighter only, under ink text: ink on lime is 16.75 */
+  --violet: #4342f5; /* the CTA's edge, the focus ring and the wordmark's period. 6.29 on paper */
 
-  /* Lines. 4.81 / 4.45 / 3.77, so a border that identifies a control passes 3:1 */
-  --tab-border: #7a77c2;
+  /* A soft, offset shadow for the floating phone */
+  --shadow-phone: 0 18px 34px rgb(11 10 41 / 0.22);
 
-  /* Never pair (design/brand/README.md): violet on indigo (2.00:1), and lime
-     with off-white (1.08:1) either way. */
-
-  /* JAGR thread (the strip). JAGR's own values, used only inside JagrStrip.astro */
+  /* JAGR thread (the strip and the footer). JAGR's own values */
   --jagr-void: #000000;
   --jagr-fg: #ededed; /* 17.94 on void */
   --jagr-fg-dim: #bcbcbc; /* 11.06 on void */
   --jagr-red: #ff0033; /* 5.30 on void */
 
-  /* Type */
+  /* Type: Poppins 400 and 700 for the page; mono only in the JAGR thread; the
+     receipt uses the system mono stack, which has the box-drawing glyphs */
   --font-sans: "Poppins", "Poppins Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-receipt: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 
-  /* Touch targets follow the app: 44px minimum */
+  /* Rhythm */
   --tap-min: 44px;
-
-  /* Rhythm, from the app's UI audit: a 16px gutter, 16px surfaces and 12px
-     controls. The page adds a width limit and the space between sections. */
-  --gutter: 16px;
+  --gutter: clamp(20px, 4.3vw, 48px);
   --page-max: 1120px;
-  --radius-control: 0.75rem;
-  --radius-surface: 1rem;
-  --section-gap: clamp(4rem, 10vw, 7rem);
+  --radius-control: 12px;
+  --radius-card: 18px;
+  --radius-band: 20px;
+  --edge: 6px; /* the thick bottom edge under cards */
 }

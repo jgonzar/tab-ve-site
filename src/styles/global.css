@@ -9,13 +9,14 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  scrollbar-color: var(--ink) var(--soft);
 }
 
 body {
   margin: 0;
   min-height: 100dvh;
-  background: var(--tab-page);
-  color: var(--tab-text);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.6;
@@ -29,10 +30,16 @@ svg {
 
 a {
   color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--tab-lime);
+  outline: 2px solid var(--violet);
   outline-offset: 3px;
 }
 
@@ -62,8 +69,8 @@ a {
   z-index: 10;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-control);
-  background: var(--tab-lime);
-  color: var(--tab-on-lime);
+  background: var(--lime);
+  color: var(--ink);
   font-weight: 700;
   text-decoration: none;
   transform: translateY(-200%);
@@ -71,36 +78,17 @@ a {
 
 .skip-link:focus-visible {
   transform: none;
-  outline-color: var(--tab-text);
+  outline-color: var(--ink);
 }
 
-/* The primary action, and the only lime fill on the page: a plain button,
-   no glow or shadow. 48px tall, like the app's fields. */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 0 1.5rem;
-  border-radius: var(--radius-control);
-  background: var(--tab-lime);
-  color: var(--tab-on-lime);
-  font-weight: 700;
-  text-decoration: none;
-  transition: background-color 150ms ease;
-}
-
-.btn-primary:hover {
-  background: #e4ff8f;
-}
-
-/* The small lime label above a section title */
-.eyebrow {
-  margin: 0;
-  color: var(--tab-lime);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+/* The highlighter: lime behind ink, kept on every line a phrase wraps to */
+.hl {
+  padding: 0.05em 0.3em;
+  border-radius: 5px;
+  background: var(--lime);
+  color: var(--ink);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* Visually hidden, still read by screen readers */

@@ -4,8 +4,14 @@
     "description": "Una app para llevar las carreras de la casa, con cada total en bolívares a la tasa BCV. Prueba la demo."
   },
   "lang": {
-    "en": { "short": "EN", "name": "English" },
-    "es": { "short": "ES", "name": "Español" }
+    "en": {
+      "short": "EN",
+      "name": "English"
+    },
+    "es": {
+      "short": "ES",
+      "name": "Español"
+    }
   },
   "skip": "Saltar al contenido",
   "hero": {
@@ -13,6 +19,7 @@
     "headline": "Cada carrera y quién debe qué, en un solo lugar.",
     "before": "Pagos de carreras llevados de memoria, en dólares, con una tasa que cambia a diario.",
     "sub": "Hecha para tres personas. Pruébala con datos de ejemplo.",
+    "subPill": "tres personas",
     "alt": "Pantalla de inicio de Tab: rutas rápidas, el total pendiente en dólares y bolívares, y las carreras por pagar."
   },
   "demo": {
