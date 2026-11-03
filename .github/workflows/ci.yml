@@ -68,12 +68,72 @@ jobs:
         run: pnpm exec playwright install --with-deps --only-shell chromium
       - name: Playwright, against dist/ with the vercel.json headers and redirects
         run: pnpm test:e2e
+      # On a failure: the report, and test-results/, which holds the actual
+      # screenshots (the source of new visual baselines)
       - if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report
-          path: playwright-report/
+          path: |
+            playwright-report/
+            test-results/
           retention-days: 7
+
+  lighthouse:
+    name: lighthouse
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Install Chromium (full, for Lighthouse)
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Lighthouse budgets, against dist/ (mobile, median of 3 runs)
+        run: pnpm lighthouse
+      - if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse-report
+          path: lighthouse-report/
+          retention-days: 7
+
+  links:
+    name: links
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      LYCHEE_VERSION: 0.24.2
+      # sha256 of lychee-x86_64-unknown-linux-gnu.tar.gz, from the release
+      LYCHEE_SHA256: 1f4e0ef7f6554a6ed33dd7ac144fb2e1bbed98598e7af973042fc5cd43951c9a
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Install lychee (pinned, checksum verified)
+        run: |
+          file="lychee-x86_64-unknown-linux-gnu.tar.gz"
+          curl -fsSLO "https://github.com/lycheeverse/lychee/releases/download/lychee-v${LYCHEE_VERSION}/${file}"
+          echo "${LYCHEE_SHA256}  ${file}" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/lychee"
+          tar -xzf "${file}" -C "$RUNNER_TEMP/lychee" --strip-components=1
+          echo "$RUNNER_TEMP/lychee" >> "$GITHUB_PATH"
+      - name: Every link in the built HTML (lychee.toml)
+        run: pnpm check:links
 
   # The link cards' visual snapshot: renders public/og/*.png again with resvg
   # and compares them pixel by pixel, within a tolerance (scripts/og.ts). Not

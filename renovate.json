@@ -34,7 +34,10 @@
         "@commitlint/**",
         "vitest",
         "@playwright/test",
-        "@types/node"
+        "@types/node",
+        "@axe-core/playwright",
+        "lighthouse",
+        "chrome-launcher"
       ],
       "groupName": "dev tooling"
     },

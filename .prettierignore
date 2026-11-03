@@ -6,3 +6,4 @@ pnpm-lock.yaml
 public/licenses/
 playwright-report/
 test-results/
+lighthouse-report/
