@@ -8,18 +8,28 @@ import { readFileSync } from "node:fs";
 
 const ROOT = new URL("../..", import.meta.url).pathname;
 
-export function loadRules() {
-  const config = JSON.parse(readFileSync(`${ROOT}vercel.json`, "utf8"));
-  return (config.headers ?? []).map(({ source, headers }) => {
-    if (/[:*+?{}[\]]/.test(source.replaceAll("(.*)", ""))) {
-      throw new Error(`vercel.json source not understood by scripts/lib: ${source}`);
-    }
-    const escaped = source
-      .split("(.*)")
-      .map((part) => part.replace(/[.^$|\\/]/g, "\\$&"))
-      .join(".*");
-    return { source, test: new RegExp(`^${escaped}$`), headers };
-  });
+export function loadConfig() {
+  return JSON.parse(readFileSync(`${ROOT}vercel.json`, "utf8"));
+}
+
+/** A vercel.json `source` as a RegExp. Only literal paths and `(.*)` are understood. */
+export function sourcePattern(source) {
+  if (/[:*+?{}[\]]/.test(source.replaceAll("(.*)", ""))) {
+    throw new Error(`vercel.json source not understood by scripts/lib: ${source}`);
+  }
+  const escaped = source
+    .split("(.*)")
+    .map((part) => part.replace(/[.^$|\\/]/g, "\\$&"))
+    .join(".*");
+  return new RegExp(`^${escaped}$`);
+}
+
+export function loadRules(config = loadConfig()) {
+  return (config.headers ?? []).map(({ source, headers }) => ({
+    source,
+    test: sourcePattern(source),
+    headers,
+  }));
 }
 
 /** The headers vercel.json gives `pathname`, as a Map of lower-case name to value. */

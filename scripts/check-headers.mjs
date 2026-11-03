@@ -45,12 +45,14 @@ async function get(path) {
   return res;
 }
 
-// The paths to check: the page, a hashed asset, a file in public/, a dotfile
-const home = await get("/");
+// The paths to check: the language redirect at /, both pages, a hashed asset,
+// the generated files, a file in public/ and a dotfile. Each gets the headers.
+const HOME = "/en/";
+const home = await get(HOME);
 const html = await home.text();
 if (home.status !== 200)
   fail(
-    `/ returned ${home.status}${remote && !bypass ? " (protected preview? set VERCEL_AUTOMATION_BYPASS_SECRET)" : ""}`,
+    `${HOME} returned ${home.status}${remote && !bypass ? " (protected preview? set VERCEL_AUTOMATION_BYPASS_SECRET)" : ""}`,
   );
 
 let asset = /(?:href|src)="(\/_astro\/[^"]+)"/.exec(html)?.[1];
@@ -60,12 +62,24 @@ if (!asset && !remote) {
   );
   if (first) asset = `/_astro/${first}`;
 }
-const paths = ["/", "/.well-known/security.txt", "/icons/favicon-32.png", asset].filter(Boolean);
+const paths = [
+  "/",
+  HOME,
+  "/es/",
+  "/sitemap.xml",
+  "/robots.txt",
+  "/.well-known/security.txt",
+  "/icons/favicon-32.png",
+  asset,
+].filter(Boolean);
+// `/` always answers with the language redirect, never a page
+const EXPECTED_STATUS = { "/": 307 };
 
 // 1. Served equals declared
 for (const path of paths) {
-  const res = path === "/" ? home : await get(path);
-  if (res.status !== 200) fail(`${path} returned ${res.status}`);
+  const res = path === HOME ? home : await get(path);
+  const expected = EXPECTED_STATUS[path] ?? 200;
+  if (res.status !== expected) fail(`${path} returned ${res.status}, expected ${expected}`);
   for (const [key, value] of headersFor(rules, path)) {
     const actual = res.headers.get(key);
     if (actual !== value)
@@ -76,7 +90,7 @@ for (const path of paths) {
 }
 
 // 2. The A+ criteria, on the page's own headers
-const h = (key) => (remote ? home.headers.get(key) : headersFor(rules, "/").get(key)) ?? "";
+const h = (key) => (remote ? home.headers.get(key) : headersFor(rules, HOME).get(key)) ?? "";
 
 const csp = Object.fromEntries(
   h("content-security-policy")
