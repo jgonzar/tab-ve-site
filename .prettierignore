@@ -7,3 +7,5 @@ public/licenses/
 playwright-report/
 test-results/
 lighthouse-report/
+.impeccable/hook.cache.json
+.impeccable/review/
