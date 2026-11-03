@@ -77,7 +77,7 @@ for (const { locale, path, t } of PAGES) {
     });
 
     test("has theme-color and favicons that load", async ({ page, request }) => {
-      await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#0b0a29");
+      await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#000000");
       const icons = await page
         .locator('link[rel="icon"], link[rel="apple-touch-icon"]')
         .evaluateAll((els) => els.map((el) => el.getAttribute("href") ?? ""));
