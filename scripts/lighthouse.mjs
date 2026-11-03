@@ -60,6 +60,16 @@ mkdirSync(new URL("../lighthouse-report", import.meta.url), { recursive: true })
 
 const RUNS = 3;
 
+// One discarded run first: Chrome's own cold start lands as an unattributed
+// long task on whichever page is measured first (615 ms of "Other" on CI),
+// which says nothing about the page
+await lighthouse(`${base}/en/`, {
+  port: chrome.port,
+  output: "json",
+  logLevel: "error",
+  extraHeaders: remote && bypass ? { "x-vercel-protection-bypass": bypass } : undefined,
+});
+
 /** The run whose performance score is the median. */
 function medianRun(results) {
   const sorted = [...results].sort(

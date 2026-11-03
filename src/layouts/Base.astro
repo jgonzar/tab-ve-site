@@ -4,6 +4,7 @@
 // build.inlineStylesheets is 'never').
 import "../styles/global.css";
 import poppins400 from "@fontsource/poppins/files/poppins-latin-400-normal.woff2?url";
+import poppins700 from "@fontsource/poppins/files/poppins-latin-700-normal.woff2?url";
 import JagrStrip from "../components/JagrStrip.astro";
 import SeoHead from "../components/SeoHead.astro";
 import { strings, type Locale } from "../i18n";
@@ -31,7 +32,11 @@ const t = strings(locale);
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png" />
+    <!-- Both weights early: the headline is 700, and where the size-adjusted
+         Arial fallback isn't installed (Linux, most Android) a late swap moves
+         the hero -->
     <link rel="preload" href={poppins400} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={poppins700} as="font" type="font/woff2" crossorigin="anonymous" />
   </head>
   <body>
     <a class="skip-link" href="#main">
