@@ -17,24 +17,45 @@ CI and Vercel run Node `24.22.2` (`.nvmrc`). Locally, any Node 24 from `24.16.0`
 ```sh
 pnpm install --frozen-lockfile
 pnpm dev            # http://localhost:4321
-pnpm check          # every CI gate below, in order
+pnpm check          # the `quality` gates below, in order (unit tests included)
+pnpm build && pnpm test:e2e   # the Playwright suite, against dist/ served like Vercel
 ```
+
+The e2e suite needs Chromium once: `pnpm exec playwright install --only-shell chromium`. To run it
+against a deployment instead, set `PREVIEW_URL` (and `VERCEL_AUTOMATION_BYPASS_SECRET` for a
+protected preview).
+
+## Languages and routing
+
+- Two static pages, `/en/` and `/es/` (Astro i18n, `prefixDefaultLocale`). Every string lives in
+  `src/i18n/en.json` and `es.json`, with the same keys (a unit test checks it).
+- `/` is a 307 from `vercel.json` `redirects`, never client JS: the `tab_site_lang` cookie (`es` or
+  `en`) wins, then an `Accept-Language` starting with `es`, else `/en/`. The targets are literals.
+- The ES / EN links are plain links. `src/scripts/lang-cookie.ts` (an external file) saves the
+  choice on click: `Secure; SameSite=Lax; Path=/; Max-Age=31536000`. With JS off, the links still
+  work and nothing is saved.
+- `scripts/serve-dist.mjs` applies the same `vercel.json` headers, `trailingSlash` and redirects
+  locally (`scripts/lib/vercel-redirects.mjs`), so the redirect matrix runs without a deploy.
+- The head (canonical, `hreflang` with `x-default`, link cards), `sitemap.xml` and `robots.txt` are
+  built in `src/seo.ts` from `SITE_URL` in `src/site.ts`: a custom domain is a one-line change.
 
 ## Quality gates
 
 CI (`.github/workflows/ci.yml`) runs on every PR and on every push to `main`. Each job is a required
 check on `main`.
 
-| Job          | What it runs                                                                                                                                                                                                                                                                                          |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `quality`    | frozen install, the dash check (`scripts/check-dashes.mjs`, every file in the repo), `astro check`, ESLint, the Prettier check, the build, the built-HTML check (`scripts/check-dist.mjs`: no inline script or style, no third-party loads) and the header check (`scripts/check-headers.mjs`, local) |
-| `audit`      | `pnpm audit --audit-level=high`                                                                                                                                                                                                                                                                       |
-| `gitleaks`   | gitleaks 8.30.1 (checksum verified) over the full history                                                                                                                                                                                                                                             |
-| `commitlint` | Conventional Commits on every commit of the PR, with no em or en dashes                                                                                                                                                                                                                               |
+| Job          | What it runs                                                                                                                                                                                                                                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `quality`    | frozen install, the dash check (`scripts/check-dashes.mjs`, every file in the repo), `astro check`, ESLint, the Prettier check, Vitest unit tests, the build, the built-HTML check (`scripts/check-dist.mjs`: no inline script or style, no third-party loads) and the header check (`scripts/check-headers.mjs`, local) |
+| `e2e`        | Playwright on Chromium against `dist/` served with the `vercel.json` headers and redirects: the `/` redirect matrix, the head, the sitemap, robots, the language links and cookie                                                                                                                                        |
+| `audit`      | `pnpm audit --audit-level=high`                                                                                                                                                                                                                                                                                          |
+| `gitleaks`   | gitleaks 8.30.1 (checksum verified) over the full history                                                                                                                                                                                                                                                                |
+| `commitlint` | Conventional Commits on every commit of the PR, with no em or en dashes                                                                                                                                                                                                                                                  |
 
 `.github/workflows/preview.yml` runs against each PR's Vercel preview once it's ready, using the URL
-from Vercel's deployment status event. It checks the served headers now; the e2e, accessibility,
-link and Lighthouse jobs join it later.
+from Vercel's deployment status event: `preview-headers` checks the served headers, and
+`preview-e2e` runs the Playwright suite against Vercel itself (including its automatic
+`X-Robots-Tag: noindex` on previews). The accessibility, link and Lighthouse jobs join it later.
 
 Supply chain: exact versions, a frozen lockfile, `minimumReleaseAge` of 3 days in
 `pnpm-workspace.yaml` (Renovate waits the same), install scripts only for esbuild and sharp, and
