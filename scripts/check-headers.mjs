@@ -9,7 +9,8 @@
 //
 // Three checks:
 // 1. Every path served as a file (200) gets exactly the headers vercel.json
-//    declares for it.
+//    declares for it, except /.well-known/, which Vercel serves itself
+//    without them (scripts/lib/vercel-headers.mjs); there only the 200 counts.
 // 2. The redirects answer with the right status and Location. Vercel sends
 //    no custom headers on a redirect, so none are asserted there; scanners
 //    grade the final 200.

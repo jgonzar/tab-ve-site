@@ -3,7 +3,8 @@
 // language redirect) before any file, then the file with the vercel.json
 // headers. Like Vercel, a redirect from trailingSlash or `redirects` carries
 // only its status and Location, none of the custom headers (seen on the first
-// real deployment). So the security baseline and the redirect matrix can be
+// real deployment), and /.well-known/ gets none either (Vercel serves it
+// itself; see scripts/lib/vercel-headers.mjs). So the security baseline and the redirect matrix can be
 // checked before a preview exists (`astro preview` ignores vercel.json). Local
 // use and CI only; Vercel serves the real site.
 //   node scripts/serve-dist.mjs [port]     (default 4321)

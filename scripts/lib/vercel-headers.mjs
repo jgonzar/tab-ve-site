@@ -32,9 +32,18 @@ export function loadRules(config = loadConfig()) {
   }));
 }
 
-/** The headers vercel.json gives `pathname`, as a Map of lower-case name to value. */
+// Paths Vercel answers itself, without any vercel.json headers. Seen on the
+// previews: /.well-known/security.txt got none of them, from the `/(.*)` rule
+// or from an explicit `/.well-known/(.*)` rule, while other files got all.
+const PLATFORM_PATHS = /^\/\.well-known\//;
+
+/**
+ * The headers vercel.json gives `pathname` on Vercel, as a Map of lower-case
+ * name to value. Empty for the paths Vercel answers itself.
+ */
 export function headersFor(rules, pathname) {
   const out = new Map();
+  if (PLATFORM_PATHS.test(pathname)) return out;
   for (const rule of rules) {
     if (!rule.test.test(pathname)) continue;
     for (const { key, value } of rule.headers) out.set(key.toLowerCase(), value);
