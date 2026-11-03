@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
+import svelte from "@astrojs/svelte";
 
 // Static output. Vercel serves dist/ as files, so no adapter is needed; the
 // headers and redirects live in vercel.json.
@@ -7,6 +8,8 @@ export default defineConfig({
   // Must match SITE_URL in src/site.ts
   site: "https://tab-ve-site.vercel.app",
   output: "static",
+  // Svelte for the sections (decision 17), rendered to HTML at build time
+  integrations: [svelte()],
   // Matches vercel.json trailingSlash: true, so every page has one URL
   trailingSlash: "always",
   i18n: {
