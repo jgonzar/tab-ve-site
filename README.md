@@ -60,7 +60,9 @@ check on `main`, except `og-cards`, until it has passed on Linux (see "Link prev
 from Vercel's deployment status event: `preview-headers` checks the served headers, and
 `preview-e2e` runs the Playwright suite against Vercel itself (including its automatic
 `X-Robots-Tag: noindex` on previews), and `preview-lighthouse` runs the budgets against the preview,
-with only `is-crawlable` set aside, since every preview is `noindex` on purpose.
+with two SEO audits set aside, both caused by the preview's protection: `is-crawlable` (every preview
+is `noindex`) and `robots-txt` (Lighthouse fetches it from inside the page without the bypass
+header). The `lighthouse` job on `dist/` keeps both, as will the check on production.
 
 **Visual baselines** live in `tests/e2e/visual.spec.ts-snapshots/`, one set per platform; CI compares
 the Linux ones. After a deliberate visual change, take the new Linux screenshots from the
