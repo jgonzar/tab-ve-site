@@ -5,6 +5,7 @@ import {
   alternates,
   demoUrl,
   ogImage,
+  PAGES,
   pagePath,
   pageUrl,
   robotsTxt,
@@ -15,6 +16,8 @@ describe("page URLs", () => {
   it("live under the language prefix, with a trailing slash", () => {
     expect(pagePath("en")).toBe("/en/");
     expect(pagePath("es")).toBe("/es/");
+    expect(pagePath("en", "credits")).toBe("/en/credits/");
+    expect(pagePath("es", "credits")).toBe("/es/credits/");
   });
 
   it("are absolute and built from SITE_URL", () => {
@@ -40,9 +43,20 @@ describe("alternates", () => {
   });
 
   it("point each language at its own canonical, so every page's set is reciprocal", () => {
-    for (const locale of LOCALES) {
-      expect(set.find((a) => a.hreflang === locale)?.href).toBe(pageUrl(locale));
+    for (const page of PAGES) {
+      for (const locale of LOCALES) {
+        expect(alternates(SITE_URL, page).find((a) => a.hreflang === locale)?.href).toBe(
+          pageUrl(locale, SITE_URL, page),
+        );
+      }
     }
+  });
+
+  it("send x-default on the credits to the English page, which has no picker", () => {
+    expect(alternates(SITE_URL, "credits").at(-1)).toEqual({
+      hreflang: "x-default",
+      href: `${SITE_URL}/en/credits/`,
+    });
   });
 });
 
@@ -67,12 +81,13 @@ describe("sitemap.xml", () => {
     expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"');
   });
 
-  it("lists both pages, each with every alternate", () => {
+  it("lists every page in every language, each with its alternates", () => {
     const urls = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1] ?? "");
-    expect(urls).toHaveLength(LOCALES.length);
-    LOCALES.forEach((locale, i) => {
-      expect(urls[i]).toContain(`<loc>${pageUrl(locale)}</loc>`);
-      for (const a of alternates()) {
+    const expected = PAGES.flatMap((page) => LOCALES.map((locale) => ({ page, locale })));
+    expect(urls).toHaveLength(expected.length);
+    expected.forEach(({ page, locale }, i) => {
+      expect(urls[i]).toContain(`<loc>${pageUrl(locale, SITE_URL, page)}</loc>`);
+      for (const a of alternates(SITE_URL, page)) {
         expect(urls[i]).toContain(
           `<xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${a.href}"/>`,
         );

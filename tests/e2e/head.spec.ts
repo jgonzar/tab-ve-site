@@ -87,7 +87,7 @@ for (const { locale, path, t } of PAGES) {
   });
 }
 
-test("sitemap.xml is valid XML listing both pages with every alternate", async ({
+test("sitemap.xml is valid XML listing every page with its alternates", async ({
   page,
   request,
 }) => {
@@ -119,11 +119,40 @@ test("sitemap.xml is valid XML listing both pages with every alternate", async (
     ["alternate", "es", absolute("/es/")],
     ["alternate", "x-default", absolute("/")],
   ];
+  const credits = [
+    ["alternate", "en", absolute("/en/credits/")],
+    ["alternate", "es", absolute("/es/credits/")],
+    ["alternate", "x-default", absolute("/en/credits/")],
+  ];
   expect(parsed.urls).toEqual([
     { loc: absolute("/en/"), alternates },
     { loc: absolute("/es/"), alternates },
+    { loc: absolute("/en/credits/"), alternates: credits },
+    { loc: absolute("/es/credits/"), alternates: credits },
   ]);
 });
+
+for (const { locale, t } of PAGES) {
+  test(`/${locale}/credits/ is its own canonical, with reciprocal hreflang`, async ({ page }) => {
+    await page.goto(`/${locale}/credits/`);
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
+    await expect(page).toHaveTitle(`Tab: ${t.credits.title}`);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      absolute(`/${locale}/credits/`),
+    );
+    const links = await page
+      .locator('link[rel="alternate"][hreflang]')
+      .evaluateAll((els) =>
+        els.map((el) => [el.getAttribute("hreflang"), el.getAttribute("href")]),
+      );
+    expect(Object.fromEntries(links)).toEqual({
+      en: absolute("/en/credits/"),
+      es: absolute("/es/credits/"),
+      "x-default": absolute("/en/credits/"),
+    });
+  });
+}
 
 test("robots.txt allows everything and lists the sitemap", async ({ request }) => {
   const res = await request.get("/robots.txt");

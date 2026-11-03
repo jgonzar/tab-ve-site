@@ -63,7 +63,8 @@ for (const [locale, other, demoLabel] of [
     await expect(alternate).toHaveAttribute("lang", other);
     await expect(alternate).toHaveAttribute("href", `/${other}/`);
 
-    const demo = page.getByRole("link", { name: demoLabel });
+    // The hero's button; page.spec.ts checks both
+    const demo = page.getByRole("link", { name: demoLabel }).first();
     await expect(demo).toHaveAttribute("href", `https://tab-ve-demo.vercel.app/?lang=${locale}`);
     await expect(demo).toHaveAttribute("rel", "noopener noreferrer");
     expect(errors).toEqual([]);
