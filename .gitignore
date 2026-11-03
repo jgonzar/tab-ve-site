@@ -9,3 +9,5 @@ playwright-report/
 test-results/
 tests/e2e/**/*-darwin.png
 lighthouse-report/
+.impeccable/review/
+.impeccable/mocks/
