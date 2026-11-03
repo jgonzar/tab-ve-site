@@ -44,8 +44,8 @@ for (const [name, headers, expected] of matrix) {
     expect(res.status()).toBe(307);
     const location = res.headers()["location"] ?? "";
     expect(sameSitePath(location, String(baseURL))).toBe(expected);
-    // The redirect itself carries the security baseline
-    expect(res.headers()["content-security-policy"]).toContain("default-src 'none'");
+    // Status and Location only: Vercel sends no vercel.json headers on a
+    // redirect, and scanners grade the final 200
   });
 }
 
@@ -54,6 +54,8 @@ test("the pages answer 200 in their own language, so nothing flashes", async ({ 
     const res = await request.get(path, { maxRedirects: 0 });
     expect(res.status()).toBe(200);
     expect(await res.text()).toContain(`<html lang="${path.slice(1, 3)}"`);
+    // The page, the 200 a visitor and a scanner land on, carries the baseline
+    expect(res.headers()["content-security-policy"]).toContain("default-src 'none'");
   }
 });
 

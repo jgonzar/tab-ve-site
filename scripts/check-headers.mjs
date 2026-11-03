@@ -7,9 +7,13 @@
 //                                               a PR preview. A protected preview
 //                                               needs VERCEL_AUTOMATION_BYPASS_SECRET.
 //
-// Two checks:
-// 1. Every path gets exactly the headers vercel.json declares for it.
-// 2. The declared set meets what Mozilla Observatory and securityheaders.com
+// Three checks:
+// 1. Every path served as a file (200) gets exactly the headers vercel.json
+//    declares for it.
+// 2. The redirects answer with the right status and Location. Vercel sends
+//    no custom headers on a redirect, so none are asserted there; scanners
+//    grade the final 200.
+// 3. The declared set meets what Mozilla Observatory and securityheaders.com
 //    grade for an A+ (no unsafe CSP sources, HSTS of 6 months or more, nosniff,
 //    framing denied, a private referrer policy, a Permissions-Policy). The
 //    HTTPS redirect can only be seen on a live URL, so the local run skips it.
@@ -45,8 +49,8 @@ async function get(path) {
   return res;
 }
 
-// The paths to check: the language redirect at /, both pages, a hashed asset,
-// the generated files, a file in public/ and a dotfile. Each gets the headers.
+// The files to check: both pages, a hashed asset, the generated files, a file
+// in public/ and a dotfile. Each gets the headers.
 const HOME = "/en/";
 const home = await get(HOME);
 const html = await home.text();
@@ -63,7 +67,6 @@ if (!asset && !remote) {
   if (first) asset = `/_astro/${first}`;
 }
 const paths = [
-  "/",
   HOME,
   "/es/",
   "/sitemap.xml",
@@ -72,14 +75,18 @@ const paths = [
   "/icons/favicon-32.png",
   asset,
 ].filter(Boolean);
-// `/` always answers with the language redirect, never a page
-const EXPECTED_STATUS = { "/": 307 };
 
-// 1. Served equals declared
+// The redirects: `/` with no cookie and no Spanish Accept-Language, and a page
+// without its trailing slash. Status and Location only.
+const REDIRECTS = [
+  { path: "/", status: 307, location: "/en/" },
+  { path: "/es", status: 308, location: "/es/" },
+];
+
+// 1. Served equals declared, on every file
 for (const path of paths) {
   const res = path === HOME ? home : await get(path);
-  const expected = EXPECTED_STATUS[path] ?? 200;
-  if (res.status !== expected) fail(`${path} returned ${res.status}, expected ${expected}`);
+  if (res.status !== 200) fail(`${path} returned ${res.status}, expected 200`);
   for (const [key, value] of headersFor(rules, path)) {
     const actual = res.headers.get(key);
     if (actual !== value)
@@ -89,7 +96,17 @@ for (const path of paths) {
   }
 }
 
-// 2. The A+ criteria, on the page's own headers
+// 2. The redirects: status and a same-site Location
+for (const { path, status, location } of REDIRECTS) {
+  const res = await get(path);
+  if (res.status !== status) fail(`${path} returned ${res.status}, expected ${status}`);
+  const to = new URL(res.headers.get("location") ?? "", `${base}${path}`);
+  if (to.origin !== new URL(base).origin || to.pathname !== location) {
+    fail(`${path} Location: expected ${location}, got "${res.headers.get("location")}"`);
+  }
+}
+
+// 3. The A+ criteria, on the page's own headers
 const h = (key) => (remote ? home.headers.get(key) : headersFor(rules, HOME).get(key)) ?? "";
 
 const csp = Object.fromEntries(
@@ -145,5 +162,5 @@ if (failures.length) {
 }
 
 console.log(
-  `✓ Header check: ${paths.length} paths on ${remote ? base : "dist/ (local, vercel.json headers)"} serve the declared headers, and they meet the A+ criteria`,
+  `✓ Header check: ${paths.length} files on ${remote ? base : "dist/ (local, vercel.json headers)"} serve the declared headers and meet the A+ criteria; ${REDIRECTS.length} redirects answer as expected`,
 );
