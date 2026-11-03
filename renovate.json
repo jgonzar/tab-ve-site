@@ -23,7 +23,7 @@
       "groupName": "astro"
     },
     {
-      "description": "Lint, format, types and commit tooling",
+      "description": "Lint, format, types, test and commit tooling",
       "matchPackageNames": [
         "eslint",
         "@eslint/**",
@@ -31,7 +31,10 @@
         "globals",
         "prettier",
         "typescript",
-        "@commitlint/**"
+        "@commitlint/**",
+        "vitest",
+        "@playwright/test",
+        "@types/node"
       ],
       "groupName": "dev tooling"
     },
@@ -48,6 +51,12 @@
     {
       "description": "Node and pnpm stay on their current majors until a human moves them",
       "matchPackageNames": ["node", "pnpm"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "@types/node follows the Node major in .nvmrc",
+      "matchPackageNames": ["@types/node"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     }
