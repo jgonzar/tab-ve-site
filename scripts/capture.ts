@@ -7,7 +7,8 @@
 //
 // baseUrl defaults to the local demo's address and must be a loopback host.
 // outDir defaults to src/assets/captures/. Writes raw PNGs (no phone frame;
-// the page draws that once) as <outDir>/<lang>/<shot>.png, each in es and en.
+// the page draws that once) as <outDir>/<lang>/<shot>.png, each in es and en,
+// plus <outDir>/<lang>/receipt.txt, the shared text summary.
 //
 // Two runs give byte-identical files (`pnpm capture:verify`):
 // - the clock is frozen at CAPTURE_NOW, in Caracas, in the browser and (through
@@ -159,9 +160,32 @@ const SHOTS: { name: string; take: (context: BrowserContext, lang: Lang) => Prom
       return page;
     },
   },
-  // 4. Settle up: Historial, the paid rides (see the README on why not the receipt)
-  { name: "historial", take: (context) => open(context, "/historial") },
+  // 4. Settle up is the receipt, saved as text by receipt() below
 ];
+
+/**
+ * 4. Settle up: the shared text summary (the receipt), as Compartir builds
+ * it. It has no screen in Tab (it goes to the share sheet), so it's saved as
+ * text, and the page renders it as real text inside the phone frame.
+ * navigator.share is replaced in this context only, to catch the text.
+ */
+async function receipt(context: BrowserContext, lang: Lang) {
+  await context.addInitScript(() => {
+    navigator.share = async (data?: ShareData) => {
+      document.documentElement.dataset.captureReceipt = data?.text ?? "";
+    };
+  });
+  const page = await open(context, "/");
+  await page.locator('[data-tour="summary"] button').first().click();
+  const text = await page
+    .locator("html[data-capture-receipt]")
+    .getAttribute("data-capture-receipt");
+  if (!text) throw new Error("capture: Compartir shared no text");
+  const dir = new URL(`${lang}/`, outDir);
+  await mkdir(dir, { recursive: true });
+  await writeFile(new URL("receipt.txt", dir), `${text}\n`);
+  console.log(`  ${lang}/receipt.txt  ${text.split("\n").length} lines`);
+}
 
 const browser = await chromium.launch();
 try {
@@ -172,8 +196,13 @@ try {
       await shoot(page, lang, shot.name);
       await context.close();
     }
+    const context = await newContext(browser, lang);
+    await receipt(context, lang);
+    await context.close();
   }
 } finally {
   await browser.close();
 }
-console.log(`✓ capture: ${LANGS.length * SHOTS.length} shots from ${base.origin}`);
+console.log(
+  `✓ capture: ${LANGS.length * SHOTS.length} shots and ${LANGS.length} receipts from ${base.origin}`,
+);

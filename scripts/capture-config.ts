@@ -9,8 +9,12 @@ export const TAB_REF = "5b136f3";
 export const CAPTURE_NOW = "2026-10-15T17:45:00-04:00";
 export const TIME_ZONE = "America/Caracas";
 
-/** The BCV rate the demo's server gets instead of the live one (Bs per USD). */
-export const BCV_RATE = 231.05;
+/**
+ * The BCV rate the demo's server gets instead of the live one (Bs per USD).
+ * Close to the real rate around CAPTURE_NOW (the live demo showed 875.65 on
+ * 2026-10-10), so the Bs totals look right to a Venezuelan reader.
+ */
+export const BCV_RATE = 875.65;
 
 /** A phone: the viewport in CSS px and the device pixel ratio. */
 export const VIEWPORT = { width: 390, height: 844 };
