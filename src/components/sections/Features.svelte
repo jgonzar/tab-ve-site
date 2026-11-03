@@ -188,11 +188,12 @@
       height: 250px;
     }
 
-    /* Beside the text the screen is narrower: start higher, so the crop
-       ends after the modal, before the next ride's button */
+    /* Beside the text the screen is narrower: the crop starts below the
+       route chips, inside the summary bar, and ends after the modal, before
+       the next ride's button */
     .card:nth-child(1) .card__shot :global(img) {
       height: 232px;
-      object-position: center 30%;
+      object-position: center 43%;
     }
   }
 
