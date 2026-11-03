@@ -28,6 +28,21 @@ describe("i18n parity", () => {
     }
   });
 
+  it("translates everything except brand and stack terms", () => {
+    // Identical in both languages on purpose: the language names (each in
+    // itself) and the stack chips (product names, copy row 17)
+    const SAME = /^(lang\.|built\.chips\.)/;
+    const flat = (value: unknown, prefix = ""): [string, unknown][] =>
+      value !== null && typeof value === "object"
+        ? Object.entries(value).flatMap(([k, v]) => flat(v, prefix ? `${prefix}.${k}` : k))
+        : [[prefix, value]];
+    const esValues = new Map(flat(es));
+    const untranslated = flat(en)
+      .filter(([key, value]) => !SAME.test(key) && esValues.get(key) === value)
+      .map(([key]) => key);
+    expect(untranslated).toEqual([]);
+  });
+
   it("serves each locale its own file", () => {
     expect(strings("en")).toBe(en);
     expect(strings("es")).toBe(es);
