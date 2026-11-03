@@ -1,9 +1,11 @@
 #!/usr/bin/env node
-// Serves dist/ the way Vercel will: the vercel.json headers on every response,
-// and its trailingSlash and redirects (the `/` language redirect) before any
-// file. So the security baseline and the redirect matrix can be checked before
-// a preview exists (`astro preview` ignores vercel.json). Local use and CI
-// only; Vercel serves the real site.
+// Serves dist/ the way Vercel does: its trailingSlash and redirects (the `/`
+// language redirect) before any file, then the file with the vercel.json
+// headers. Like Vercel, a redirect from trailingSlash or `redirects` carries
+// only its status and Location, none of the custom headers (seen on the first
+// real deployment). So the security baseline and the redirect matrix can be
+// checked before a preview exists (`astro preview` ignores vercel.json). Local
+// use and CI only; Vercel serves the real site.
 //   node scripts/serve-dist.mjs [port]     (default 4321)
 
 import { createReadStream, existsSync, statSync } from "node:fs";
@@ -44,12 +46,12 @@ export function serve(port = 4321) {
   const rules = loadRules(config);
   const server = createServer((req, res) => {
     const { pathname, search } = new URL(req.url ?? "/", "http://localhost");
-    for (const [key, value] of headersFor(rules, pathname)) res.setHeader(key, value);
     const redirect = resolveRedirect(config, { pathname, search, headers: req.headers });
     if (redirect) {
       res.writeHead(redirect.status, { location: redirect.location }).end();
       return;
     }
+    for (const [key, value] of headersFor(rules, pathname)) res.setHeader(key, value);
     const file = resolveFile(pathname);
     const notFound = resolveFile("/404");
     if (!file && !notFound) {

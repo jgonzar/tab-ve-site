@@ -35,7 +35,8 @@ protected preview).
   choice on click: `Secure; SameSite=Lax; Path=/; Max-Age=31536000`. With JS off, the links still
   work and nothing is saved.
 - `scripts/serve-dist.mjs` applies the same `vercel.json` headers, `trailingSlash` and redirects
-  locally (`scripts/lib/vercel-redirects.mjs`), so the redirect matrix runs without a deploy.
+  locally (`scripts/lib/vercel-redirects.mjs`), so the redirect matrix runs without a deploy. As on
+  Vercel, the headers go on files only, never on a redirect.
 - The head (canonical, `hreflang` with `x-default`, link cards), `sitemap.xml` and `robots.txt` are
   built in `src/seo.ts` from `SITE_URL` in `src/site.ts`: a custom domain is a one-line change.
 
@@ -63,7 +64,10 @@ Renovate on a weekly, grouped schedule (`renovate.json`).
 
 ## Security baseline
 
-Every path gets these headers from `vercel.json`:
+Every response served as a file (the pages, assets, `sitemap.xml`, `robots.txt`, `security.txt`)
+gets these headers from `vercel.json`. Redirects don't: Vercel answers a `redirects` or
+`trailingSlash` redirect with its status and `Location` only, so the 307 at `/` and the 308s carry no
+custom headers. They have no body to protect, and scanners grade the final 200.
 
 | Header                       | Value                                                                                                                                                   |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -79,8 +83,9 @@ Hashed assets under `/_astro/` are cached for a year, immutable. Fonts (Poppins,
 are self-hosted from Fontsource; their OFL notices ship in `public/licenses/`.
 `/.well-known/security.txt` gives the security contact.
 
-To check the headers against the build: `pnpm build && pnpm check:headers` (it serves `dist/` with
-the `vercel.json` headers). To check a deployment:
+To check the headers against the build: `pnpm build && pnpm check:headers` (it serves `dist/` the
+way Vercel does: headers on files, status and `Location` only on redirects). It checks the headers on
+every file, and the status and `Location` of the redirects. To check a deployment:
 `VERCEL_AUTOMATION_BYPASS_SECRET=... node scripts/check-headers.mjs --url <preview URL>`.
 
 ### Header grades
