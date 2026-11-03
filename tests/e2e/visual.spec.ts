@@ -12,12 +12,18 @@ for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`/${locale}/`);
       await page.evaluate(() => document.fonts.ready);
-      // Bring every lazy image in, so the snapshot is complete
-      for (const img of await page.locator('img[loading="lazy"]').all()) {
-        await img.scrollIntoViewIfNeeded();
+      // Load every lazy image without scrolling, so the snapshot is complete.
+      // Scrolling first leaves Chromium's full-page capture painting some
+      // text from a stale raster (the closing pill came out at 75%); a
+      // viewport screenshot of the same state paints it correctly.
+      await page.evaluate(() => {
+        for (const img of document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]')) {
+          img.loading = "eager";
+        }
+      });
+      for (const img of await page.locator("img").all()) {
         await expect(img).toHaveJSProperty("complete", true);
       }
-      await page.evaluate(() => window.scrollTo(0, 0));
       await expect(page).toHaveScreenshot(`${locale}-${width}.png`, {
         fullPage: true,
         animations: "disabled",
