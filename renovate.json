@@ -1,0 +1,55 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "schedule": ["before 9am on monday"],
+  "rangeStrategy": "pin",
+  "minimumReleaseAge": "3 days",
+  "internalChecksFilter": "strict",
+  "prConcurrentLimit": 5,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 9am on monday"]
+  },
+  "packageRules": [
+    {
+      "description": "Astro and its tooling move together",
+      "matchPackageNames": [
+        "astro",
+        "@astrojs/**",
+        "prettier-plugin-astro",
+        "eslint-plugin-astro",
+        "astro-eslint-parser"
+      ],
+      "groupName": "astro"
+    },
+    {
+      "description": "Lint, format, types and commit tooling",
+      "matchPackageNames": [
+        "eslint",
+        "@eslint/**",
+        "typescript-eslint",
+        "globals",
+        "prettier",
+        "typescript",
+        "@commitlint/**"
+      ],
+      "groupName": "dev tooling"
+    },
+    {
+      "description": "Self-hosted fonts",
+      "matchPackageNames": ["@fontsource/**"],
+      "groupName": "fonts"
+    },
+    {
+      "description": "GitHub Actions, pinned to digests",
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    },
+    {
+      "description": "Node and pnpm stay on their current majors until a human moves them",
+      "matchPackageNames": ["node", "pnpm"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }
+  ]
+}

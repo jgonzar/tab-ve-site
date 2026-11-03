@@ -1,0 +1,39 @@
+# Checks that run against a PR's live Vercel preview. Vercel reports each
+# deployment back to GitHub as a deployment status; this workflow starts when a
+# Preview deployment succeeds and reads its URL from that event.
+#
+# L1 checks the served security headers. L2 and L4 add their jobs here (e2e,
+# axe, link check, Lighthouse), each reading the same PREVIEW_URL.
+#
+# Previews sit behind Vercel Authentication, so requests carry the project's
+# "Protection Bypass for Automation" secret, stored in this repo as the Actions
+# secret VERCEL_AUTOMATION_BYPASS_SECRET.
+
+name: Preview
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+jobs:
+  headers:
+    name: preview-headers
+    # Vercel names the environment "Preview", or "Preview" plus the project name
+    # on some accounts, hence startsWith
+    if: github.event.deployment_status.state == 'success' && startsWith(github.event.deployment.environment, 'Preview')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PREVIEW_URL: ${{ github.event.deployment_status.environment_url }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Served headers match vercel.json and meet the A+ criteria
+        run: node scripts/check-headers.mjs --url "$PREVIEW_URL"
