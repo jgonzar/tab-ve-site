@@ -47,6 +47,62 @@ a {
   }
 }
 
+/* The page's width limit and side gutter */
+.container {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+/* Shown on keyboard focus only, first in the tab order */
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 10;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-control);
+  background: var(--tab-lime);
+  color: var(--tab-on-lime);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+  outline-color: var(--tab-text);
+}
+
+/* The primary action, and the only lime fill on the page: a plain button,
+   no glow or shadow. 48px tall, like the app's fields. */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 1.5rem;
+  border-radius: var(--radius-control);
+  background: var(--tab-lime);
+  color: var(--tab-on-lime);
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 150ms ease;
+}
+
+.btn-primary:hover {
+  background: #e4ff8f;
+}
+
+/* The small lime label above a section title */
+.eyebrow {
+  margin: 0;
+  color: var(--tab-lime);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
 /* Visually hidden, still read by screen readers */
 .sr-only {
   position: absolute;

@@ -1,0 +1,101 @@
+---
+// The footer: the JAGR thread again (decision 3), in the strip's look. Back to
+// the quest on JAGR, the privacy line, and the credits.
+import { strings, type Locale } from "../i18n";
+import { pagePath } from "../seo";
+import { JAGR_QUEST_URL } from "../site";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings(locale);
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <a class="site-footer__back" href={JAGR_QUEST_URL} rel="noopener noreferrer">
+      <span class="site-footer__caret" aria-hidden="true"></span>
+      <span>{t.footer.back}</span>
+    </a>
+    <p class="site-footer__privacy">{t.footer.privacy}</p>
+    <a class="site-footer__credits" href={pagePath(locale, "credits")}>
+      {t.footer.credits}
+    </a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--jagr-void);
+    color: var(--jagr-fg);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem 1.5rem;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 0.75rem var(--gutter);
+  }
+
+  .site-footer__back,
+  .site-footer__credits {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: var(--tap-min);
+    color: var(--jagr-fg);
+    text-decoration: none;
+  }
+
+  .site-footer__back {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .site-footer__back:hover,
+  .site-footer__credits:hover {
+    color: var(--jagr-red);
+  }
+
+  .site-footer__credits {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .site-footer__back:focus-visible,
+  .site-footer__credits:focus-visible {
+    outline-color: var(--jagr-fg);
+  }
+
+  /* JAGR's caret, pointing back, as in the strip */
+  .site-footer__caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.62em;
+    background: var(--jagr-red);
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  }
+
+  .site-footer__privacy {
+    margin: 0;
+    color: var(--jagr-fg-dim);
+  }
+
+  /* On a phone: back link and credits on one row, the privacy line below */
+  @media (max-width: 639px) {
+    .site-footer__privacy {
+      order: 3;
+      flex-basis: 100%;
+      padding-bottom: 0.5rem;
+    }
+  }
+</style>

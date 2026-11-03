@@ -6,13 +6,17 @@ import "../styles/global.css";
 import poppins400 from "@fontsource/poppins/files/poppins-latin-400-normal.woff2?url";
 import JagrStrip from "../components/JagrStrip.astro";
 import SeoHead from "../components/SeoHead.astro";
-import type { Locale } from "../i18n";
+import { strings, type Locale } from "../i18n";
+import type { Page } from "../seo";
+import { JAGR_QUEST_URL } from "../site";
 
 interface Props {
   locale: Locale;
+  page?: Page;
 }
 
-const { locale } = Astro.props;
+const { locale, page = "home" } = Astro.props;
+const t = strings(locale);
 ---
 
 <!doctype html>
@@ -20,7 +24,7 @@ const { locale } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <SeoHead locale={locale} />
+    <SeoHead locale={locale} page={page} />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0b0a29" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
@@ -29,7 +33,10 @@ const { locale } = Astro.props;
     <link rel="preload" href={poppins400} as="font" type="font/woff2" crossorigin="anonymous" />
   </head>
   <body>
-    <JagrStrip lang={locale} />
+    <a class="skip-link" href="#main">
+      {t.skip}
+    </a>
+    <JagrStrip lang={locale} href={JAGR_QUEST_URL} />
     <slot />
   </body>
 </html>

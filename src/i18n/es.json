@@ -7,7 +7,68 @@
     "en": { "short": "EN", "name": "English" },
     "es": { "short": "ES", "name": "Español" }
   },
+  "skip": "Saltar al contenido",
+  "hero": {
+    "eyebrow": "Una app para la casa",
+    "headline": "Cada carrera y quién debe qué, en un solo lugar.",
+    "before": "Pagos de carreras llevados de memoria, en dólares, con una tasa que cambia a diario.",
+    "sub": "Hecha para tres personas. Pruébala con datos de ejemplo.",
+    "alt": "Pantalla de inicio de Tab: rutas rápidas, el total pendiente en dólares y bolívares, y las carreras por pagar."
+  },
   "demo": {
-    "cta": "Probar la demo"
+    "cta": "Probar la demo",
+    "note": "Datos de ejemplo, compartidos por todos los visitantes. Se reinician cada 4 horas."
+  },
+  "features": {
+    "eyebrow": "Qué hace",
+    "title": "Las tres cosas que mejor hace",
+    "items": [
+      {
+        "title": "Una carrera, un toque.",
+        "body": "Las rutas de siempre están a un toque, y las carreras se guardan incluso sin conexión.",
+        "alt": "La tarjeta de carrera rápida, lista para registrar."
+      },
+      {
+        "title": "Dólares y bolívares.",
+        "body": "Cada total en USD y Bs, a la tasa oficial BCV del día.",
+        "alt": "La barra de resumen y una carrera, en USD y Bs."
+      },
+      {
+        "title": "Saldar cuentas.",
+        "body": "Comparte un resumen en texto de lo pendiente y luego marca las carreras como pagadas.",
+        "alt": "El resumen en texto de las carreras pendientes."
+      }
+    ]
+  },
+  "built": {
+    "eyebrow": "Cómo está hecha",
+    "title": "Un stack pequeño, en uso diario",
+    "chips": [
+      "SvelteKit",
+      "Svelte 5",
+      "Tailwind CSS",
+      "DaisyUI",
+      "Drizzle",
+      "Neon Postgres",
+      "Paraglide",
+      "PWA",
+      "Vercel"
+    ]
+  },
+  "footer": {
+    "back": "Volver a JAGR",
+    "privacy": "Sin analíticas. Una cookie, para tu idioma.",
+    "credits": "Créditos"
+  },
+  "credits": {
+    "title": "Créditos",
+    "description": "Las fuentes, sus licencias y a quién pertenecen la marca y las pantallas de Tab.",
+    "fontsHeading": "Fuentes",
+    "fontsBody": "Poppins, de los autores del proyecto Poppins, y Share Tech Mono, de Carrois Type Design, se usan bajo la SIL Open Font License 1.1. Las dos se sirven desde este sitio.",
+    "poppinsLicence": "Licencia de Poppins",
+    "shareTechLicence": "Licencia de Share Tech Mono",
+    "brandHeading": "Marca y pantallas",
+    "brandBody": "El nombre Tab, el logotipo, el ícono y las pantallas de la app que aparecen en esta página pertenecen a Jose Angel Gonzalez. Las pantallas muestran datos de ejemplo.",
+    "back": "Volver a Tab"
   }
 }

@@ -3,17 +3,21 @@
 import LanguageLinks from "./LanguageLinks.astro";
 import Wordmark from "./Wordmark.astro";
 import type { Locale } from "../i18n";
+import { pagePath, type Page } from "../seo";
 
 interface Props {
   locale: Locale;
+  page?: Page;
 }
 
-const { locale } = Astro.props;
+const { locale, page = "home" } = Astro.props;
 ---
 
 <header class="top-bar">
-  <Wordmark class="top-bar__mark" />
-  <LanguageLinks locale={locale} />
+  <a class="top-bar__home" href={pagePath(locale)}>
+    <Wordmark class="top-bar__mark" />
+  </a>
+  <LanguageLinks locale={locale} page={page} />
 </header>
 
 <style>
@@ -22,7 +26,16 @@ const { locale } = Astro.props;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.5rem 1rem;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 0.5rem var(--gutter);
+  }
+
+  .top-bar__home {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    border-radius: 0.5rem;
   }
 
   .top-bar :global(.top-bar__mark) {

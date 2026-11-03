@@ -4,13 +4,15 @@
 // `/` redirect in vercel.json reads it on the next visit. Each link names its
 // language in that language (copy row 4), with lang and hreflang to match.
 import { LOCALES, strings, type Locale } from "../i18n";
-import { pagePath } from "../seo";
+import { pagePath, type Page } from "../seo";
 
 interface Props {
   locale: Locale;
+  /** The page to switch, so each link leads to the same page in its language */
+  page?: Page;
 }
 
-const { locale } = Astro.props;
+const { locale, page = "home" } = Astro.props;
 const t = strings(locale);
 ---
 
@@ -19,7 +21,7 @@ const t = strings(locale);
     <li>
       <a
         class="lang-links__link"
-        href={pagePath(l)}
+        href={pagePath(l, page)}
         hreflang={l}
         lang={l}
         data-lang={l}
