@@ -72,9 +72,26 @@ const paths = [
   "/sitemap.xml",
   "/robots.txt",
   "/.well-known/security.txt",
+  "/licenses/poppins-OFL.txt",
   "/icons/favicon-32.png",
   asset,
 ].filter(Boolean);
+
+// HSTS is compared by meaning, not text: the max-age must reach the declared
+// one and includeSubDomains must be there. Vercel adds `preload` on its own
+// *.vercel.app hosts (the whole vercel.app domain is preloaded), so preload is
+// accepted there; anywhere else it must be our own declared choice.
+function hstsMatches(actual, declared, host) {
+  const parse = (v) => {
+    const parts = v.split(";").map((p) => p.trim().toLowerCase());
+    const age = Number(parts.find((p) => p.startsWith("max-age="))?.slice(8) ?? NaN);
+    return { age, sub: parts.includes("includesubdomains"), preload: parts.includes("preload") };
+  };
+  const a = parse(actual);
+  const d = parse(declared);
+  const preloadOk = a.preload === d.preload || (a.preload && host.endsWith(".vercel.app"));
+  return a.age >= d.age && a.sub === d.sub && preloadOk;
+}
 
 // The redirects: `/` with no cookie and no Spanish Accept-Language, and a page
 // without its trailing slash. Status and Location only.
@@ -87,12 +104,25 @@ const REDIRECTS = [
 for (const path of paths) {
   const res = path === HOME ? home : await get(path);
   if (res.status !== 200) fail(`${path} returned ${res.status}, expected 200`);
+  const before = failures.length;
   for (const [key, value] of headersFor(rules, path)) {
     const actual = res.headers.get(key);
-    if (actual !== value)
+    const ok =
+      key === "strict-transport-security" && actual !== null
+        ? hstsMatches(actual, value, new URL(base).hostname)
+        : actual === value;
+    if (!ok)
       fail(
         `${path} ${key}: expected "${value}", got ${actual === null ? "nothing" : `"${actual}"`}`,
       );
+  }
+  // On a mismatch, show how the platform answered, to tell a routing miss
+  // (no custom headers at all) from a wrong value
+  if (failures.length > before) {
+    const seen = ["content-type", "server", "x-vercel-cache", "x-matched-path", "age"]
+      .map((k) => `${k}=${res.headers.get(k) ?? "-"}`)
+      .join(" ");
+    fail(`${path} answered with ${seen}`);
   }
 }
 

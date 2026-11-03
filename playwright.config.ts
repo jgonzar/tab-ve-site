@@ -18,10 +18,11 @@ export default defineConfig({
   use: {
     // localhost, not 127.0.0.1: browsers keep Secure cookies on http://localhost
     baseURL: preview ?? `http://localhost:${PORT}`,
-    extraHTTPHeaders:
-      preview && bypass
-        ? { "x-vercel-protection-bypass": bypass, "x-vercel-set-bypass-cookie": "true" }
-        : {},
+    // The bypass header only. With x-vercel-set-bypass-cookie, Vercel answers
+    // every request with its own 307 back to the same path to set the cookie,
+    // which hides the app's own status and Location from non-following
+    // requests. The header on every request (page loads included) is enough.
+    extraHTTPHeaders: preview && bypass ? { "x-vercel-protection-bypass": bypass } : {},
     trace: "retain-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
