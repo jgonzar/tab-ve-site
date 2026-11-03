@@ -1,7 +1,9 @@
 ---
 /*
- * JAGR strip v1.1.0 (2026-11-03)
+ * JAGR strip v1.2.0 (2026-11-03)
  *
+ * v1.2.0: the row lines up with the page's own width limit and gutter
+ * (--page-max and --gutter, when the site sets them); the bar stays full width.
  * v1.1.0: the link target is a prop, so each app leads to its own quest page.
  * v1.0.0 (2026-11-02): first version, linking to JAGR's home.
  *
@@ -56,7 +58,11 @@ const t = COPY[lang];
     justify-content: space-between;
     gap: 1rem;
     min-height: var(--tap-min);
-    padding: 0 1rem;
+    /* The bar runs edge to edge; its row keeps to the page's column */
+    padding-inline: max(
+      var(--gutter, 1rem),
+      calc((100% - var(--page-max, 100%)) / 2 + var(--gutter, 1rem))
+    );
     background: var(--jagr-void);
     color: var(--jagr-fg);
     font-family: var(--font-mono);
