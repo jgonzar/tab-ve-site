@@ -1,0 +1,26 @@
+TAB
+Pending rides as of October 15, 2026
+────────────────────────────────────
+
+1. Oct 15  •  El Limón → El Rocío
+   Ana, Luis
+   No price
+
+2. Oct 15  •  El Rocío → El Limón
+   Ana, Luis
+   $6.00  (Bs 5,253.90)
+
+3. Oct 14  •  Rosalito → Fresco Market → El Limón
+   Ana, Luis
+   $9.50  (Bs 8,318.68)
+
+4. Oct 14  •  La Redoma → El Rocío
+   Ana, Luis
+   $7.00  (Bs 6,129.55)
+
+5. Oct 13  •  Sambil Chacao → El Rocío
+   Ana
+   $12.00  (Bs 10,507.80)
+
+────────────────────────────────────
+5 rides  •  Total: $34.50  (Bs 30,209.93)

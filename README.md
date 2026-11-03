@@ -124,12 +124,12 @@ The page's phone screens are raw PNGs in `src/assets/captures/{es,en}/` (Astro r
 them at build). The phone around them is drawn once in CSS, by `src/components/PhoneFrame.astro`, so
 the bitmaps carry no frame.
 
-| File             | Shows                                                                   |
-| ---------------- | ----------------------------------------------------------------------- |
-| `inicio.png`     | The hero: Inicio, with the quick routes, the summary bar and the rides  |
-| `quick-ride.png` | "One tap per ride": the quick-ride card, open on the first route        |
-| `summary.png`    | "Dollars and bolívares": the summary bar, stuck at the top, over a ride |
-| `historial.png`  | "Settle up": Historial, the paid rides (see "Why Historial" below)      |
+| File             | Shows                                                                      |
+| ---------------- | -------------------------------------------------------------------------- |
+| `inicio.png`     | The hero: Inicio, with the quick routes, the summary bar and the rides     |
+| `quick-ride.png` | "One tap per ride": the quick-ride card, open on the first route           |
+| `summary.png`    | "Dollars and bolívares": the summary bar, stuck at the top, over a ride    |
+| `receipt.txt`    | "Settle up": the shared text summary (the receipt), as Compartir builds it |
 
 They come from a **local** Tab demo on a fresh, throwaway database, never from the live shared demo
 (which could show a visitor's text, and isn't reproducible). Nothing is captured in CI.
@@ -166,7 +166,7 @@ unchanged; the shim:
 **2. Capture**, in another terminal:
 
 ```sh
-pnpm capture           # writes src/assets/captures/{es,en}/*.png
+pnpm capture           # writes src/assets/captures/{es,en}/*.png and receipt.txt
 pnpm capture:verify    # captures again into a temp folder and compares, byte for byte
 ```
 
@@ -181,10 +181,11 @@ Two runs give byte-identical files. Commit the PNGs after any change to `scripts
 the shots, or `TAB_REF`. Re-shooting after a Tab UI change means bumping `TAB_REF` and running both
 steps again.
 
-**Why Historial for "Settle up".** The shared summary has no screen of its own in Tab: Compartir
-hands the text to the phone's share sheet (or the clipboard). Capturing it would mean drawing a
-messaging screen around it, which isn't Tab's UI, so the feature shows Historial, where settled
-rides end up.
+**Why the receipt is text.** The shared summary has no screen of its own in Tab: Compartir hands
+the text to the phone's share sheet (or the clipboard). A screenshot would mean drawing a messaging
+screen around it, which isn't Tab's UI. So the capture saves the text itself, `receipt.txt` per
+language, by catching what Compartir passes to `navigator.share`, and the page renders it as real
+text inside the phone frame. It's verified byte for byte, like the PNGs.
 
 ### Link preview cards
 
@@ -192,9 +193,16 @@ rides end up.
 `scripts/og.ts` fills the two description lines of `scripts/og-template.svg` (Tab's `design/og.svg`,
 with those lines as text slots) and renders it with resvg, using Poppins Regular from
 `@fontsource/poppins` (OFL, converted from WOFF in memory) and no system fonts, so it gives the same
-result on macOS and Linux. `pnpm og --check` renders both in memory and compares them with the
-committed files (the visual snapshot). The English text is Tab's current card. The site never
-hotlinks `tab-ve.vercel.app/og.png`.
+result on macOS and Linux. The English text is Tab's current card. The site never hotlinks
+`tab-ve.vercel.app/og.png`.
+
+`pnpm og --check` is the visual snapshot, and CI's `og-cards` job runs it. It renders both cards in
+memory and compares them with the committed files pixel by pixel. A pixel is off when a channel
+differs by more than 32/255, and at most 10 pixels may be off. Anti-aliasing drift stays well
+under that bar: even a different rasterizer altogether (macOS sips on Tab's outlines) differs by at
+most 48/255, on just 20 pixels past 32, and the same resvg build on another CPU only differs by
+rounding. The check still catches a missing comma (14 pixels) or one wrong letter (about 470). The measurements are in `scripts/og.ts`. The cards are rendered on
+macOS arm64, so `og-cards` isn't a required check until it has passed on Linux x64.
 
 ## The JAGR strip
 
