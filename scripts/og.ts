@@ -7,11 +7,13 @@
 //
 //   pnpm og            write both cards
 //   pnpm og --check    render in memory and compare with the committed
-//                      files, byte for byte (the visual snapshot)
+//                      files, pixel by pixel, within a small tolerance (the
+//                      visual snapshot; CI runs it, see CHANNEL_TOLERANCE)
 //
 // Never hotlink tab-ve.vercel.app/og.png: the site serves its own copies.
 
 import { Resvg } from "@resvg/resvg-js";
+import sharp from "sharp";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -78,6 +80,41 @@ function woffToTtf(woff: Buffer): Buffer {
   return Buffer.concat(chunks);
 }
 
+/**
+ * The visual snapshot's tolerance, for `--check` (it runs in CI on Linux
+ * x64; the committed cards are rendered on macOS arm64). Measured with
+ * scripts/og.ts's own renderer on the English card (756,000 pixels):
+ *
+ * - Anti-aliasing noise: even a different rasterizer entirely (Tab's og.png,
+ *   macOS sips drawing outlined paths, against resvg drawing text) differs by
+ *   at most 48/255 per channel, and only 20 pixels by more than 32. The same
+ *   resvg build on another CPU differs only by rounding, far less than that.
+ * - Real changes: one wrong letter ("BVC") moves 471 pixels by more than 32,
+ *   a missing comma 14, and the text 1px to the right 6,131. A lost font
+ *   (fallback glyphs) moves thousands.
+ *
+ * So a pixel counts as off when any channel differs by more than 32, and at
+ * most 10 may be off: under the missing comma, above stray edge pixels. A
+ * percentage like 0.5% (3,780 pixels) would let a wrong word through.
+ */
+const CHANNEL_TOLERANCE = 32;
+const MAX_PIXELS_OFF = 10;
+
+/** How many RGBA pixels differ by more than CHANNEL_TOLERANCE in any channel. */
+function pixelsOff(a: Buffer, b: Buffer): number {
+  if (a.length !== b.length) return Infinity;
+  let off = 0;
+  for (let i = 0; i < a.length; i += 4) {
+    for (let c = 0; c < 4; c++) {
+      if (Math.abs(a[i + c] - b[i + c]) > CHANNEL_TOLERANCE) {
+        off++;
+        break;
+      }
+    }
+  }
+  return off;
+}
+
 const escapeXml = (text: string) =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -110,18 +147,22 @@ try {
       );
     }
 
-    const png = new Resvg(svg, options).render().asPng();
+    const rendered = new Resvg(svg, options).render();
+    const png = rendered.asPng();
     const file = new URL(`og-${lang}.png`, OUT);
     if (check) {
       let committed: Buffer | null = null;
       try {
-        committed = readFileSync(file);
+        committed = (await sharp(readFileSync(file)).ensureAlpha().raw().toBuffer()) as Buffer;
       } catch {
         // reported below
       }
-      if (!committed || !committed.equals(png))
-        failures.push(`og-${lang}.png differs from the committed file`);
-      else console.log(`  = og-${lang}.png`);
+      const off = committed ? pixelsOff(rendered.pixels, committed) : Infinity;
+      if (off > MAX_PIXELS_OFF) {
+        failures.push(
+          `og-${lang}.png differs from the committed file (${off} pixels off by more than ${CHANNEL_TOLERANCE}/255, at most ${MAX_PIXELS_OFF} allowed)`,
+        );
+      } else console.log(`  = og-${lang}.png (${off} pixels off)`);
     } else {
       writeFileSync(file, png);
       console.log(
