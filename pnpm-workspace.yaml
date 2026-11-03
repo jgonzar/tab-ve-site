@@ -10,5 +10,6 @@ allowBuilds:
   esbuild: true
   sharp: true
 
-# Fail the install on a Node version outside package.json `engines`.
-engineStrict: true
+# No `engineStrict`: a Node outside package.json `engines` gets a warning, not a
+# failed install. The toolchain runs on 24.15 even though eslint-plugin-astro
+# declares 24.16 as its floor, and CI and Vercel use the exact .nvmrc version.

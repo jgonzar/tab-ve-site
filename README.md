@@ -9,8 +9,10 @@ first production deploy is made.
 
 ## Run it
 
-Needs Node `24.22.2` (`.nvmrc`) and pnpm `11.28.9` (`packageManager`; pnpm switches to it on its
-own).
+CI and Vercel run Node `24.22.2` (`.nvmrc`). Locally, any Node 24 from `24.16.0` matches `engines`
+(eslint-plugin-astro's floor). An older 24 still installs and passes `pnpm check`, with an
+"Unsupported engine" warning; to match CI exactly, switch with `fnm use` or `nvm use`, which read
+`.nvmrc`. pnpm is `11.28.9` (`packageManager`; pnpm switches to it on its own).
 
 ```sh
 pnpm install --frozen-lockfile
@@ -62,10 +64,19 @@ the `vercel.json` headers). To check a deployment:
 
 ### Header grades
 
-| Scanner             | URL                       | Grade | Date |
-| ------------------- | ------------------------- | ----- | ---- |
-| Mozilla Observatory | pending the first preview |       |      |
-| securityheaders.com | pending the first preview |       |      |
+Previews stay behind Vercel Authentication; protection is never switched off for a scan. So the
+grades are proven in two places:
+
+- **On every preview:** the CI criteria check above (`preview-headers`), plus securityheaders.com
+  on the preview URL with the bypass query,
+  `?x-vercel-protection-bypass=<secret>&x-vercel-set-bypass-cookie=true`.
+- **After the production promote:** Mozilla Observatory on `tab-ve-site.vercel.app`. Observatory
+  scans a bare host and can't pass the bypass, so it grades production only.
+
+| Scanner             | URL                            | Grade | Date |
+| ------------------- | ------------------------------ | ----- | ---- |
+| securityheaders.com | pending the first preview      |       |      |
+| Mozilla Observatory | pending the production promote |       |      |
 
 ## Deploys
 
