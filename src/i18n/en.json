@@ -7,7 +7,68 @@
     "en": { "short": "EN", "name": "English" },
     "es": { "short": "ES", "name": "Español" }
   },
+  "skip": "Skip to content",
+  "hero": {
+    "eyebrow": "A household app",
+    "headline": "Every ride, who owes what, in one place.",
+    "before": "Ride payments tracked from memory, in dollars, against a rate that changes daily.",
+    "sub": "Built for three people. Try it with sample data.",
+    "alt": "Tab's home screen: quick routes, the pending total in dollars and bolívares, and the rides waiting to be paid."
+  },
   "demo": {
-    "cta": "Try the demo"
+    "cta": "Try the demo",
+    "note": "Sample data, shared by every visitor. It resets every 4 hours."
+  },
+  "features": {
+    "eyebrow": "What it does",
+    "title": "The three things it does best",
+    "items": [
+      {
+        "title": "One tap per ride.",
+        "body": "Usual routes are one tap away, and rides save even offline.",
+        "alt": "The quick-ride card, ready to log a ride."
+      },
+      {
+        "title": "Dollars and bolívares.",
+        "body": "Every total in USD and Bs, at the day's official BCV rate.",
+        "alt": "The summary bar and a ride card, in USD and Bs."
+      },
+      {
+        "title": "Settle up.",
+        "body": "Share a text summary of what's pending, then mark rides paid.",
+        "alt": "The shared text summary of pending rides."
+      }
+    ]
+  },
+  "built": {
+    "eyebrow": "How it's built",
+    "title": "A small stack, in daily use",
+    "chips": [
+      "SvelteKit",
+      "Svelte 5",
+      "Tailwind CSS",
+      "DaisyUI",
+      "Drizzle",
+      "Neon Postgres",
+      "Paraglide",
+      "PWA",
+      "Vercel"
+    ]
+  },
+  "footer": {
+    "back": "Back to JAGR",
+    "privacy": "No analytics. One cookie, for your language.",
+    "credits": "Credits"
+  },
+  "credits": {
+    "title": "Credits",
+    "description": "The fonts, their licences, and who owns Tab's brand and screens.",
+    "fontsHeading": "Fonts",
+    "fontsBody": "Poppins, by the Poppins Project Authors, and Share Tech Mono, by Carrois Type Design, are used under the SIL Open Font License 1.1. Both are served from this site.",
+    "poppinsLicence": "Poppins licence",
+    "shareTechLicence": "Share Tech Mono licence",
+    "brandHeading": "Brand and screens",
+    "brandBody": "The Tab name, wordmark and icon, and the app screens on this page, belong to Jose Angel Gonzalez. The screens show sample data.",
+    "back": "Back to Tab"
   }
 }

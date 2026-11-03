@@ -43,4 +43,12 @@
 
   /* Touch targets follow the app: 44px minimum */
   --tap-min: 44px;
+
+  /* Rhythm, from the app's UI audit: a 16px gutter, 16px surfaces and 12px
+     controls. The page adds a width limit and the space between sections. */
+  --gutter: 16px;
+  --page-max: 1120px;
+  --radius-control: 0.75rem;
+  --radius-surface: 1rem;
+  --section-gap: clamp(4rem, 10vw, 7rem);
 }

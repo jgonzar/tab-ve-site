@@ -1,34 +1,39 @@
 ---
-// The language page's head tags: title, description, canonical, hreflang, link
+// A page's head tags, in one language: title, description, canonical, hreflang, link
 // cards. Every URL comes from src/seo.ts, so it's built from one SITE_URL.
 // No JSON-LD: search engines read it only inline, and the CSP allows no inline
 // script.
 import { strings, type Locale } from "../i18n";
-import { alternates, OG_IMAGE_SIZE, OG_LOCALE, ogImage, pageUrl } from "../seo";
+import { alternates, OG_IMAGE_SIZE, OG_LOCALE, ogImage, pageUrl, type Page } from "../seo";
+import { SITE_URL } from "../site";
 
 interface Props {
   locale: Locale;
+  page?: Page;
 }
 
-const { locale } = Astro.props;
+const { locale, page = "home" } = Astro.props;
 const t = strings(locale);
-const url = pageUrl(locale);
+const url = pageUrl(locale, SITE_URL, page);
+// The credits reuse the landing page's title pattern ("Tab: ...")
+const title = page === "home" ? t.meta.title : `Tab: ${t.credits.title}`;
+const description = page === "home" ? t.meta.description : t.credits.description;
 const image = ogImage(locale);
 const otherLocales = Object.entries(OG_LOCALE).filter(([l]) => l !== locale);
 ---
 
-<title>{t.meta.title}</title>
-<meta name="description" content={t.meta.description} />
+<title>{title}</title>
+<meta name="description" content={description} />
 <link rel="canonical" href={url} />
-{alternates().map((a) => (
+{alternates(SITE_URL, page).map((a) => (
   <link rel="alternate" hreflang={a.hreflang} href={a.href} />
 ))}
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Tab" />
 <meta property="og:url" content={url} />
-<meta property="og:title" content={t.meta.title} />
-<meta property="og:description" content={t.meta.description} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
 <meta property="og:locale" content={OG_LOCALE[locale]} />
 {otherLocales.map(([, value]) => (
   <meta property="og:locale:alternate" content={value} />
@@ -39,6 +44,6 @@ const otherLocales = Object.entries(OG_LOCALE).filter(([l]) => l !== locale);
 <meta property="og:image:height" content={String(OG_IMAGE_SIZE.height)} />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={t.meta.title} />
-<meta name="twitter:description" content={t.meta.description} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={image} />

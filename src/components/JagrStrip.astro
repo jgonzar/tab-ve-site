@@ -1,6 +1,9 @@
 ---
 /*
- * JAGR strip v1.0.0 (2026-11-02)
+ * JAGR strip v1.1.0 (2026-11-03)
+ *
+ * v1.1.0: the link target is a prop, so each app leads to its own quest page.
+ * v1.0.0 (2026-11-02): first version, linking to JAGR's home.
  *
  * The thin black bar that marks an app's landing page as part of JAGR, the
  * portfolio, and gives the visitor a way back. This file is the strip's one
@@ -15,9 +18,9 @@
  * visible label (WCAG 2.5.3). The caret is decorative and aria-hidden. The
  * strings are the approved copy, rows 1 to 3.
  */
-import { JAGR_URL } from "../site";
-
 interface Props {
+  /** Where the link leads: the app's quest page on JAGR */
+  href: string;
   lang: "en" | "es";
 }
 
@@ -34,12 +37,12 @@ const COPY = {
   },
 } as const;
 
-const { lang } = Astro.props;
+const { lang, href } = Astro.props;
 const t = COPY[lang];
 ---
 
 <nav class="jagr-strip" aria-label="JAGR">
-  <a class="jagr-strip__link" href={JAGR_URL} rel="noopener noreferrer" aria-label={t.linkName}>
+  <a class="jagr-strip__link" href={href} rel="noopener noreferrer" aria-label={t.linkName}>
     <span class="jagr-strip__caret" aria-hidden="true"></span>
     <span>{t.link}</span>
   </a>
