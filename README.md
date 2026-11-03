@@ -45,19 +45,27 @@ protected preview).
 CI (`.github/workflows/ci.yml`) runs on every PR and on every push to `main`. Each job is a required
 check on `main`, except `og-cards`, until it has passed on Linux (see "Link preview cards").
 
-| Job          | What it runs                                                                                                                                                                                                                                                                                                             |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `quality`    | frozen install, the dash check (`scripts/check-dashes.mjs`, every file in the repo), `astro check`, ESLint, the Prettier check, Vitest unit tests, the build, the built-HTML check (`scripts/check-dist.mjs`: no inline script or style, no third-party loads) and the header check (`scripts/check-headers.mjs`, local) |
-| `e2e`        | Playwright on Chromium against `dist/` served with the `vercel.json` headers and redirects: the `/` redirect matrix, the head, the sitemap, robots, the language links and cookie                                                                                                                                        |
-| `og-cards`   | `pnpm og --check`: the link cards rendered again and compared with the committed PNGs, within a small pixel tolerance                                                                                                                                                                                                    |
-| `audit`      | `pnpm audit --audit-level=high`                                                                                                                                                                                                                                                                                          |
-| `gitleaks`   | gitleaks 8.30.1 (checksum verified) over the full history                                                                                                                                                                                                                                                                |
-| `commitlint` | Conventional Commits on every commit of the PR, with no em or en dashes                                                                                                                                                                                                                                                  |
+| Job          | What it runs                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `quality`    | frozen install, the dash check (`scripts/check-dashes.mjs`, every file in the repo), `astro check`, ESLint, the Prettier check, Vitest unit tests, the build, the built-HTML check (`scripts/check-dist.mjs`: no inline script or style, no third-party loads) and the header check (`scripts/check-headers.mjs`, local)                                                                                                                                                             |
+| `e2e`        | Playwright on Chromium against `dist/` served with the `vercel.json` headers and redirects: the `/` redirect matrix, the head, the sitemap, robots, the language links and cookie, every section in both languages, the demo and JAGR links, the credits, no overflow from 320 to 1440px, 44px targets, the skip link, the hero float and reduced motion, axe (WCAG 2.2 AA and best practices) on all four pages at 390 and 1280, and visual snapshots of both pages at 390 and 1280 |
+| `lighthouse` | `pnpm lighthouse`: both pages, mobile, the median of 3 runs, against the budgets: LCP 2.0 s, CLS 0.05, TBT 200 ms, JS 5 KB, total 400 KB, Accessibility, Best Practices and SEO all 100                                                                                                                                                                                                                                                                                              |
+| `links`      | lychee 0.24.2 (checksum verified) on every link in the built HTML, internal and external (`lychee.toml`)                                                                                                                                                                                                                                                                                                                                                                             |
+| `og-cards`   | `pnpm og --check`: the link cards rendered again and compared with the committed PNGs, within a small pixel tolerance                                                                                                                                                                                                                                                                                                                                                                |
+| `audit`      | `pnpm audit --audit-level=high`                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `gitleaks`   | gitleaks 8.30.1 (checksum verified) over the full history                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `commitlint` | Conventional Commits on every commit of the PR, with no em or en dashes                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 `.github/workflows/preview.yml` runs against each PR's Vercel preview once it's ready, using the URL
 from Vercel's deployment status event: `preview-headers` checks the served headers, and
 `preview-e2e` runs the Playwright suite against Vercel itself (including its automatic
-`X-Robots-Tag: noindex` on previews). The accessibility, link and Lighthouse jobs join it later.
+`X-Robots-Tag: noindex` on previews), and `preview-lighthouse` runs the budgets against the preview,
+with only `is-crawlable` set aside, since every preview is `noindex` on purpose.
+
+**Visual baselines** live in `tests/e2e/visual.spec.ts-snapshots/`, one set per platform; CI compares
+the Linux ones. After a deliberate visual change, take the new Linux screenshots from the
+`playwright-report` artifact of the failing `e2e` run (`test-results/*/*-actual.png`) and commit them
+under the baseline names. Local macOS baselines are ignored by git.
 
 Supply chain: exact versions, a frozen lockfile, `minimumReleaseAge` of 3 days in
 `pnpm-workspace.yaml` (Renovate waits the same), install scripts only for esbuild and sharp, and
@@ -76,15 +84,19 @@ gets these headers from `vercel.json`. Two exceptions, both Vercel's own behavio
 Neither matters for the grade: a redirect and a plain-text file have no page to protect, and
 scanners grade the final HTML 200.
 
-| Header                       | Value                                                                                                                                                   |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Content-Security-Policy`    | `default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'` |
-| `X-Content-Type-Options`     | `nosniff`                                                                                                                                               |
-| `X-Frame-Options`            | `DENY`                                                                                                                                                  |
-| `Referrer-Policy`            | `strict-origin-when-cross-origin`                                                                                                                       |
-| `Permissions-Policy`         | every listed feature denied (`camera=()`, `microphone=()`, `geolocation=()`, `payment=()`, `usb=()`, `browsing-topics=()` and more)                     |
-| `Cross-Origin-Opener-Policy` | `same-origin`                                                                                                                                           |
-| `Strict-Transport-Security`  | `max-age=63072000; includeSubDomains` (`preload` waits for a custom domain)                                                                             |
+| Header                       | Value                                                                                                                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Content-Security-Policy`    | `default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'` |
+| `X-Content-Type-Options`     | `nosniff`                                                                                                                                                                   |
+| `X-Frame-Options`            | `DENY`                                                                                                                                                                      |
+| `Referrer-Policy`            | `strict-origin-when-cross-origin`                                                                                                                                           |
+| `Permissions-Policy`         | every listed feature denied (`camera=()`, `microphone=()`, `geolocation=()`, `payment=()`, `usb=()`, `browsing-topics=()` and more)                                         |
+| `Cross-Origin-Opener-Policy` | `same-origin`                                                                                                                                                               |
+| `Strict-Transport-Security`  | `max-age=63072000; includeSubDomains` (`preload` waits for a custom domain)                                                                                                 |
+
+`connect-src 'self'` is there for Lighthouse: it reads `robots.txt` with a fetch from inside the
+page, which `default-src 'none'` alone would block (and the SEO score with it). The page itself
+makes no requests from script.
 
 Hashed assets under `/_astro/` are cached for a year, immutable. Fonts (Poppins, Share Tech Mono)
 are self-hosted from Fontsource; their OFL notices ship in `public/licenses/`.
@@ -208,4 +220,6 @@ macOS arm64, so `og-cards` isn't a required check until it has passed on Linux x
 ## The JAGR strip
 
 `src/components/JagrStrip.astro` is the strip's one versioned source (see its header comment). Memo
-and Jenova copy it unchanged.
+and Jenova copy it unchanged. Since v1.1.0 the link target is a prop: each site passes its own quest
+page (`JAGR_QUEST_URL` here). Until L6 ships `/quests/tab` on JAGR, that link 404s, and `lychee.toml`
+allows it.
