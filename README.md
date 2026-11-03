@@ -3,7 +3,7 @@
 The landing page for [Tab](https://tab-ve-demo.vercel.app), a household ride tracker, and part of
 JAGR, Ángel's portfolio. Its one job is to lead to the demo.
 
-A static [Astro](https://astro.build) site: no client framework, no JavaScript shipped by default,
+A static [Astro](https://astro.build) site: no client framework, almost no JavaScript (two small modules),
 no third-party requests, and a strict CSP. Production lives at `tab-ve-site.vercel.app` once the
 first production deploy is made.
 
@@ -218,6 +218,26 @@ under that bar: even a different rasterizer altogether (macOS sips on Tab's outl
 most 48/255, on just 20 pixels past 32, and the same resvg build on another CPU only differs by
 rounding. The check still catches a missing comma (14 pixels) or one wrong letter (about 470). The measurements are in `scripts/og.ts`. The cards are rendered on
 macOS arm64, so `og-cards` isn't a required check until it has passed on Linux x64.
+
+## Motion
+
+The sections are Svelte components rendered at build time, so they ship no JavaScript. The only
+scripts are two small external modules (`script-src 'self'` is untouched; `pnpm check:dist` fails
+on any other):
+
+- `src/scripts/lang-cookie.ts`: saves the language choice when a language link is used.
+- `src/scripts/dots.ts`: feeds the pointer into the dot fields. It sets `--mx`, `--my` and
+  `--r` on the `.dots` element under the pointer, and the look is all CSS (`.dots` in
+  `src/styles/global.css`): the faint dots clear around the pointer and brand-coloured ones take
+  their place. It runs only for a fine pointer that can hover and no request for reduced motion;
+  on a phone, or for anyone who asked for calm, the dots stay still. The hero, the closing band and
+  the receipt band are dot fields.
+
+The rest is CSS: cards lift, tilt and pop a coin on hover and focus; the highlighter re-sweeps the
+title; the button's arrow turns; the footer link's underline draws itself; the cards settle straight
+and the receipt feeds out of its slot as they scroll into view (scroll-driven, so the visitor sets
+the pace, and static where unsupported). Nothing moves on its own for more than 5 seconds
+(WCAG 2.2.2), and reduced motion turns it all off.
 
 ## The JAGR strip
 

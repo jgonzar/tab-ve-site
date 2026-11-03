@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-03T23:10:27.029Z",
+  "generatedAt": "2026-11-03T23:58:13.654Z",
   "title": "Design System: Tab",
   "extensions": {
     "colorMeta": {
@@ -299,7 +299,7 @@
       {
         "name": "card-edge",
         "value": "0 6px 0 var(--ink)",
-        "purpose": "The solid straight down edge under every feature card."
+        "purpose": "The solid straight down edge under every feature card; 13px on hover and focus (violet on the navy card)."
       },
       {
         "name": "pressed-edge",
@@ -325,13 +325,18 @@
         "name": "current-ring",
         "value": "inset 0 0 0 2px var(--ink)",
         "purpose": "The current language link."
+      },
+      {
+        "name": "card-edge-hover",
+        "value": "0 13px 0 var(--ink)",
+        "purpose": "The grown edge under a hovered or focused card; var(--violet) on the navy card."
       }
     ],
     "motion": [
       {
-        "name": "ease-press",
+        "name": "ease-out-expo",
         "value": "cubic-bezier(0.22, 1, 0.36, 1)",
-        "purpose": "Button lift and press (120ms), arrow nudge (160ms)."
+        "purpose": "Exponential ease-out for every pointer and focus motion; no overshoot or bounce."
       },
       {
         "name": "duration-press",
@@ -341,7 +346,7 @@
       {
         "name": "duration-arrow",
         "value": "160ms",
-        "purpose": "The arrow circle's nudge on hover."
+        "purpose": "The arrow circle's nudge (3px up and right) and 45 degree turn on hover."
       },
       {
         "name": "hero-float",
@@ -354,9 +359,24 @@
         "purpose": "The paper feeds out of the slot as its card scrolls in. Behind @supports and prefers-reduced-motion: no-preference."
       },
       {
-        "name": "route-draw",
-        "value": "draw linear both, animation-timeline: scroll(root), range 0% to 85%",
-        "purpose": "The route trail draws itself as the page scrolls, from 1280px. Same guards."
+        "name": "card-hover",
+        "value": "translateY(-7px) rotate(-0.7deg), edge 6px to 13px, 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Card response on hover (inside @media (hover: hover)) and focus-within; coin pops in (0.4s), title highlighter re-sweeps (0.55s), screen leans out."
+      },
+      {
+        "name": "card-settle",
+        "value": "settle linear both, animation-timeline: view(), range entry 0% entry 85%",
+        "purpose": "Each card arrives at its own tilt (-3.5, 3, -1.6 degrees) and 44px low, then settles straight. Uses rotate and translate properties. Behind @supports and prefers-reduced-motion: no-preference."
+      },
+      {
+        "name": "pointer-dots",
+        "value": "--mx, --my, --r set by src/scripts/dots.ts; radius 150px, eased follow 0.18, grow 0.12",
+        "purpose": "Faint dots clear near the pointer and violet, navy and lime dots take their place. Only for (hover: hover) and (pointer: fine) without reduced motion."
+      },
+      {
+        "name": "underline-draw",
+        "value": "stroke-dashoffset 1 to 0, 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "The footer back link underline draws itself on hover and focus."
       }
     ],
     "breakpoints": [
@@ -383,10 +403,6 @@
       {
         "name": "two-cards",
         "value": "960px"
-      },
-      {
-        "name": "route-trail",
-        "value": "1280px"
       }
     ]
   },
@@ -397,7 +413,7 @@
       "refersTo": "button-demo",
       "description": "The page's one action: navy with a violet pressed edge and a lime arrow circle. Exactly two per page.",
       "html": "<a class=\"ds-demo\" href=\"#\"><span>Try the demo</span><span class=\"ds-demo__arrow\" aria-hidden=\"true\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0b0a29\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 17L17 7M9 7h8v8\"/></svg></span></a>",
-      "css": ".ds-demo { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 16px 0 20px; border-radius: var(--radius-control, 12px); background: var(--ink, #0b0a29); color: var(--on-ink, #ffffff); font-family: var(--font-sans, Poppins, sans-serif); font-size: 0.9375rem; font-weight: 700; text-decoration: none; box-shadow: 0 5px 0 var(--violet, #4342f5); transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-demo:hover { transform: translateY(-1px); box-shadow: 0 6px 0 var(--violet, #4342f5); } .ds-demo:active { transform: translateY(5px); box-shadow: 0 0 0 var(--violet, #4342f5); } .ds-demo:focus-visible { outline: 2px solid var(--violet, #4342f5); outline-offset: 3px; } .ds-demo__arrow { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--lime, #d7fe65); transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-demo:hover .ds-demo__arrow { transform: translate(1px, -1px); }"
+      "css": ".ds-demo { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 16px 0 20px; border-radius: var(--radius-control, 12px); background: var(--ink, #0b0a29); color: var(--on-ink, #ffffff); font-family: var(--font-sans, Poppins, sans-serif); font-size: 0.9375rem; font-weight: 700; text-decoration: none; box-shadow: 0 5px 0 var(--violet, #4342f5); transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-demo:hover { transform: translateY(-1px); box-shadow: 0 6px 0 var(--violet, #4342f5); } .ds-demo:active { transform: translateY(5px); box-shadow: 0 0 0 var(--violet, #4342f5); } .ds-demo:focus-visible { outline: 2px solid var(--violet, #4342f5); outline-offset: 3px; } .ds-demo__arrow { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--lime, #d7fe65); transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-demo:hover .ds-demo__arrow { transform: translate(3px, -3px) rotate(45deg); }"
     },
     {
       "name": "Highlighted heading",
@@ -454,16 +470,26 @@
       "description": "The black mono bar linking back to JAGR, with its red caret. JAGR's own values.",
       "html": "<nav class=\"ds-jagr\" aria-label=\"JAGR\"><a class=\"ds-jagr__link\" href=\"#\"><span class=\"ds-jagr__caret\" aria-hidden=\"true\"></span><span>JAGR</span></a><span class=\"ds-jagr__tag\">Side quest</span></nav>",
       "css": ".ds-jagr { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 44px; padding-inline: 20px; background: var(--jagr-void, #000000); color: var(--jagr-fg, #ededed); font-family: var(--font-mono, \"Share Tech Mono\", monospace); font-size: 0.8125rem; letter-spacing: 0.16em; text-transform: uppercase; line-height: 1; } .ds-jagr__link { display: inline-flex; align-items: center; gap: 0.5em; min-height: 44px; color: var(--jagr-fg, #ededed); text-decoration: none; } .ds-jagr__link:hover { color: var(--jagr-red, #ff0033); } .ds-jagr__link:focus-visible { outline: 2px solid var(--jagr-fg, #ededed); outline-offset: 2px; } .ds-jagr__caret { display: inline-block; width: 0.55em; height: 0.62em; background: var(--jagr-red, #ff0033); clip-path: polygon(100% 0, 0 50%, 100% 100%); } .ds-jagr__tag { color: var(--jagr-fg-dim, #bcbcbc); }"
+    },
+    {
+      "name": "Card coin",
+      "kind": "custom",
+      "refersTo": "card-coin",
+      "description": "The hero's $ or Bs coin that pops into a card's corner on hover and focus; violet on the navy card.",
+      "html": "<div class=\"ds-coin-row\"><span class=\"ds-coin\">$</span><span class=\"ds-coin ds-coin--ink\">Bs</span></div>",
+      "css": ".ds-coin-row { display: flex; gap: 16px; padding: 16px; } .ds-coin { display: grid; place-items: center; width: 32px; height: 32px; border: 2px solid var(--ink, #0b0a29); border-radius: 50%; background: var(--lime, #d7fe65); color: var(--ink, #0b0a29); font-family: var(--font-sans, Poppins, sans-serif); font-size: 0.8125rem; font-weight: 700; line-height: 1; } .ds-coin--ink { background: var(--violet, #4342f5); color: var(--on-ink, #ffffff); }"
     }
   ],
   "narrative": {
     "northStar": "The highlighter sheet",
-    "overview": "Tab is shown the way a person marks up a printed page. The page is a white sheet with navy ink for text, outlines and fills. Lime is a highlighter dragged behind the words that matter. Real app screens are pasted onto the sheet inside thick ink frames, and the real receipt text is printed on a strip of thermal paper. Violet appears only as a pressed edge under the main action, on the focus ring and as the period of the wordmark. The look replaced an earlier dark SaaS treatment and rejects its pattern: a centred headline over a row of equal glassy cards.\n\nThe density is calm and print-like: one column of content inside a 1120px sheet, short lines, cards that alternate white, navy, then white and wide. Line art is Tab's own: a dashed route arc between two map pins with a lime $ coin and a violet Bs coin. Depth is physical, not atmospheric: cards and the main button sit on a solid bottom edge, like card stock or a key, and the soft shadows belong to the two objects lifted off the sheet, the floating phone and the receipt paper. The hero and the closing band sit on a still dot ground, like the dotted grid of a notebook page, so the wide margins read as paper rather than blank.\n\nThe page is framed by the JAGR thread, a black mono strip above and a black mono footer below, which carries JAGR's own values and is not part of Tab's palette.\n\nThe system is shaped by hard constraints. A strict CSP forbids inline styles, so every state and variant is a class, an attribute selector or an `nth-child` rule, never a style attribute. The page ships 0 client JS beyond the language module, so nothing is interactive beyond links and CSS states. Every target is at least 44px. Motion is limited and always optional: one 4s float of the hero phone, plus two scroll-driven moves (the receipt paper feeding out and the route trail drawing itself), all under `prefers-reduced-motion: no-preference`, and the scroll-driven ones also behind `@supports`. Without support or under reduced motion everything is simply there.",
+    "overview": "Tab is shown the way a person marks up a printed page. The page is a white sheet with navy ink for text, outlines and fills. Lime is a highlighter dragged behind the words that matter. Real app screens are pasted onto the sheet inside thick ink frames, and the real receipt text is printed on a strip of thermal paper. Violet appears only as a pressed edge under the main action, on the focus ring and as the period of the wordmark. The look replaced an earlier dark SaaS treatment and rejects its pattern: a centred headline over a row of equal glassy cards.\n\nThe density is calm and print-like: one column of content inside a 1120px sheet, short lines, cards that alternate white, navy, then white and wide. Line art is Tab's own: a dashed route arc between two map pins with a lime $ coin and a violet Bs coin. Depth is physical, not atmospheric: cards and the main button sit on a solid bottom edge, like card stock or a key, and the soft shadows belong to the two objects lifted off the sheet, the floating phone and the receipt paper. The hero, the closing band and the receipt band sit on a dot ground, like the dotted grid of a notebook page, so the wide margins read as paper rather than blank. Faint ink dots are still until a pointer arrives; then they clear around it and violet, navy and lime dots take their place on the same lattice.\n\nThe page is framed by the JAGR thread, a black mono strip above and a black mono footer below, which carries JAGR's own values and is not part of Tab's palette.\n\nThe system is shaped by hard constraints. A strict CSP forbids inline styles, so every state and variant is a class, an attribute selector or an `nth-child` rule, never a style attribute. Client JS is two small modules, the language cookie and the pointer module for the dot fields (about 0.6 KB gzipped, an external file so the CSP is untouched); nothing else is interactive beyond links and CSS states. Every target is at least 44px. Motion is limited, optional and answers the visitor. The only automatic motion is one 4s float of the hero phone. Scroll sets the pace of the receipt paper feeding out and of each card settling straight. The pointer (or focus) drives the dot field, the card response, the button arrow and the footer underline. All of it sits under `prefers-reduced-motion: no-preference` (the dot module also needs a fine, hovering pointer), the scroll-driven parts also behind `@supports`, and all new easing is the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce. Without support or under reduced motion everything is simply there.",
     "keyCharacteristics": [
       "White paper, navy ink, lime only as highlighter, violet only as an edge or focus mark.",
       "2px ink outlines with a solid 6px ink edge underneath on cards.",
       "Real screens in thick ink frames, never mockups.",
-      "Still dot grids as ground; the route trail and receipt are the only scroll-driven motion.",
+      "Dot fields as ground, still until a pointer clears them and brand-coloured dots follow it.",
+      "Cards that lift, tilt and grow their ink edge when pointed at, and arrive tilted as they scroll in.",
+      "Motion answers the visitor (scroll, pointer, focus); the hero phone's single float is the only motion that runs by itself.",
       "Poppins 400 and 700 only; mono belongs to the receipt and the JAGR thread.",
       "Real colours for every text and border, never opacity; every text at least 4.5:1, every control border at least 3:1.",
       "States through classes and structural selectors only (strict CSP)."
@@ -476,12 +502,12 @@
       },
       {
         "name": "The One Edge Rule",
-        "body": "Violet is a mark, not a surface: the CTA's edge, the focus ring, the wordmark's period, the Bs coin. Nothing else is violet.",
+        "body": "Violet is a mark, not a surface: the CTA's edge, the focus ring, the wordmark's period, the Bs coins, the navy card's hover edge and the pointer's violet dots. Nothing else is violet.",
         "section": "colors"
       },
       {
         "name": "The Real Colour Rule",
-        "body": "Every colour is a solid token with its measured ratio beside it in tokens.css. Never reach a lighter tone with opacity. Text and borders only: the dot grids are decoration and the only place a translucent ink is built.",
+        "body": "Every colour is a solid token with its measured ratio beside it in tokens.css. Never reach a lighter tone with opacity. Text and borders only: the faint dots are decoration and the only place a translucent ink is built.",
         "section": "colors"
       },
       {
@@ -506,12 +532,17 @@
       },
       {
         "name": "The Two Lifted Objects Rule",
-        "body": "Only the hero phone and the receipt paper are lifted off the sheet, each with one soft shadow. The phone floats once for 4s when the page opens; the paper feeds out as its card scrolls into view. Both run under `prefers-reduced-motion: no-preference` only, and the paper's feed also behind `@supports (animation-timeline: view())`.",
+        "body": "Only the hero phone and the receipt paper have a soft shadow. The phone floats once for 4s when the page opens, the one motion that runs by itself; the paper feeds out as its card scrolls into view. Both run under `prefers-reduced-motion: no-preference` only, and the paper's feed also behind `@supports (animation-timeline: view())`. A card that rises on hover is lifted by its solid edge growing, never by a soft shadow.",
         "section": "elevation"
       },
       {
-        "name": "The Scroll Sets The Pace Rule",
-        "body": "Scroll-driven motion (the paper feed, the route trail) is tied to the visitor's scroll with a linear timeline, so nothing runs on its own, and it is gated by `@supports` and reduced motion so the static state is the complete design.",
+        "name": "The Visitor Sets The Pace Rule",
+        "body": "Everything but the hero float answers the visitor, so none of it needs a pause control. Scroll-driven motion (the paper feed, each card settling from its own tilt) uses a linear `view()` timeline, behind `@supports` and reduced motion. The card's individual `rotate` and `translate` properties carry the scroll arrival so they never fight the hover's `transform`. Pointer and focus motion (cards, button arrow, footer underline, dot field) uses the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce, and hover effects sit inside `@media (hover: hover)`. The static state is always the complete design.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Pointer Dots Rule",
+        "body": "A `.dots` field reacts to the pointer through three custom properties (`--mx`, `--my`, `--r`) set by `src/scripts/dots.ts`: faint dots clear within about 150px of the pointer and violet, navy and lime dots take their place, eased so they follow smoothly. The look is all CSS (two masks and a circle). The module runs only for `(hover: hover) and (pointer: fine)` without reduced motion; otherwise the dots stay still. It is decoration over paper and soft bands, kept out of text areas, and the field is deliberate: do not strip it as a grid-background finding.",
         "section": "elevation"
       }
     ],
@@ -522,13 +553,17 @@
       "**Do** express every state and variant as a class, an attribute selector or an `nth-child` rule (the CSP forbids inline styles).",
       "**Do** give every link and control at least 44px.",
       "**Do** show real screens and the real receipt text, cropped to end in empty space.",
-      "**Do** gate any motion behind `prefers-reduced-motion: no-preference`, keep timed motion under 5 seconds, and drive longer motion from scroll behind `@supports` so the static state is complete.",
-      "**Do** build texture from still dots (1.4px, 18px pitch, radial mask) and keep it out of text areas."
+      "**Do** gate any motion behind `prefers-reduced-motion: no-preference`, keep automatic motion to one short cycle, drive longer motion from scroll behind `@supports` and from the pointer behind `@media (hover: hover)`, so the static state is complete.",
+      "**Do** ease new motion with cubic-bezier(0.22, 1, 0.36, 1) and keep it free of overshoot and bounce.",
+      "**Do** build texture from dot fields (1.4px faint dots, 18px pitch, masked), keep it out of text areas, and let the pointer module drive any new field through `.dots`.",
+      "**Do** use the individual `rotate` and `translate` properties for scroll-driven motion on an element that also moves with `transform`."
     ],
     "donts": [
       "**Don't** return to the dark SaaS hero: a centred headline over a row of equal glassy cards.",
       "**Don't** use lime as text, as a large field, or on paper without ink on top of it (1.08:1).",
-      "**Don't** use violet as a fill or text colour beyond the edge, the focus ring, the wordmark's period and the Bs coin.",
+      "**Don't** use violet as a fill or text colour beyond the edges, the focus ring, the wordmark's period, the Bs coins and the pointer dots.",
+      "**Don't** add a trail, pins or any scroll-drawn line in the margin; it was tried and removed.",
+      "**Don't** make the dots react without a fine hovering pointer, or load more client JS for decoration.",
       "**Don't** reach lighter tones with opacity; add a real colour token instead.",
       "**Don't** offset an edge sideways or blur a card shadow; only the hero phone and the receipt paper have a soft shadow.",
       "**Don't** set Tab's content in Share Tech Mono or bring JAGR red into Tab's own sections.",

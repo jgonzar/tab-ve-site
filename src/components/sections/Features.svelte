@@ -23,6 +23,9 @@
 
   let { heading, subheading, items, screens, receipt }: Props = $props();
 
+  // The coin that pops onto a card when it's hovered: the hero's two currencies
+  const COINS = ["$", "Bs", "$"];
+
   // Between the receipt's lines, inside the <pre>
   const NEWLINE = "\n";
 
@@ -52,6 +55,7 @@
   <ul class="features__cards">
     {#each items as item, i (item.title)}
       <li class="card">
+        <span class="card__coin" aria-hidden="true">{COINS[i]}</span>
         <div class="card__copy">
           <h3 class="card__title"><span class="hl">{item.title}</span></h3>
           <p class="card__body">{item.body}</p>
@@ -65,7 +69,7 @@
                slot. Everything but the <pre> is decoration. The text scrolls
                sideways on its own if a narrow phone ever needs it, so it can
                take focus -->
-          <div class="receipt">
+          <div class="receipt dots">
             <span class="receipt__slot" aria-hidden="true"></span>
             <div class="receipt__feed">
               <div class="receipt__sheet">
@@ -134,8 +138,13 @@
     list-style: none;
   }
 
-  /* A card: a 2px ink outline and a thick ink edge underneath */
+  /* A card: a 2px ink outline and a thick ink edge underneath. It lifts and
+     tilts when hovered or focused, and arrives tilted as it scrolls in */
   .card {
+    position: relative;
+    transition:
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     min-width: 0;
     display: grid;
     align-content: start;
@@ -211,8 +220,7 @@
     overflow: clip;
     border-radius: 14px;
     background-color: var(--soft);
-    background-image: radial-gradient(rgb(11 10 41 / 0.24) 1.4px, transparent 1.7px);
-    background-size: 18px 18px;
+    --dot-alpha: 0.24;
   }
 
   /* The printer slot: navy with the violet edge, like the main button */
@@ -371,6 +379,113 @@
        stranded at the top above a blank column */
     .card:nth-child(3) .card__copy {
       align-self: center;
+    }
+  }
+
+  /* The coin: the hero's $ or Bs, popping onto the card's corner */
+  .card__coin {
+    position: absolute;
+    top: -15px;
+    right: 16px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1;
+    transform: scale(0) rotate(-40deg);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card:nth-child(2) .card__coin {
+    background: var(--violet);
+    color: var(--on-ink);
+  }
+
+  /* What a card does when you point at it or tab to it. Hover only where
+     there is hover: on a touch screen a tap would leave it stuck */
+  @media (hover: hover) {
+    .card:hover,
+    .card:focus-within {
+      transform: translateY(-7px) rotate(-0.7deg);
+      box-shadow: 0 13px 0 var(--ink);
+    }
+
+    .card:nth-child(2):hover,
+    .card:nth-child(2):focus-within {
+      box-shadow: 0 13px 0 var(--violet);
+    }
+
+    .card:hover .card__coin,
+    .card:focus-within .card__coin {
+      transform: scale(1) rotate(0);
+    }
+
+    /* The highlighter sweeps across the title again */
+    .card:hover .card__title .hl {
+      animation: sweep 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .card__shot {
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .card:hover .card__shot {
+      transform: translateY(-5px) rotate(2.2deg) scale(1.05);
+    }
+  }
+
+  @keyframes sweep {
+    from {
+      background-size: 0% 100%;
+    }
+
+    to {
+      background-size: 100% 100%;
+    }
+  }
+
+  /* Each card arrives at its own angle and settles straight as it scrolls
+     into view. The individual rotate and translate properties, so it never
+     fights the hover's transform. Scroll-driven, so the visitor sets the
+     pace; without support, or under reduced motion, the cards just sit */
+  @keyframes settle {
+    from {
+      rotate: var(--tilt, 3deg);
+      translate: 0 44px;
+    }
+
+    to {
+      rotate: 0deg;
+      translate: 0 0;
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .card {
+        animation: settle linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 85%;
+      }
+
+      .card:nth-child(1) {
+        --tilt: -3.5deg;
+      }
+
+      .card:nth-child(2) {
+        --tilt: 3deg;
+      }
+
+      .card:nth-child(3) {
+        --tilt: -1.6deg;
+      }
     }
   }
 </style>
