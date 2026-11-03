@@ -90,12 +90,11 @@ const t = strings(locale);
     color: var(--jagr-fg-dim);
   }
 
-  /* On a phone: back link and credits on one row, the privacy line below */
+  /* On a phone: one column, in reading order, as the mock shows */
   @media (max-width: 639px) {
-    .site-footer__privacy {
-      order: 3;
-      flex-basis: 100%;
-      padding-bottom: 0.5rem;
+    .site-footer__inner {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

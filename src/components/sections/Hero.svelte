@@ -117,12 +117,13 @@
     margin-top: 22px;
   }
 
-  /* The art: the route behind, the phone tilted on top. Clipped, so the
-     float and the tilt never widen the page */
+  /* The art: the route behind, the phone tilted on top. Clipped sideways
+     only, so the tilt never widens the page while the phone's soft shadow
+     still falls below the box */
   .hero__art {
     position: relative;
     height: 392px;
-    overflow: clip;
+    overflow-x: clip;
   }
 
   .hero__route {
@@ -152,10 +153,12 @@
     border-radius: 20px;
   }
 
-  /* One slow float, only for those who haven't asked for less motion */
+  /* One slow float when the page opens, then rest: a single 4s cycle, so
+     nothing moves on its own for more than 5 seconds (WCAG 2.2.2), and
+     only for those who haven't asked for less motion */
   @media (prefers-reduced-motion: no-preference) {
     .hero__phone {
-      animation: float 4s ease-in-out infinite;
+      animation: float 4s ease-in-out 1;
     }
   }
 

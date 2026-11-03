@@ -65,8 +65,10 @@
     padding-block: 8px 32px;
   }
 
+  /* Stacked on a phone; the subtitle beside the title from 600px */
   .features__head {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     align-items: baseline;
     gap: 6px 14px;
@@ -149,9 +151,16 @@
     object-position: top;
   }
 
-  /* The quick-ride card sits mid-screen */
+  /* Each crop ends in empty space, never through a line of the app:
+     the quick-ride card shows the whole modal, Cancel included; the
+     summary card ends in the gap under the summary bar */
   .card:nth-child(1) .card__shot :global(img) {
-    object-position: center 46%;
+    height: 250px;
+    object-position: center 48.5%;
+  }
+
+  .card:nth-child(2) .card__shot :global(img) {
+    height: 182px;
   }
 
   .card__receipt {
@@ -171,8 +180,19 @@
       grid-template-columns: minmax(22ch, 1fr) 180px;
     }
 
-    .card__shot :global(img) {
+    .features__head {
+      flex-direction: row;
+    }
+
+    .card:nth-child(n) .card__shot :global(img) {
       height: 250px;
+    }
+
+    /* Beside the text the screen is narrower: start higher, so the crop
+       ends after the modal, before the next ride's button */
+    .card:nth-child(1) .card__shot :global(img) {
+      height: 232px;
+      object-position: center 30%;
     }
   }
 

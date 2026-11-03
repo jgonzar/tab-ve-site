@@ -17,9 +17,14 @@
 
   let { line, pill, cta, demo, note, icon }: Props = $props();
 
-  const at = $derived(line.indexOf(pill));
+  // Each sentence starts its own line, in both languages: the first holds
+  // the pill, the rest follows. Structure only; the words are row 8's.
+  const end = $derived(line.indexOf(". ") + 1);
+  const first = $derived(end > 0 ? line.slice(0, end) : line);
+  const rest = $derived(end > 0 ? line.slice(end) : "");
+  const at = $derived(first.indexOf(pill));
   const parts = $derived(
-    at < 0 ? [line, "", ""] : [line.slice(0, at), pill, line.slice(at + pill.length)],
+    at < 0 ? [first, "", ""] : [first.slice(0, at), pill, first.slice(at + pill.length)],
   );
 </script>
 
@@ -28,7 +33,9 @@
     <Picture image={icon} alt="" />
   </div>
   <p class="closing__line">
-    {parts[0]}{#if parts[1]}<span class="closing__pill">{parts[1]}</span>{/if}{parts[2]}
+    <span class="closing__sentence"
+      >{parts[0]}{#if parts[1]}<span class="closing__pill">{parts[1]}</span>{/if}{parts[2]}</span
+    >{#if rest}<span class="closing__sentence">{rest}</span>{/if}
   </p>
   <div class="closing__cta">
     <DemoButton href={demo} label={cta} />
@@ -66,6 +73,10 @@
     line-height: 1.25;
     letter-spacing: -0.02em;
     text-wrap: balance;
+  }
+
+  .closing__sentence {
+    display: block;
   }
 
   .closing__pill {
