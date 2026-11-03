@@ -190,3 +190,41 @@ test.describe("motion", () => {
     expect(name).toBe("none");
   });
 });
+
+test.describe("the dot fields follow the pointer", () => {
+  const radius = (page: import("@playwright/test").Page, selector: string) =>
+    page
+      .locator(selector)
+      .evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue("--r")) || 0);
+
+  test("clear and colour around it, then settle when it leaves", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/en/");
+    expect(await radius(page, ".ground")).toBe(0);
+
+    const box = await page.locator(".ground").boundingBox();
+    if (!box) throw new Error("no hero field");
+    await page.mouse.move(box.x + box.width / 2, box.y + 120);
+    await page.mouse.move(box.x + box.width / 2 + 60, box.y + 160, { steps: 6 });
+    await expect.poll(() => radius(page, ".ground")).toBeGreaterThan(100);
+    const mx = await page
+      .locator(".ground")
+      .evaluate((el) => getComputedStyle(el).getPropertyValue("--mx"));
+    expect(parseFloat(mx)).toBeGreaterThan(300);
+
+    // Out of the field, onto the top of the page: it gives the dots back
+    await page.mouse.move(box.x + box.width / 2, 4, { steps: 4 });
+    await expect.poll(() => radius(page, ".ground"), { timeout: 4000 }).toBe(0);
+  });
+
+  test("stay still for anyone who asked for reduced motion", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/en/");
+    const box = await page.locator(".ground").boundingBox();
+    if (!box) throw new Error("no hero field");
+    await page.mouse.move(box.x + 300, box.y + 200, { steps: 6 });
+    await page.waitForTimeout(400);
+    expect(await radius(page, ".ground")).toBe(0);
+  });
+});

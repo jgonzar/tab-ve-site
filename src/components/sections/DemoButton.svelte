@@ -67,7 +67,8 @@
     transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /* The arrow circle nudges up and turns a quarter */
   .demo:hover .demo__arrow {
-    transform: translate(1px, -1px);
+    transform: translate(3px, -3px) rotate(45deg);
   }
 </style>
