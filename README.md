@@ -116,6 +116,86 @@ grades are proven in two places:
 - Merging to `main` deploys nothing: `vercel.json` turns off Git deployments for `main`.
 - Production is promoted by hand, only on Ángel's explicit go.
 
+## Captures and link cards
+
+### Screenshots
+
+The page's phone screens are raw PNGs in `src/assets/captures/{es,en}/` (Astro resizes and hashes
+them at build). The phone around them is drawn once in CSS, by `src/components/PhoneFrame.astro`, so
+the bitmaps carry no frame.
+
+| File             | Shows                                                                   |
+| ---------------- | ----------------------------------------------------------------------- |
+| `inicio.png`     | The hero: Inicio, with the quick routes, the summary bar and the rides  |
+| `quick-ride.png` | "One tap per ride": the quick-ride card, open on the first route        |
+| `summary.png`    | "Dollars and bolívares": the summary bar, stuck at the top, over a ride |
+| `historial.png`  | "Settle up": Historial, the paid rides (see "Why Historial" below)      |
+
+They come from a **local** Tab demo on a fresh, throwaway database, never from the live shared demo
+(which could show a visitor's text, and isn't reproducible). Nothing is captured in CI.
+
+**1. Start the local demo** (needs a Tab checkout, pnpm and Node 24; no Docker):
+
+```sh
+pnpm capture:demo --tab <path to a Tab checkout>
+```
+
+`scripts/capture-demo.ts`:
+
+- exports Tab at `TAB_REF` (in `scripts/capture-config.ts`) with `git archive` into a work dir
+  (default `<tmp>/tab-capture-demo-<TAB_REF>`, or `--dir`). The checkout itself is only read.
+- installs (`--frozen-lockfile`) and builds it there, once per ref, and writes Tab's schema as SQL
+  with `drizzle-kit export`
+- serves it with `vite preview` on `http://127.0.0.1:4173`, with `DEMO_MODE=on` and an environment
+  built from scratch (no inherited variables, and it refuses to start if the export has a `.env`)
+
+The server runs with `scripts/capture-shim.mjs` preloaded (`node --import`). Tab's code is
+unchanged; the shim:
+
+- **answers the database.** Tab uses Neon's HTTP driver, which POSTs each query to an `/sql`
+  endpoint with `fetch`. The shim answers those requests from an in-memory
+  [PGlite](https://pglite.dev) (Tab's own devDependency) in the same process, with Tab's schema
+  applied. `DATABASE_URL` points at a reserved `.invalid` host, so nothing could ever reach a real
+  database. Every start is an empty database, and Tab's own lazy 4-hour reset seeds it with the demo
+  data (Ana, Luis, Carla) on the first request.
+- **fixes the BCV rate** (`BCV_RATE`) by answering Tab's request to ve.dolarapi.com
+- **shifts the server clock** to start at `CAPTURE_NOW`, so the seed, which is relative to "now", is
+  the same on every run
+- **refuses every other outbound request**
+
+**2. Capture**, in another terminal:
+
+```sh
+pnpm capture           # writes src/assets/captures/{es,en}/*.png
+pnpm capture:verify    # captures again into a temp folder and compares, byte for byte
+```
+
+`scripts/capture.ts` takes the base URL as an optional argument and refuses any host but localhost.
+Each shot gets a fresh browser context with the clock frozen at `CAPTURE_NOW` in America/Caracas, a
+390×844 viewport at DPR 3, reduced motion plus CSS that turns off transitions and animations, the
+fonts loaded, the language set through Tab's `tab_lang` cookie, the person (Ana) and the tour flag
+set through Tab's own `localStorage` keys, and the demo banner hidden by an injected stylesheet. The
+rate request is stubbed in the browser too, and any non-local request is blocked.
+
+Two runs give byte-identical files. Commit the PNGs after any change to `scripts/capture-config.ts`,
+the shots, or `TAB_REF`. Re-shooting after a Tab UI change means bumping `TAB_REF` and running both
+steps again.
+
+**Why Historial for "Settle up".** The shared summary has no screen of its own in Tab: Compartir
+hands the text to the phone's share sheet (or the clipboard). Capturing it would mean drawing a
+messaging screen around it, which isn't Tab's UI, so the feature shows Historial, where settled
+rides end up.
+
+### Link preview cards
+
+`public/og/og-en.png` and `og-es.png` (1200×630) are committed, and `pnpm og` regenerates them.
+`scripts/og.ts` fills the two description lines of `scripts/og-template.svg` (Tab's `design/og.svg`,
+with those lines as text slots) and renders it with resvg, using Poppins Regular from
+`@fontsource/poppins` (OFL, converted from WOFF in memory) and no system fonts, so it gives the same
+result on macOS and Linux. `pnpm og --check` renders both in memory and compares them with the
+committed files (the visual snapshot). The English text is Tab's current card. The site never
+hotlinks `tab-ve.vercel.app/og.png`.
+
 ## The JAGR strip
 
 `src/components/JagrStrip.astro` is the strip's one versioned source (see its header comment). Memo
