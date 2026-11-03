@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Lighthouse on both pages, mobile with simulated throttling (Lighthouse's
 // default), against the ticket's budgets. Exits non-zero on a missed budget.
-// Each page runs three times and the median run counts, as Lighthouse CI
+// Each page runs five times and the median run counts, as Lighthouse CI
 // does: a single run swings with whatever else the machine is doing.
 //
 //   node scripts/lighthouse.mjs              serves dist/ locally, then runs
@@ -58,7 +58,11 @@ const failures = [];
 const rows = [];
 mkdirSync(new URL("../lighthouse-report", import.meta.url), { recursive: true });
 
-const RUNS = 3;
+// Five, as Lighthouse CI recommends: on shared CI runners one run in three
+// or so carries a few hundred ms of unattributed main-thread work (TBT 261
+// and 362 ms, with the page's own scripting at 15 ms), and a median of three
+// can still land on it
+const RUNS = 5;
 
 // One discarded run first: Chrome's own cold start lands as an unattributed
 // long task on whichever page is measured first (615 ms of "Other" on CI),
