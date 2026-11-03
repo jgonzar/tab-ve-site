@@ -1,0 +1,36 @@
+---
+// The one page shell. Everything it loads is same-origin and external: no
+// inline <script> or <style> (CSP: script-src 'self'; style-src 'self', and
+// build.inlineStylesheets is 'never').
+import "../styles/global.css";
+import poppins400 from "@fontsource/poppins/files/poppins-latin-400-normal.woff2?url";
+import JagrStrip from "../components/JagrStrip.astro";
+
+interface Props {
+  lang: "en" | "es";
+  title: string;
+  description: string;
+}
+
+const { lang, title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b0a29" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png" />
+    <link rel="preload" href={poppins400} as="font" type="font/woff2" crossorigin="anonymous" />
+  </head>
+  <body>
+    <JagrStrip lang={lang} />
+    <slot />
+  </body>
+</html>

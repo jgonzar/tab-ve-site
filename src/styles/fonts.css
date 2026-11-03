@@ -1,0 +1,50 @@
+/* Self-hosted fonts. Nothing is fetched from a font CDN (CSP font-src 'self').
+
+   The @font-face rules are written here instead of importing Fontsource's CSS,
+   because its CSS also lists a .woff fallback for every face. Every browser the
+   site targets reads woff2, so only woff2 files ship. The files still come from
+   the pinned @fontsource packages, so Renovate updates them.
+
+   Poppins: Latin subset (it covers every Spanish character), 2 weights. 400 is
+   the body and is preloaded from the layout; 700 is for headings.
+   Share Tech Mono: Latin, 400 only. It's the JAGR strip's face (JagrStrip.astro).
+   Both are under the SIL Open Font License 1.1; the notices ship in
+   public/licenses/. */
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("@fontsource/poppins/files/poppins-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("@fontsource/poppins/files/poppins-latin-700-normal.woff2") format("woff2");
+}
+
+/* A local Arial sized to Poppins' metrics, so the swap from fallback to Poppins
+   moves almost nothing (CLS). The overrides are Poppins' own vertical metrics
+   (ascent 1050, descent 350, line gap 100, per 1000 units) divided by the size
+   adjust, which matches Poppins' average glyph width to Arial's. */
+@font-face {
+  font-family: "Poppins Fallback";
+  src: local("Arial"), local("ArialMT"), local("Helvetica");
+  size-adjust: 112.16%;
+  ascent-override: 93.62%;
+  descent-override: 31.21%;
+  line-gap-override: 8.92%;
+}
+
+@font-face {
+  font-family: "Share Tech Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("@fontsource/share-tech-mono/files/share-tech-mono-latin-400-normal.woff2")
+    format("woff2");
+}

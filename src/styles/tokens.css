@@ -1,0 +1,46 @@
+/* Tab brand tokens, copied from the Tab app's theme (src/app.css in the Tab repo,
+   the `tab` DaisyUI theme) and its brand sources (design/brand/README.md).
+
+   Contrast rule (WCAG 2.2 AA): no text below 4.5:1 and no UI border below 3:1
+   on any of the three surfaces. The app's low-alpha whites (0.2 and 0.25 on
+   the raised surface, 1.80:1 and 2.15:1) fail, so the site uses solid colours
+   instead. Ratios are listed against page / raised / deep. */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --tab-page: #0b0a29; /* base-100 */
+  --tab-raised: #13113f; /* base-200: cards, bars */
+  --tab-deep: #1f1b62; /* base-300: the deepest surface step */
+  --tab-indigo: #1c1a9b; /* brand Indigo, the app's summary bar */
+
+  /* Brand */
+  --tab-violet: #4342f5; /* primary. Fill only: 3.06:1 as text on the page, so never text on dark */
+  --tab-on-violet: #f8f8f8; /* 5.93:1 on violet */
+  --tab-lime: #d7fe65; /* accent. 16.75 / 15.47 / 13.12 */
+  --tab-on-lime: #0b0a29;
+
+  /* Text */
+  --tab-text: #f8f8f8; /* off-white. 18.15 / 16.76 / 14.21 */
+  --tab-text-muted: #b9b8d9; /* 10.02 / 9.26 / 7.85 */
+
+  /* Lines. 4.81 / 4.45 / 3.77, so a border that identifies a control passes 3:1 */
+  --tab-border: #7a77c2;
+
+  /* Never pair (design/brand/README.md): violet on indigo (2.00:1), and lime
+     with off-white (1.08:1) either way. */
+
+  /* JAGR thread (the strip). JAGR's own values, used only inside JagrStrip.astro */
+  --jagr-void: #000000;
+  --jagr-fg: #ededed; /* 17.94 on void */
+  --jagr-fg-dim: #bcbcbc; /* 11.06 on void */
+  --jagr-red: #ff0033; /* 5.30 on void */
+
+  /* Type */
+  --font-sans: "Poppins", "Poppins Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Touch targets follow the app: 44px minimum */
+  --tap-min: 44px;
+}

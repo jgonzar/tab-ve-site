@@ -1,0 +1,96 @@
+---
+/*
+ * JAGR strip v1.0.0 (2026-11-02)
+ *
+ * The thin black bar that marks an app's landing page as part of JAGR, the
+ * portfolio, and gives the visitor a way back. This file is the strip's one
+ * versioned source: Memo and Jenova copy it unchanged and bump the version
+ * here when it changes (the matching section in JAGR's DESIGN.md records it).
+ *
+ * Look: JAGR's mono (Share Tech Mono) and its red caret, on JAGR's void black.
+ * The red is the caret only, a navigation mark, per DESIGN.md's caret rule.
+ * Voltrix is not used.
+ *
+ * Accessibility: a <nav> named "JAGR". The link's accessible name contains its
+ * visible label (WCAG 2.5.3). The caret is decorative and aria-hidden. The
+ * strings are the approved copy, rows 1 to 3.
+ */
+import { JAGR_URL } from "../site";
+
+interface Props {
+  lang: "en" | "es";
+}
+
+const COPY = {
+  en: {
+    link: "JAGR",
+    linkName: "Back to JAGR, Ángel's portfolio",
+    tag: "Side quest",
+  },
+  es: {
+    link: "JAGR",
+    linkName: "Volver a JAGR, el portafolio de Ángel",
+    tag: "Misión secundaria",
+  },
+} as const;
+
+const { lang } = Astro.props;
+const t = COPY[lang];
+---
+
+<nav class="jagr-strip" aria-label="JAGR">
+  <a class="jagr-strip__link" href={JAGR_URL} rel="noopener noreferrer" aria-label={t.linkName}>
+    <span class="jagr-strip__caret" aria-hidden="true"></span>
+    <span>{t.link}</span>
+  </a>
+  <span class="jagr-strip__tag">{t.tag}</span>
+</nav>
+
+<style>
+  .jagr-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--tap-min);
+    padding: 0 1rem;
+    background: var(--jagr-void);
+    color: var(--jagr-fg);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .jagr-strip__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: var(--tap-min);
+    text-decoration: none;
+    color: var(--jagr-fg);
+  }
+
+  .jagr-strip__link:hover {
+    color: var(--jagr-red);
+  }
+
+  .jagr-strip__link:focus-visible {
+    outline: 2px solid var(--jagr-fg);
+    outline-offset: 2px;
+  }
+
+  /* JAGR's .hud-caret, pointing back */
+  .jagr-strip__caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.62em;
+    background: var(--jagr-red);
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  }
+
+  .jagr-strip__tag {
+    color: var(--jagr-fg-dim);
+  }
+</style>
