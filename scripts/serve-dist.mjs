@@ -1,14 +1,17 @@
 #!/usr/bin/env node
-// Serves dist/ with the headers vercel.json declares, so the security baseline
-// can be checked before any preview exists (`astro preview` ignores
-// vercel.json). Local use and CI only; Vercel serves the real site.
+// Serves dist/ the way Vercel will: the vercel.json headers on every response,
+// and its trailingSlash and redirects (the `/` language redirect) before any
+// file. So the security baseline and the redirect matrix can be checked before
+// a preview exists (`astro preview` ignores vercel.json). Local use and CI
+// only; Vercel serves the real site.
 //   node scripts/serve-dist.mjs [port]     (default 4321)
 
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { pathToFileURL } from "node:url";
-import { headersFor, loadRules } from "./lib/vercel-headers.mjs";
+import { headersFor, loadConfig, loadRules } from "./lib/vercel-headers.mjs";
+import { resolveRedirect } from "./lib/vercel-redirects.mjs";
 
 const DIST = new URL("../dist", import.meta.url).pathname;
 
@@ -37,10 +40,16 @@ function resolveFile(pathname) {
 }
 
 export function serve(port = 4321) {
-  const rules = loadRules();
+  const config = loadConfig();
+  const rules = loadRules(config);
   const server = createServer((req, res) => {
-    const { pathname } = new URL(req.url ?? "/", "http://localhost");
+    const { pathname, search } = new URL(req.url ?? "/", "http://localhost");
     for (const [key, value] of headersFor(rules, pathname)) res.setHeader(key, value);
+    const redirect = resolveRedirect(config, { pathname, search, headers: req.headers });
+    if (redirect) {
+      res.writeHead(redirect.status, { location: redirect.location }).end();
+      return;
+    }
     const file = resolveFile(pathname);
     const notFound = resolveFile("/404");
     if (!file && !notFound) {
@@ -59,5 +68,5 @@ export function serve(port = 4321) {
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   const port = Number(process.argv[2] ?? 4321);
   await serve(port);
-  console.log(`Serving dist/ with vercel.json headers at http://127.0.0.1:${port}`);
+  console.log(`Serving dist/ with vercel.json headers and redirects at http://127.0.0.1:${port}`);
 }
