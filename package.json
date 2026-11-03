@@ -1,0 +1,47 @@
+{
+  "name": "tab-ve-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The landing page for Tab, a household ride tracker. A static Astro site.",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@11.28.9",
+  "engines": {
+    "node": "^24.22.2"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check:types": "astro check",
+    "check:dashes": "node scripts/check-dashes.mjs",
+    "check:dist": "node scripts/check-dist.mjs",
+    "check:headers": "node scripts/check-headers.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "serve:dist": "node scripts/serve-dist.mjs",
+    "check": "pnpm check:dashes && pnpm check:types && pnpm lint && pnpm format:check && pnpm build && pnpm check:dist && pnpm check:headers"
+  },
+  "dependencies": {
+    "@fontsource/poppins": "5.3.0",
+    "@fontsource/share-tech-mono": "5.3.0",
+    "astro": "7.4.4",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
+    "@eslint/js": "10.0.1",
+    "astro-eslint-parser": "3.2.0",
+    "eslint": "10.13.0",
+    "eslint-plugin-astro": "3.2.1",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.2",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1"
+  }
+}

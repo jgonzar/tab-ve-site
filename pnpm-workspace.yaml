@@ -1,0 +1,14 @@
+# pnpm settings. pnpm 11 reads them here, not from package.json.
+
+# Skip any release younger than 3 days (in minutes). A compromised version is
+# usually caught and pulled within that window.
+minimumReleaseAge: 4320
+
+# Only these packages may run install scripts. pnpm 11 calls this list
+# `allowBuilds` (it replaced `onlyBuiltDependencies`).
+allowBuilds:
+  esbuild: true
+  sharp: true
+
+# Fail the install on a Node version outside package.json `engines`.
+engineStrict: true
