@@ -68,7 +68,9 @@
   .closing__line {
     margin: 0;
     max-width: 20ch;
-    font-size: clamp(1.65rem, 5vw, 2.3rem);
+    /* Two fixed steps, not a vw clamp: a vw size inherited into the pill
+       could stay stale after a viewport change and render the pill smaller */
+    font-size: 1.65rem;
     font-weight: 700;
     line-height: 1.25;
     letter-spacing: -0.02em;
@@ -98,6 +100,10 @@
   }
 
   @media (min-width: 720px) {
+    .closing__line {
+      font-size: 2.3rem;
+    }
+
     .closing {
       margin-block: 4px 40px;
       padding: 40px 44px;
