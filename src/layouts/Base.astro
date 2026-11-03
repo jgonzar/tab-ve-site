@@ -5,23 +5,22 @@
 import "../styles/global.css";
 import poppins400 from "@fontsource/poppins/files/poppins-latin-400-normal.woff2?url";
 import JagrStrip from "../components/JagrStrip.astro";
+import SeoHead from "../components/SeoHead.astro";
+import type { Locale } from "../i18n";
 
 interface Props {
-  lang: "en" | "es";
-  title: string;
-  description: string;
+  locale: Locale;
 }
 
-const { lang, title, description } = Astro.props;
+const { locale } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <SeoHead locale={locale} />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0b0a29" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
@@ -30,7 +29,7 @@ const { lang, title, description } = Astro.props;
     <link rel="preload" href={poppins400} as="font" type="font/woff2" crossorigin="anonymous" />
   </head>
   <body>
-    <JagrStrip lang={lang} />
+    <JagrStrip lang={locale} />
     <slot />
   </body>
 </html>

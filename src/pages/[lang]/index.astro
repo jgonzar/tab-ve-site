@@ -1,0 +1,44 @@
+---
+// The landing page, once per language: /en/ and /es/. The sections arrive in
+// L4; for now it carries the head, the top bar and the demo link.
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import TopBar from "../../components/TopBar.astro";
+import { LOCALES, strings, type Locale } from "../../i18n";
+import { demoUrl } from "../../seo";
+
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const locale = Astro.params.lang as Locale;
+const t = strings(locale);
+---
+
+<Base locale={locale}>
+  <TopBar locale={locale} />
+  <main class="page">
+    <a class="page__cta" href={demoUrl(locale)} rel="noopener noreferrer">
+      {t.demo.cta}
+    </a>
+  </main>
+</Base>
+
+<style>
+  .page {
+    display: grid;
+    place-items: center;
+    padding: 4rem 1rem;
+  }
+
+  .page__cta {
+    display: inline-grid;
+    place-items: center;
+    min-height: var(--tap-min);
+    padding: 0 1.5rem;
+    border-radius: 0.75rem;
+    background: var(--tab-violet);
+    color: var(--tab-on-violet);
+    font-weight: 700;
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "title": "Tab: cada carrera y quién debe qué",
+    "description": "Una app para llevar las carreras de la casa, con cada total en bolívares a la tasa BCV. Prueba la demo."
+  },
+  "lang": {
+    "en": { "short": "EN", "name": "English" },
+    "es": { "short": "ES", "name": "Español" }
+  },
+  "demo": {
+    "cta": "Probar la demo"
+  }
+}
