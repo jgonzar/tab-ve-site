@@ -1,0 +1,68 @@
+---
+// The ES / EN switch: two plain links, so it works with JS off. With JS on,
+// src/scripts/lang-cookie.ts saves the choice in a cookie on click, and the
+// `/` redirect in vercel.json reads it on the next visit. Each link names its
+// language in that language (copy row 4), with lang and hreflang to match.
+import { LOCALES, strings, type Locale } from "../i18n";
+import { pagePath } from "../seo";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = strings(locale);
+---
+
+<ul class="lang-links">
+  {LOCALES.map((l) => (
+    <li>
+      <a
+        class="lang-links__link"
+        href={pagePath(l)}
+        hreflang={l}
+        lang={l}
+        data-lang={l}
+        aria-current={l === locale ? "page" : undefined}
+      >
+        <span aria-hidden="true">{t.lang[l].short}</span>
+        <span class="sr-only">{t.lang[l].name}</span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<script src="../scripts/lang-cookie.ts"></script>
+
+<style>
+  .lang-links {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lang-links__link {
+    display: inline-grid;
+    place-items: center;
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+    padding: 0 0.5rem;
+    border-radius: 0.75rem;
+    color: var(--tab-text-muted);
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+  }
+
+  .lang-links__link:hover {
+    color: var(--tab-text);
+  }
+
+  .lang-links__link[aria-current="page"] {
+    color: var(--tab-text);
+    box-shadow: inset 0 0 0 1px var(--tab-border);
+  }
+</style>

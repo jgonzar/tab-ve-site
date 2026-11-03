@@ -9,6 +9,32 @@
       "main": false
     }
   },
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "tab_site_lang", "value": { "eq": "es" } }],
+      "destination": "/es/",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "tab_site_lang", "value": { "eq": "en" } }],
+      "destination": "/en/",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "accept-language", "value": { "pre": "es" } }],
+      "destination": "/es/",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "destination": "/en/",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

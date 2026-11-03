@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "title": "Tab: every ride, who owes what",
+    "description": "A household ride tracker that converts every total to bolívares at the BCV rate. Try the demo."
+  },
+  "lang": {
+    "en": { "short": "EN", "name": "English" },
+    "es": { "short": "ES", "name": "Español" }
+  },
+  "demo": {
+    "cta": "Try the demo"
+  }
+}

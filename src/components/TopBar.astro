@@ -1,0 +1,31 @@
+---
+// The top bar under the JAGR strip: the wordmark and the language links.
+import LanguageLinks from "./LanguageLinks.astro";
+import Wordmark from "./Wordmark.astro";
+import type { Locale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<header class="top-bar">
+  <Wordmark class="top-bar__mark" />
+  <LanguageLinks locale={locale} />
+</header>
+
+<style>
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .top-bar :global(.top-bar__mark) {
+    height: 1.75rem;
+  }
+</style>
