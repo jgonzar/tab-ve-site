@@ -43,6 +43,10 @@ describe("i18n parity", () => {
     expect(untranslated).toEqual([]);
   });
 
+  it("pills a phrase that row 8 really contains, in both languages", () => {
+    for (const t of [en, es]) expect(t.hero.sub).toContain(t.hero.subPill);
+  });
+
   it("serves each locale its own file", () => {
     expect(strings("en")).toBe(en);
     expect(strings("es")).toBe(es);

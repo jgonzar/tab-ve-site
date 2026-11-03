@@ -29,20 +29,26 @@ for (const { locale, t } of PAGES) {
       await expect(page.locator("h1")).toHaveText(t.hero.headline);
       await expect(main.getByText(t.hero.eyebrow, { exact: true })).toBeVisible();
       await expect(main.getByText(t.hero.before, { exact: true })).toBeVisible();
-      await expect(main.getByText(t.hero.sub, { exact: true })).toBeVisible();
+      // Row 8 is the closing band's big line, with its pill
+      const closing = main.locator(".closing__line");
+      await expect(closing).toHaveText(t.hero.sub);
+      await expect(closing.locator(".closing__pill")).toHaveText(t.hero.subPill);
 
+      // The section titles are the highlighted labels, with rows 11 and 16 beside them
       const h2 = await main.locator("h2").allTextContents();
-      expect(h2).toEqual([t.features.title, t.built.title]);
+      expect(h2).toEqual([t.features.eyebrow, t.built.eyebrow]);
+      await expect(main.getByText(t.features.title, { exact: true })).toBeVisible();
+      await expect(main.getByText(t.built.title, { exact: true })).toBeVisible();
       const h3 = await main.locator("h3").allTextContents();
       expect(h3).toEqual(t.features.items.map((f) => f.title));
       for (const f of t.features.items) {
         await expect(main.getByText(f.body, { exact: true })).toBeVisible();
       }
 
-      // "Settle up" is the receipt, as text, captioned with copy row 15
-      const receipt = main.locator("figure.receipt");
-      await expect(receipt.locator("pre")).toContainText("$34.50");
-      await expect(receipt.locator("figcaption")).toHaveText(t.features.items[2]?.alt ?? "");
+      // "Settle up" is the full receipt, as text, named with copy row 15
+      const receipt = main.locator("pre.card__receipt");
+      await expect(receipt).toContainText("$34.50");
+      await expect(receipt).toHaveAttribute("aria-label", t.features.items[2]?.alt ?? "");
 
       await expect(main.locator(".chip")).toHaveText(t.built.chips);
       await expect(main.getByText(t.demo.note, { exact: true })).toBeVisible();
@@ -89,7 +95,7 @@ for (const { locale, t } of PAGES) {
       await expect(hero).toHaveAttribute("loading", "eager");
       await expect(hero).toHaveAttribute("fetchpriority", "high");
       await expect(hero).toHaveAttribute("alt", t.hero.alt);
-      const features = page.locator(".feature img");
+      const features = page.locator(".card img");
       await expect(features).toHaveCount(2);
       for (const [i, img] of (await features.all()).entries()) {
         await expect(img).toHaveAttribute("loading", "lazy");

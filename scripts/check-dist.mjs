@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Checks the built HTML against the CSP, so a violation fails CI instead of
 // breaking the page silently in the browser:
-//   - no inline <script> (every script must have a same-origin src)
+//   - no inline <script> (every script must have a same-origin src), and no
+//     script but the language module: the Svelte sections render at build
+//     time and ship no JavaScript (plan decision 17)
 //   - no <style> element and no style="" attribute (style-src 'self')
 //   - no inline event handlers (onclick= and the like)
 //   - no resource loaded from another origin (src, srcset, and <link> hrefs).
@@ -21,6 +23,8 @@ function* walk(dir) {
   }
 }
 
+const LANGUAGE_MODULE =
+  /^\/_astro\/LanguageLinks\.astro_astro_type_script_index_0_lang\.[\w-]+\.js$/;
 const isRemote = (url) => /^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(url.trim());
 const problems = [];
 let count = 0;
@@ -33,6 +37,9 @@ for (const file of walk(DIST)) {
 
   for (const m of html.matchAll(/<script\b([^>]*)>/gi)) {
     if (!/\bsrc\s*=/i.test(m[1])) report(`inline <script${m[1]}>`);
+    const src = /\bsrc\s*=\s*["']([^"']*)["']/i.exec(m[1])?.[1] ?? "";
+    if (src && !LANGUAGE_MODULE.test(src))
+      report(`a script other than the language module: ${src}`);
   }
   if (/<style\b/i.test(html)) report("inline <style> element");
   if (/<[a-z][^>]*\sstyle\s*=/i.test(html)) report("style= attribute");
