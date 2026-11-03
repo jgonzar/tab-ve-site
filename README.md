@@ -64,10 +64,16 @@ Renovate on a weekly, grouped schedule (`renovate.json`).
 
 ## Security baseline
 
-Every response served as a file (the pages, assets, `sitemap.xml`, `robots.txt`, `security.txt`)
-gets these headers from `vercel.json`. Redirects don't: Vercel answers a `redirects` or
-`trailingSlash` redirect with its status and `Location` only, so the 307 at `/` and the 308s carry no
-custom headers. They have no body to protect, and scanners grade the final 200.
+Every response served as a file (the pages, assets, `sitemap.xml`, `robots.txt`, the licences)
+gets these headers from `vercel.json`. Two exceptions, both Vercel's own behaviour:
+
+- **Redirects:** Vercel answers a `redirects` or `trailingSlash` redirect with its status and
+  `Location` only, so the 307 at `/` and the 308s carry no custom headers.
+- **`/.well-known/`:** Vercel serves this folder itself, so `security.txt` gets only Vercel's
+  defaults (HSTS with `preload`), from the `/(.*)` rule or from a rule of its own alike.
+
+Neither matters for the grade: a redirect and a plain-text file have no page to protect, and
+scanners grade the final HTML 200.
 
 | Header                       | Value                                                                                                                                                   |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
