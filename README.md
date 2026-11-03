@@ -43,12 +43,13 @@ protected preview).
 ## Quality gates
 
 CI (`.github/workflows/ci.yml`) runs on every PR and on every push to `main`. Each job is a required
-check on `main`.
+check on `main`, except `og-cards`, until it has passed on Linux (see "Link preview cards").
 
 | Job          | What it runs                                                                                                                                                                                                                                                                                                             |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `quality`    | frozen install, the dash check (`scripts/check-dashes.mjs`, every file in the repo), `astro check`, ESLint, the Prettier check, Vitest unit tests, the build, the built-HTML check (`scripts/check-dist.mjs`: no inline script or style, no third-party loads) and the header check (`scripts/check-headers.mjs`, local) |
 | `e2e`        | Playwright on Chromium against `dist/` served with the `vercel.json` headers and redirects: the `/` redirect matrix, the head, the sitemap, robots, the language links and cookie                                                                                                                                        |
+| `og-cards`   | `pnpm og --check`: the link cards rendered again and compared with the committed PNGs, within a small pixel tolerance                                                                                                                                                                                                    |
 | `audit`      | `pnpm audit --audit-level=high`                                                                                                                                                                                                                                                                                          |
 | `gitleaks`   | gitleaks 8.30.1 (checksum verified) over the full history                                                                                                                                                                                                                                                                |
 | `commitlint` | Conventional Commits on every commit of the PR, with no em or en dashes                                                                                                                                                                                                                                                  |
