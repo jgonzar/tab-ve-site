@@ -48,32 +48,46 @@ const mark = await picture(icon, { width: 96, sizes: "(min-width: 720px) 96px, 5
 
 <Base locale={locale}>
   <TopBar locale={locale} />
-  <main id="main" tabindex="-1" class="container">
-    <Hero
-      eyebrow={t.hero.eyebrow}
-      headline={t.hero.headline}
-      before={t.hero.before}
-      cta={t.demo.cta}
-      demo={demo}
-      screen={hero}
-      alt={t.hero.alt}
-    />
-    <Features
-      heading={t.features.eyebrow}
-      subheading={t.features.title}
-      items={t.features.items}
-      screens={shots}
-      receipt={receipt(locale)}
-    />
-    <Closing
-      line={t.hero.sub}
-      pill={t.hero.subPill}
-      cta={t.demo.cta}
-      demo={demo}
-      note={t.demo.note}
-      icon={mark}
-    />
-    <Built heading={t.built.eyebrow} subheading={t.built.title} chips={t.built.chips} />
+  <main id="main" tabindex="-1" class="page">
+    <!-- The route trail: a dashed line down the left margin with a pin at each
+         section. Decoration only; it shows from 1280px wide, where the margin
+         has room, and draws itself as the page scrolls -->
+    <span class="rail" aria-hidden="true"></span>
+    <div class="ground">
+      <div class="container stop">
+        <Hero
+          eyebrow={t.hero.eyebrow}
+          headline={t.hero.headline}
+          before={t.hero.before}
+          cta={t.demo.cta}
+          demo={demo}
+          screen={hero}
+          alt={t.hero.alt}
+        />
+      </div>
+    </div>
+    <div class="container stop">
+      <Features
+        heading={t.features.eyebrow}
+        subheading={t.features.title}
+        items={t.features.items}
+        screens={shots}
+        receipt={receipt(locale)}
+      />
+    </div>
+    <div class="container stop">
+      <Closing
+        line={t.hero.sub}
+        pill={t.hero.subPill}
+        cta={t.demo.cta}
+        demo={demo}
+        note={t.demo.note}
+        icon={mark}
+      />
+    </div>
+    <div class="container stop">
+      <Built heading={t.built.eyebrow} subheading={t.built.title} chips={t.built.chips} />
+    </div>
   </main>
   <SiteFooter locale={locale} />
 </Base>
@@ -81,5 +95,92 @@ const mark = await picture(icon, { width: 96, sizes: "(min-width: 720px) 96px, 5
 <style>
   main:focus {
     outline: none;
+  }
+
+  .page {
+    position: relative;
+  }
+
+  /* A still dot ground behind the hero, fading toward its edges, so the
+     wide margins read as paper rather than blank. It spans the full width
+     behind the 1120px column */
+  .ground {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .ground::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(rgb(11 10 41 / 0.18) 1.4px, transparent 1.7px);
+    background-size: 18px 18px;
+    -webkit-mask-image: radial-gradient(ellipse 72% 90% at 50% 40%, #000 20%, transparent 100%);
+    mask-image: radial-gradient(ellipse 72% 90% at 50% 40%, #000 20%, transparent 100%);
+  }
+
+  /* The route trail and its pins: out in the left margin, from 1280px */
+  .rail,
+  .stop::before {
+    display: none;
+  }
+
+  @media (min-width: 1280px) {
+    .stop {
+      position: relative;
+    }
+
+    .stop::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 44px;
+      left: -44px;
+      z-index: 1;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--lime) 0 2.5px, var(--ink) 3px);
+      box-shadow: 0 0 0 4px var(--paper);
+    }
+
+    /* The hero's pin sits level with its headline */
+    .ground .stop::before {
+      top: 150px;
+    }
+
+    .rail {
+      display: block;
+      position: absolute;
+      top: 156px;
+      bottom: 90px;
+      left: calc(50% - 560px - 38px);
+      width: 2px;
+      background: repeating-linear-gradient(to bottom, var(--ink) 0 6px, transparent 6px 13px);
+    }
+  }
+
+  /* The line draws itself as the page scrolls: scroll-driven, so the visitor
+     sets the pace and nothing runs on its own. Without support, or under
+     reduced motion, the whole line is there */
+  @keyframes draw {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @supports (animation-timeline: scroll()) {
+    @media (min-width: 1280px) and (prefers-reduced-motion: no-preference) {
+      .rail {
+        animation: draw linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0% 85%;
+      }
+    }
   }
 </style>

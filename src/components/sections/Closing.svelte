@@ -46,11 +46,25 @@
 <style>
   .closing {
     position: relative;
+    isolation: isolate;
     margin-block: 4px 30px;
     padding: 28px 22px;
     overflow: hidden;
     border-radius: var(--radius-band);
     background: var(--soft);
+  }
+
+  /* A still dot ground, strongest around the icon and fading toward the
+     text, so the band reads as paper and the words stay clean */
+  .closing::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(rgb(11 10 41 / 0.2) 1.4px, transparent 1.7px);
+    background-size: 18px 18px;
+    -webkit-mask-image: radial-gradient(ellipse 60% 100% at 90% 70%, #000 10%, transparent 100%);
+    mask-image: radial-gradient(ellipse 60% 100% at 90% 70%, #000 10%, transparent 100%);
   }
 
   .closing__icon {

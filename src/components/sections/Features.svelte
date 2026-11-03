@@ -25,6 +25,22 @@
 
   // Between the receipt's lines, inside the <pre>
   const NEWLINE = "\n";
+
+  // The paper's foot carries a barcode, drawn once from fixed bar widths. It
+  // is decoration only: no data, hidden from screen readers
+  const BARS = (() => {
+    const widths = [
+      2, 1, 3, 1, 1, 2, 3, 1, 2, 1, 1, 3, 2, 1, 2, 2, 1, 3, 1, 2, 1, 1, 3, 1, 2, 2, 1, 1, 3, 2, 1,
+      2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 2, 1, 1, 2, 3, 1, 2, 1, 2, 2, 1, 1, 3, 1, 2,
+    ];
+    const bars: { x: number; w: number }[] = [];
+    let x = 0;
+    widths.forEach((w, i) => {
+      if (i % 2 === 0 && x < 148) bars.push({ x, w });
+      x += w;
+    });
+    return bars;
+  })();
 </script>
 
 <section class="features" aria-labelledby="features-title">
@@ -45,15 +61,38 @@
             <Picture image={screens[i]} alt={item.alt} />
           </div>
         {:else}
-          <!-- The full receipt, as real text. It scrolls sideways on its own
-               if a narrow phone ever needs it, so it can take focus -->
-          <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-          <pre
-            class="card__receipt"
-            tabindex="0"
-            aria-label={item.alt}>{#each receipt as line, n (n)}{#if line.rule}<span
-                  aria-hidden="true">{line.text}</span
-                >{:else}{line.text}{/if}{#if n < receipt.length - 1}{NEWLINE}{/if}{/each}</pre>
+          <!-- The full receipt, as real text on a paper strip that feeds out of a
+               slot. Everything but the <pre> is decoration. The text scrolls
+               sideways on its own if a narrow phone ever needs it, so it can
+               take focus -->
+          <div class="receipt">
+            <span class="receipt__slot" aria-hidden="true"></span>
+            <div class="receipt__feed">
+              <div class="receipt__sheet">
+                <div class="receipt__paper">
+                  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+                  <pre
+                    class="card__receipt"
+                    tabindex="0"
+                    aria-label={item.alt}>{#each receipt as line, n (n)}{#if line.rule}<span
+                          aria-hidden="true">{line.text}</span
+                        >{:else}{line.text}{/if}{#if n < receipt.length - 1}{NEWLINE}{/if}{/each}</pre>
+                  <svg
+                    class="receipt__barcode"
+                    viewBox="0 0 150 34"
+                    width="150"
+                    height="34"
+                    aria-hidden="true"
+                  >
+                    {#each BARS as bar (bar.x)}
+                      <rect x={bar.x} y="0" width={bar.w} height="34" />
+                    {/each}
+                  </svg>
+                </div>
+                <span class="receipt__tape" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
         {/if}
       </li>
     {/each}
@@ -163,15 +202,115 @@
     height: 182px;
   }
 
+  /* The receipt: a thermal-paper strip on a dotted band, fed out of a slot.
+     The text stays real and selectable; the paper is only its container */
+  .receipt {
+    position: relative;
+    min-width: 0;
+    padding: 18px 14px 34px;
+    overflow: clip;
+    border-radius: 14px;
+    background-color: var(--soft);
+    background-image: radial-gradient(rgb(11 10 41 / 0.24) 1.4px, transparent 1.7px);
+    background-size: 18px 18px;
+  }
+
+  /* The printer slot: navy with the violet edge, like the main button */
+  .receipt__slot {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: min(100%, 470px);
+    height: 24px;
+    margin-inline: auto;
+    border-radius: 12px;
+    background: var(--ink);
+    box-shadow: 0 5px 0 var(--violet);
+  }
+
+  /* Hides the paper above the slot while it feeds out */
+  .receipt__feed {
+    display: grid;
+    justify-items: center;
+    margin-top: -10px;
+    clip-path: inset(0 -40px -60px -40px);
+  }
+
+  .receipt__sheet {
+    position: relative;
+    width: min(100%, 430px);
+    transform: rotate(-1.6deg);
+    filter: drop-shadow(0 10px 16px rgb(11 10 41 / 0.2));
+  }
+
+  /* Torn top and bottom edges */
+  .receipt__paper {
+    padding: 28px 16px 26px;
+    background: #fffef8;
+    color: var(--ink);
+    -webkit-mask:
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51%
+        repeat-x,
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / 12px 51%
+        repeat-x;
+    mask:
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51%
+        repeat-x,
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / 12px 51%
+        repeat-x;
+  }
+
   .card__receipt {
     margin: 0;
-    padding: 14px 16px;
     overflow-x: auto;
-    border-radius: 12px;
-    background: var(--soft);
-    color: var(--ink);
-    font: 0.65rem/1.55 var(--font-receipt);
+    font: 0.65rem/1.5 var(--font-receipt);
     white-space: pre;
+  }
+
+  .receipt__barcode {
+    display: block;
+    margin: 12px auto 0;
+    fill: var(--ink);
+  }
+
+  /* A strip of the highlighter, taping the paper at its corner */
+  .receipt__tape {
+    position: absolute;
+    top: 44px;
+    right: -18px;
+    width: 86px;
+    height: 26px;
+    border-radius: 3px;
+    background: var(--lime);
+    opacity: 0.92;
+    transform: rotate(38deg);
+  }
+
+  /* The paper feeds out as the card scrolls into view: scroll-driven, so the
+     visitor sets the pace and nothing runs on its own. Without support, or
+     under reduced motion, the paper is simply there */
+  @keyframes feed {
+    from {
+      transform: translateY(-100%) rotate(-1.6deg);
+    }
+
+    to {
+      transform: translateY(0) rotate(-1.6deg);
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .receipt__feed {
+        view-timeline: --receipt block;
+      }
+
+      .receipt__sheet {
+        animation: feed linear both;
+        animation-timeline: --receipt;
+        animation-range: entry 15% entry 100%;
+      }
+    }
   }
 
   /* Text and its screen side by side inside each card from 600px */
@@ -197,22 +336,27 @@
     }
   }
 
-  /* The receipt beside its text once both fit: about 640px of card */
+  /* The paper is wider than a phone: 12.5px text from 760px */
   @media (min-width: 760px) {
     .features {
       padding-block: 12px 44px;
     }
 
-    .card:nth-child(3) {
-      grid-template-columns: minmax(22ch, 0.8fr) minmax(0, 1.2fr);
-    }
-
     .card__receipt {
       font-size: 0.78125rem;
     }
+
+    .receipt {
+      padding-inline: 20px;
+    }
+
+    .receipt__paper {
+      padding-inline: 22px;
+    }
   }
 
-  /* Two cards to a row, the receipt card across both, from 960px */
+  /* Two cards to a row, the receipt card across both with its paper beside
+     the text, from 960px; below that the paper sits under the text */
   @media (min-width: 960px) {
     .features__cards {
       grid-template-columns: 1fr 1fr;
@@ -220,6 +364,13 @@
 
     .card:nth-child(3) {
       grid-column: 1 / 3;
+      grid-template-columns: minmax(22ch, 0.8fr) minmax(0, 1.2fr);
+    }
+
+    /* Beside the tall paper the copy sits level with its middle, not
+       stranded at the top above a blank column */
+    .card:nth-child(3) .card__copy {
+      align-self: center;
     }
   }
 </style>

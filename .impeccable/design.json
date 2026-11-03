@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-03T22:36:14.543Z",
+  "generatedAt": "2026-11-03T23:10:27.029Z",
   "title": "Design System: Tab",
   "extensions": {
     "colorMeta": {
@@ -228,6 +228,21 @@
           "oklch(80% 0.165 24)",
           "oklch(95% 0.044 24)"
         ]
+      },
+      "thermal-paper": {
+        "role": "neutral",
+        "displayName": "Thermal paper",
+        "canonical": "#fffef8",
+        "tonalRamp": [
+          "oklch(15% 0.012 100)",
+          "oklch(25% 0.012 100)",
+          "oklch(35% 0.012 100)",
+          "oklch(45% 0.012 100)",
+          "oklch(55% 0.012 100)",
+          "oklch(65% 0.012 100)",
+          "oklch(80% 0.006 100)",
+          "oklch(95% 0.006 100)"
+        ]
       }
     },
     "typographyMeta": {
@@ -237,11 +252,11 @@
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "The closing band's line; 2.3rem from 720px."
+        "purpose": "The closing band's line on phones."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Highlighted section headings; the stack band uses 1.25rem."
+        "purpose": "Highlighted section headings."
       },
       "title-card": {
         "displayName": "Card title",
@@ -261,11 +276,23 @@
       },
       "receipt": {
         "displayName": "Receipt",
-        "purpose": "The real receipt text, system mono with box-drawing glyphs; 0.78125rem from 760px."
+        "purpose": "The real receipt text on thermal paper, system mono with box-drawing glyphs; 0.78125rem from 760px."
       },
       "jagr-mono": {
         "displayName": "JAGR mono",
         "purpose": "The JAGR strip and footer only, uppercase."
+      },
+      "headline-wide": {
+        "displayName": "Headline wide",
+        "purpose": "The closing band's line from 720px."
+      },
+      "title-compact": {
+        "displayName": "Compact title",
+        "purpose": "The stack band heading and the credits page's section headings."
+      },
+      "credits-title": {
+        "displayName": "Credits title",
+        "purpose": "The credits page's H1 only."
       }
     },
     "shadows": [
@@ -283,6 +310,16 @@
         "name": "phone-float",
         "value": "0 18px 34px rgb(11 10 41 / 0.22)",
         "purpose": "The hero phone only."
+      },
+      {
+        "name": "receipt-paper",
+        "value": "drop-shadow(0 10px 16px rgb(11 10 41 / 0.2))",
+        "purpose": "The thermal paper only; a filter so it follows the torn edges."
+      },
+      {
+        "name": "slot-edge",
+        "value": "0 5px 0 var(--violet)",
+        "purpose": "Under the navy printer slot above the receipt."
       },
       {
         "name": "current-ring",
@@ -310,6 +347,16 @@
         "name": "hero-float",
         "value": "float 4s ease-in-out 1",
         "purpose": "One 6px float of the hero phone on load, under prefers-reduced-motion: no-preference only."
+      },
+      {
+        "name": "receipt-feed",
+        "value": "feed linear both, animation-timeline: view(), range entry 15% to entry 100%",
+        "purpose": "The paper feeds out of the slot as its card scrolls in. Behind @supports and prefers-reduced-motion: no-preference."
+      },
+      {
+        "name": "route-draw",
+        "value": "draw linear both, animation-timeline: scroll(root), range 0% to 85%",
+        "purpose": "The route trail draws itself as the page scrolls, from 1280px. Same guards."
       }
     ],
     "breakpoints": [
@@ -336,6 +383,10 @@
       {
         "name": "two-cards",
         "value": "960px"
+      },
+      {
+        "name": "route-trail",
+        "value": "1280px"
       }
     ]
   },
@@ -391,10 +442,10 @@
     {
       "name": "Receipt",
       "kind": "custom",
-      "refersTo": "receipt",
-      "description": "The real shared receipt as text in system mono on the soft band colour.",
-      "html": "<pre class=\"ds-receipt\" tabindex=\"0\">TAB\nPending rides as of October 15, 2026\n\n1. Oct 15  El Limon to El Rocio\n   Ana, Luis\n   $6.00  (Bs 5,253.90)</pre>",
-      "css": ".ds-receipt { margin: 0; padding: 14px 16px; overflow-x: auto; border-radius: 12px; background: var(--soft, #ecebf3); color: var(--ink, #0b0a29); font: 0.78125rem/1.55 var(--font-receipt, ui-monospace, Menlo, monospace); white-space: pre; } .ds-receipt:focus-visible { outline: 2px solid var(--violet, #4342f5); outline-offset: 3px; }"
+      "refersTo": "receipt-paper",
+      "description": "The real receipt as text on thermal paper: torn edges, a soft drop shadow, a slight tilt, a barcode and a lime tape strip, fed from a navy slot on a dotted soft band.",
+      "html": "<div class=\"ds-receipt-band\"><span class=\"ds-slot\" aria-hidden=\"true\"></span><div class=\"ds-sheet\"><div class=\"ds-paper\"><pre class=\"ds-receipt\" tabindex=\"0\">TAB\nPending rides as of October 15, 2026\n\n1. Oct 15  El Limon to El Rocio\n   Ana, Luis\n   $6.00  (Bs 5,253.90)</pre></div><span class=\"ds-tape\" aria-hidden=\"true\"></span></div></div>",
+      "css": ".ds-receipt-band { position: relative; padding: 18px 14px 34px; overflow: clip; border-radius: 14px; background-color: var(--soft, #ecebf3); background-image: radial-gradient(rgb(11 10 41 / 0.24) 1.4px, transparent 1.7px); background-size: 18px 18px; } .ds-slot { position: relative; z-index: 2; display: block; width: min(100%, 470px); height: 24px; margin-inline: auto; border-radius: 12px; background: var(--ink, #0b0a29); box-shadow: 0 5px 0 var(--violet, #4342f5); } .ds-sheet { position: relative; width: min(100%, 430px); margin: -10px auto 0; transform: rotate(-1.6deg); filter: drop-shadow(0 10px 16px rgb(11 10 41 / 0.2)); } .ds-paper { padding: 28px 16px 26px; background: #fffef8; color: var(--ink, #0b0a29); -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51% repeat-x, conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / 12px 51% repeat-x; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51% repeat-x, conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / 12px 51% repeat-x; } .ds-receipt { margin: 0; overflow-x: auto; font: 0.65rem/1.5 var(--font-receipt, ui-monospace, Menlo, monospace); white-space: pre; } .ds-receipt:focus-visible { outline: 2px solid var(--violet, #4342f5); outline-offset: 3px; } .ds-tape { position: absolute; top: 44px; right: -18px; width: 86px; height: 26px; border-radius: 3px; background: var(--lime, #d7fe65); transform: rotate(38deg); }"
     },
     {
       "name": "JAGR strip",
@@ -407,11 +458,12 @@
   ],
   "narrative": {
     "northStar": "The highlighter sheet",
-    "overview": "Tab is shown the way a person marks up a printed page. The page is a white sheet with navy ink for text, outlines and fills. Lime is a highlighter dragged behind the words that matter. Real app screens and the real receipt text are pasted onto the sheet inside thick ink frames. Violet appears only as a pressed edge under the main action, on the focus ring and as the period of the wordmark. The look replaced an earlier dark SaaS treatment and rejects its pattern: a centred headline over a row of equal glassy cards.\n\nThe density is calm and print-like: one column of content inside a 1120px sheet, short lines, cards that alternate white, navy, then white and wide. Line art is Tab's own: a dashed route arc between two map pins with a lime $ coin and a violet Bs coin. Depth is physical, not atmospheric: cards and the main button sit on a solid bottom edge, like card stock or a key, and the one soft shadow belongs to the floating phone.\n\nThe page is framed by the JAGR thread, a black mono strip above and a black mono footer below, which carries JAGR's own values and is not part of Tab's palette.\n\nThe system is shaped by hard constraints. A strict CSP forbids inline styles, so every state and variant is a class, an attribute selector or an `nth-child` rule, never a style attribute. The page ships 0 client JS beyond the language module, so nothing is interactive beyond links and CSS states. Every target is at least 44px. The only ambient motion is one 4s float of the hero phone, and only under `prefers-reduced-motion: no-preference`.",
+    "overview": "Tab is shown the way a person marks up a printed page. The page is a white sheet with navy ink for text, outlines and fills. Lime is a highlighter dragged behind the words that matter. Real app screens are pasted onto the sheet inside thick ink frames, and the real receipt text is printed on a strip of thermal paper. Violet appears only as a pressed edge under the main action, on the focus ring and as the period of the wordmark. The look replaced an earlier dark SaaS treatment and rejects its pattern: a centred headline over a row of equal glassy cards.\n\nThe density is calm and print-like: one column of content inside a 1120px sheet, short lines, cards that alternate white, navy, then white and wide. Line art is Tab's own: a dashed route arc between two map pins with a lime $ coin and a violet Bs coin. Depth is physical, not atmospheric: cards and the main button sit on a solid bottom edge, like card stock or a key, and the soft shadows belong to the two objects lifted off the sheet, the floating phone and the receipt paper. The hero and the closing band sit on a still dot ground, like the dotted grid of a notebook page, so the wide margins read as paper rather than blank.\n\nThe page is framed by the JAGR thread, a black mono strip above and a black mono footer below, which carries JAGR's own values and is not part of Tab's palette.\n\nThe system is shaped by hard constraints. A strict CSP forbids inline styles, so every state and variant is a class, an attribute selector or an `nth-child` rule, never a style attribute. The page ships 0 client JS beyond the language module, so nothing is interactive beyond links and CSS states. Every target is at least 44px. Motion is limited and always optional: one 4s float of the hero phone, plus two scroll-driven moves (the receipt paper feeding out and the route trail drawing itself), all under `prefers-reduced-motion: no-preference`, and the scroll-driven ones also behind `@supports`. Without support or under reduced motion everything is simply there.",
     "keyCharacteristics": [
       "White paper, navy ink, lime only as highlighter, violet only as an edge or focus mark.",
       "2px ink outlines with a solid 6px ink edge underneath on cards.",
       "Real screens in thick ink frames, never mockups.",
+      "Still dot grids as ground; the route trail and receipt are the only scroll-driven motion.",
       "Poppins 400 and 700 only; mono belongs to the receipt and the JAGR thread.",
       "Real colours for every text and border, never opacity; every text at least 4.5:1, every control border at least 3:1.",
       "States through classes and structural selectors only (strict CSP)."
@@ -429,7 +481,12 @@
       },
       {
         "name": "The Real Colour Rule",
-        "body": "Every colour is a solid token with its measured ratio beside it in tokens.css. Never reach a lighter tone with opacity.",
+        "body": "Every colour is a solid token with its measured ratio beside it in tokens.css. Never reach a lighter tone with opacity. Text and borders only: the dot grids are decoration and the only place a translucent ink is built.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Warm Paper Rule",
+        "body": "Thermal paper (#fffef8) is the single off-white and belongs to the receipt strip. Every other paper surface is the white page or the soft band.",
         "section": "colors"
       },
       {
@@ -444,33 +501,40 @@
       },
       {
         "name": "The Straight Down Rule",
-        "body": "Edges drop vertically with 0 blur in the outline's own colour. No diagonal offsets, no blurred card shadows.",
+        "body": "Edges drop vertically with 0 blur in the outline's own colour. No diagonal offsets, no blurred card shadows. The two lifted objects are the only soft shadows.",
         "section": "elevation"
       },
       {
-        "name": "The One Float Rule",
-        "body": "Only the hero phone floats: one soft shadow, one 4s cycle when the page opens, under `prefers-reduced-motion: no-preference` only.",
+        "name": "The Two Lifted Objects Rule",
+        "body": "Only the hero phone and the receipt paper are lifted off the sheet, each with one soft shadow. The phone floats once for 4s when the page opens; the paper feeds out as its card scrolls into view. Both run under `prefers-reduced-motion: no-preference` only, and the paper's feed also behind `@supports (animation-timeline: view())`.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Scroll Sets The Pace Rule",
+        "body": "Scroll-driven motion (the paper feed, the route trail) is tied to the visitor's scroll with a linear timeline, so nothing runs on its own, and it is gated by `@supports` and reduced motion so the static state is the complete design.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "Do put lime only behind ink words, with the 5px rounded highlighter that clones on every wrapped line.",
-      "Do use the straight down edge (0 6px 0 ink) under cards and the violet pressed edge under the demo button only.",
-      "Do keep every text at least 4.5:1 and every control border at least 3:1 with solid tokens, and record the ratio beside any new token.",
-      "Do express every state and variant as a class, an attribute selector or an `nth-child` rule (the CSP forbids inline styles).",
-      "Do give every link and control at least 44px.",
-      "Do show real screens and the real receipt text, cropped to end in empty space.",
-      "Do gate any motion behind `prefers-reduced-motion: no-preference` and keep it under 5 seconds."
+      "**Do** put lime only behind ink words, with the 5px rounded highlighter that clones on every wrapped line.",
+      "**Do** use the straight down edge (0 6px 0 ink) under cards and the violet pressed edge under the demo button only.",
+      "**Do** keep every text at least 4.5:1 and every control border at least 3:1 with solid tokens, and record the ratio beside any new token.",
+      "**Do** express every state and variant as a class, an attribute selector or an `nth-child` rule (the CSP forbids inline styles).",
+      "**Do** give every link and control at least 44px.",
+      "**Do** show real screens and the real receipt text, cropped to end in empty space.",
+      "**Do** gate any motion behind `prefers-reduced-motion: no-preference`, keep timed motion under 5 seconds, and drive longer motion from scroll behind `@supports` so the static state is complete.",
+      "**Do** build texture from still dots (1.4px, 18px pitch, radial mask) and keep it out of text areas."
     ],
     "donts": [
-      "Don't return to the dark SaaS hero: a centred headline over a row of equal glassy cards.",
-      "Don't use lime as text, as a large field, or on paper without ink on top of it (1.08:1).",
-      "Don't use violet as a fill or text colour beyond the edge, the focus ring, the wordmark's period and the Bs coin.",
-      "Don't reach lighter tones with opacity; add a real colour token instead.",
-      "Don't offset an edge sideways or blur a card shadow; only the hero phone has a soft shadow.",
-      "Don't set Tab's content in Share Tech Mono or bring JAGR red into Tab's own sections.",
-      "Don't add Poppins weights beyond 400 and 700.",
-      "Don't put a small highlighted label above a heading; the hero's label is a known defect, not a pattern."
+      "**Don't** return to the dark SaaS hero: a centred headline over a row of equal glassy cards.",
+      "**Don't** use lime as text, as a large field, or on paper without ink on top of it (1.08:1).",
+      "**Don't** use violet as a fill or text colour beyond the edge, the focus ring, the wordmark's period and the Bs coin.",
+      "**Don't** reach lighter tones with opacity; add a real colour token instead.",
+      "**Don't** offset an edge sideways or blur a card shadow; only the hero phone and the receipt paper have a soft shadow.",
+      "**Don't** set Tab's content in Share Tech Mono or bring JAGR red into Tab's own sections.",
+      "**Don't** use thermal paper, torn edges or tape anywhere but the receipt.",
+      "**Don't** add Poppins weights beyond 400 and 700.",
+      "**Don't** put a small highlighted label above a heading. The hero's label (\"A household app\") is the one exception, kept as the approved mock has it while the user decides whether it moves beside the wordmark; don't copy it as a pattern."
     ]
   }
 }
