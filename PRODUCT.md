@@ -27,7 +27,7 @@ Tab is a real household app, in daily use by three people in Venezuela, not a co
 
 ## Capabilities and Constraints
 
-- **Copy:** the approved copy, rows 1 to 34, in English and Spanish, lives in the plan artifact `tab-landing` in Traycer epic `dbf8539d`. Any change needs the user's approval.
+- **Copy:** the approved copy, rows 1 to 36, in English and Spanish, lives in the plan artifact `tab-landing` in Traycer epic `dbf8539d`. Any change needs the user's approval.
 - **Imagery:** the real app captures (`inicio`, `quick-ride`, `summary`) and the real receipt text (`receipt.txt` per language), produced by the deterministic capture script.
 - **The JAGR strip** (black, mono, red caret) links back to the portfolio.
 - **Technical bar:**

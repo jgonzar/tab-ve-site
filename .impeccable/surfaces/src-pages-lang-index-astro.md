@@ -41,3 +41,4 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   - D7: the hero lead starts "Before Tab:" / "Antes de Tab:" (approved copy change).
   - D8: both coins sit on the arc where it clears the phone, and the arc is widened.
   - F20 (the JAGR strip's focus ring is clipped at the top edge) is not fixed here: the strip is a versioned copy, so the fix belongs in its source (`outline-offset: -4px`) and is then copied again.
+- L8 outcome (2026-11-04): D1 to D8 and every straight fix built except F20, the finish review found nothing material left after its five fixes, and PR #4 was green on all 12 checks at 9c79cb4.
