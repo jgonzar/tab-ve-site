@@ -26,6 +26,14 @@
   // The coin that pops onto a card when it's hovered: the hero's two currencies
   const COINS = ["$", "Bs", "$"];
 
+  // The receipt's own total line, read back for the big figure beside it:
+  // "5 rides  •  Total: $34.50  (Bs 30,209.93)". No words of its own, so the
+  // figure can only ever say what the receipt says
+  const total = $derived.by(() => {
+    const m = receipt.at(-1)?.text.match(/^(\d+ \S+)\s+•\s+Total:\s+(\$[\d.,]+)\s+\((.+)\)\s*$/);
+    return m ? { rides: m[1], usd: m[2], bs: m[3] } : null;
+  });
+
   // Between the receipt's lines, inside the <pre>
   const NEWLINE = "\n";
 
@@ -59,6 +67,52 @@
         <div class="card__copy">
           <h3 class="card__title"><span class="hl">{item.title}</span></h3>
           <p class="card__body">{item.body}</p>
+          {#if !screens[i] && total}
+            <!-- Beside the tall paper: its total as a figure, and the two steps
+                 the card names, share then paid, as icons. Decoration only;
+                 the receipt text holds every one of these numbers -->
+            <div class="settle" aria-hidden="true">
+              <div class="settle__total">
+                <span class="settle__rides">{total.rides}</span>
+                <span class="settle__usd">{total.usd}</span>
+                <span class="settle__bs">{total.bs}</span>
+              </div>
+              <div class="settle__steps">
+                <span class="settle__step settle__step--share">
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="22"
+                    height="22"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><circle cx="6" cy="12" r="2.6" /><circle cx="18" cy="6" r="2.6" /><circle
+                      cx="18"
+                      cy="18"
+                      r="2.6"
+                    /><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6" /></svg
+                  >
+                </span>
+                <svg class="settle__trail" viewBox="0 0 120 10" width="120" height="10" fill="none">
+                  <path d="M2 5H118" stroke="#0b0a29" stroke-width="2" stroke-dasharray="7 7" />
+                </svg>
+                <span class="settle__step settle__step--paid">
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="22"
+                    height="22"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M5 13l4 4L19 7" /></svg
+                  >
+                </span>
+              </div>
+            </div>
+          {/if}
         </div>
         {#if screens[i]}
           <div class="card__shot">
@@ -375,10 +429,101 @@
       grid-template-columns: minmax(22ch, 0.8fr) minmax(0, 1.2fr);
     }
 
-    /* Beside the tall paper the copy sits level with its middle, not
-       stranded at the top above a blank column */
+    /* The copy starts at the top; under it the total and the two steps
+       take the column the tall paper leaves */
     .card:nth-child(3) .card__copy {
-      align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-self: stretch;
+    }
+
+    /* The total under the copy, the two steps down at the card's foot,
+       level with the paper's barcode */
+    .card:nth-child(3) .settle {
+      display: grid;
+      flex: 1;
+      align-content: space-between;
+      gap: 26px;
+      margin-top: 32px;
+      padding-bottom: 6px;
+    }
+  }
+
+  /* Hidden on a phone, where the paper sits right under the text */
+  .settle {
+    display: none;
+  }
+
+  .settle__total {
+    display: grid;
+    gap: 2px;
+    max-width: 360px;
+    padding: 22px 24px 26px;
+    border-radius: 16px;
+    background: var(--ink);
+    box-shadow: 0 6px 0 var(--violet);
+    color: var(--on-ink);
+  }
+
+  .settle__rides,
+  .settle__bs {
+    color: var(--on-ink-muted);
+    font-size: 0.875rem;
+  }
+
+  .settle__usd {
+    color: var(--lime);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .settle__steps {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .settle__step {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+  }
+
+  .settle__step--share {
+    background: var(--lime);
+    color: var(--ink);
+  }
+
+  .settle__step--paid {
+    background: var(--ink);
+    color: var(--lime);
+  }
+
+  .settle__trail {
+    width: min(120px, 30%);
+    height: 10px;
+  }
+
+  /* The dashes march from share to paid while the card is pointed at, as
+     on the hero's route */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .card:hover .settle__trail path {
+      animation: settle-march 1.4s linear infinite;
+    }
+  }
+
+  @keyframes settle-march {
+    from {
+      stroke-dashoffset: 14;
+    }
+
+    to {
+      stroke-dashoffset: 0;
     }
   }
 
