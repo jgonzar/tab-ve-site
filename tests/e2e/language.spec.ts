@@ -19,7 +19,7 @@ test.describe("with a Spanish browser", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "es");
 
     await page.getByRole("link", { name: "English" }).click();
-    await expect(page).toHaveURL(/\/en\/$/);
+    await expect(page).toHaveURL(/\/en\/#top$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
 
     const cookie = (await context.cookies()).find((c) => c.name === "tab_site_lang");
@@ -40,7 +40,7 @@ test.describe("with JS off", () => {
   test("the links still switch language; no cookie is saved", async ({ page, context }) => {
     await page.goto("/en/");
     await page.getByRole("link", { name: "Español" }).click();
-    await expect(page).toHaveURL(/\/es\/$/);
+    await expect(page).toHaveURL(/\/es\/#top$/);
     await expect(page.locator("html")).toHaveAttribute("lang", "es");
     expect((await context.cookies()).find((c) => c.name === "tab_site_lang")).toBeUndefined();
   });
@@ -58,10 +58,10 @@ for (const [locale, other, demoLabel] of [
     const alternate = page.locator(`a[hreflang="${other}"]`);
     await expect(current).toHaveAttribute("aria-current", "page");
     await expect(current).toHaveAttribute("lang", locale);
-    await expect(current).toHaveAttribute("href", `/${locale}/`);
+    await expect(current).toHaveAttribute("href", `/${locale}/#top`);
     await expect(alternate).not.toHaveAttribute("aria-current", /.*/);
     await expect(alternate).toHaveAttribute("lang", other);
-    await expect(alternate).toHaveAttribute("href", `/${other}/`);
+    await expect(alternate).toHaveAttribute("href", `/${other}/#top`);
 
     // The hero's button; page.spec.ts checks both
     const demo = page.getByRole("link", { name: demoLabel }).first();

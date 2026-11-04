@@ -31,51 +31,43 @@
   <div class="hero__art">
     <svg
       class="hero__route"
-      viewBox="0 0 400 400"
-      width="400"
+      viewBox="0 0 520 400"
+      width="520"
       height="400"
       preserveAspectRatio="xMidYMid meet"
       fill="none"
       aria-hidden="true"
     >
-      <path
-        class="hero__arc"
-        d="M40 330 C 60 150, 340 230, 360 60"
-        stroke="#0b0a29"
-        stroke-width="2"
-        stroke-dasharray="7 7"
-      />
-      <circle class="hero__dot" r="6" fill="#d7fe65" stroke="#0b0a29" stroke-width="2" />
-      <g transform="translate(40 330)">
-        <circle r="17" fill="#0b0a29" />
-        <path d="M0 7s-6-5-6-9a6 6 0 0 1 12 0c0 4-6 9-6 9z" stroke="#ffffff" stroke-width="2" />
-        <circle cy="-2" r="2" fill="#d7fe65" />
+      <path class="hero__arc" d="M28 350 C 40 150, 500 280, 492 48" stroke-width="2" />
+      <g transform="translate(28 350)">
+        <circle class="hero__pin" r="17" />
+        <path
+          class="hero__pin-mark"
+          d="M0 7s-6-5-6-9a6 6 0 0 1 12 0c0 4-6 9-6 9z"
+          stroke-width="2"
+        />
+        <circle class="hero__pin-dot" cy="-2" r="2" />
       </g>
-      <g transform="translate(360 60)">
-        <circle r="17" fill="#0b0a29" />
-        <path d="M0 7s-6-5-6-9a6 6 0 0 1 12 0c0 4-6 9-6 9z" stroke="#ffffff" stroke-width="2" />
-        <circle cy="-2" r="2" fill="#d7fe65" />
+      <g transform="translate(492 48)">
+        <circle class="hero__pin" r="17" />
+        <path
+          class="hero__pin-mark"
+          d="M0 7s-6-5-6-9a6 6 0 0 1 12 0c0 4-6 9-6 9z"
+          stroke-width="2"
+        />
+        <circle class="hero__pin-dot" cy="-2" r="2" />
       </g>
-      <g transform="translate(70 120)">
-        <circle r="21" fill="#d7fe65" stroke="#0b0a29" stroke-width="2" />
-        <text
-          y="6"
-          text-anchor="middle"
-          font-family="Poppins, sans-serif"
-          font-weight="700"
-          font-size="17"
-          fill="#0b0a29">$</text
+      <!-- Both coins sit on the arc, where it clears the phone -->
+      <g transform="translate(82 264)">
+        <circle class="hero__coin hero__coin--usd" r="21" stroke-width="2" />
+        <text class="hero__coin-text hero__coin-text--usd" y="6" text-anchor="middle" font-size="17"
+          >$</text
         >
       </g>
-      <g transform="translate(330 270)">
-        <circle r="23" fill="#4342f5" stroke="#0b0a29" stroke-width="2" />
-        <text
-          y="6"
-          text-anchor="middle"
-          font-family="Poppins, sans-serif"
-          font-weight="700"
-          font-size="15"
-          fill="#ffffff">Bs</text
+      <g transform="translate(448 149)">
+        <circle class="hero__coin hero__coin--bs" r="23" stroke-width="2" />
+        <text class="hero__coin-text hero__coin-text--bs" y="6" text-anchor="middle" font-size="15"
+          >Bs</text
         >
       </g>
     </svg>
@@ -113,6 +105,7 @@
     color: var(--muted);
     font-size: 0.9375rem;
     line-height: 1.6;
+    text-wrap: pretty;
   }
 
   .hero__cta {
@@ -155,45 +148,62 @@
     border-radius: 20px;
   }
 
-  /* One slow float when the page opens, then rest: a single 4s cycle, so
-     nothing moves on its own for more than 5 seconds (WCAG 2.2.2), and
-     only for those who haven't asked for less motion */
-  @media (prefers-reduced-motion: no-preference) {
-    .hero__phone {
-      animation: float 4s ease-in-out 1;
-    }
+  /* The route's colours are the tokens, not copies of them */
+  .hero__arc {
+    stroke: var(--ink);
+    stroke-dasharray: 7 7;
   }
 
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateX(-50%) rotate(-5deg) translateY(0);
-    }
+  .hero__pin {
+    fill: var(--ink);
+  }
 
-    50% {
-      transform: translateX(-50%) rotate(-5deg) translateY(-6px);
-    }
+  .hero__pin-mark {
+    stroke: var(--paper);
+  }
+
+  .hero__pin-dot {
+    fill: var(--lime);
+  }
+
+  .hero__coin {
+    stroke: var(--ink);
+  }
+
+  .hero__coin--usd {
+    fill: var(--lime);
+  }
+
+  .hero__coin--bs {
+    fill: var(--violet);
+  }
+
+  .hero__coin-text {
+    font-family: var(--font-sans);
+    font-weight: 700;
+  }
+
+  .hero__coin-text--usd {
+    fill: var(--ink);
+  }
+
+  .hero__coin-text--bs {
+    fill: var(--on-ink);
   }
 
   /* The route as in the app's ride sheet: the dashes march from the first pin
-     to the second, ten pixels a second, and a dot rides the arc once. Three
-     cycles when the page opens, then rest (under 5 seconds, WCAG 2.2.2); the
-     visitor's pointer over the art sets them going again. The dot is
-     only drawn while it rides. */
-  /* Drawn only while it rides: not at all at rest, and never under reduced
-     motion, where nothing below applies */
-  .hero__dot {
-    opacity: 0;
-  }
-
+     to the second, ten pixels a second. Three cycles, then rest (under 5
+     seconds, WCAG 2.2.2); the visitor's pointer over the art sets them going
+     again. The march is the one motion in the hero: it starts as the entry
+     loader lifts (about 2.15 seconds), so none of it runs unseen, and at once
+     when there is no loader (the language switch, #top). */
   @media (prefers-reduced-motion: no-preference) {
     .hero__arc {
-      animation: march 1.4s linear 3;
+      animation: march 1.4s linear 2.15s 3 both;
     }
 
-    .hero__dot {
-      offset-path: path("M40 330 C 60 150, 340 230, 360 60");
-      animation: ride 4.2s cubic-bezier(0.45, 0, 0.55, 1) 1;
+    :global(:root:has(#top:target)) .hero__arc {
+      animation-delay: 0s;
     }
 
     @media (hover: hover) {
@@ -223,29 +233,33 @@
     }
   }
 
-  /* Drawn while it rides and in neither resting state: base and end are both
-     invisible */
-  @keyframes ride {
-    0% {
-      offset-distance: 0%;
-      opacity: 1;
+  /* The copy gets the wider share while the art is still narrow, then the
+     art grows from 1100px */
+  @media (min-width: 900px) {
+    .hero {
+      grid-template-columns: 3fr 2fr;
+      gap: 40px;
+      padding-block: 44px 56px;
     }
 
-    99% {
-      opacity: 1;
+    .hero__before {
+      max-width: 38ch;
+      font-size: 1.0625rem;
     }
 
-    100% {
-      offset-distance: 100%;
-      opacity: 0;
+    /* Two lines in English while the copy column is still the narrower share */
+    .hero__title {
+      font-size: 3rem;
     }
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 1100px) {
     .hero {
       grid-template-columns: 7fr 5fr;
-      gap: 40px;
-      padding-block: 44px 56px;
+    }
+
+    .hero__title {
+      font-size: 3.4rem;
     }
 
     .hero__art {

@@ -36,8 +36,13 @@
     return m ? { rides: m[1], usd: m[2], bs: m[3] } : null;
   });
 
-  // Between the receipt's lines, inside the <pre>
-  const NEWLINE = "\n";
+  // How far a receipt line hangs when it has to wrap: a numbered ride ("3. ")
+  // hangs under its text, the lines beneath it keep their own indent. Classes,
+  // not inline styles (the CSP)
+  const hang = (text: string) => {
+    const numbered = text.match(/^\d+\.\s/);
+    return numbered ? numbered[0].length : text.length - text.trimStart().length;
+  };
 
   // The paper's foot carries a barcode, drawn once from fixed bar widths. It
   // is decoration only: no data, hidden from screen readers
@@ -138,21 +143,23 @@
           </div>
         {:else}
           <!-- The full receipt, as real text on a paper strip that feeds out of a
-               slot. Everything but the <pre> is decoration. The text scrolls
-               sideways on its own if a narrow phone ever needs it, so it can
-               take focus -->
+               slot. Everything but the <pre> is decoration. Each line is its own
+               block and wraps with a hanging indent where the paper is narrow,
+               so nothing is cut off, nothing scrolls and nothing needs a tab
+               stop; the group role gives the text its name -->
           <div class="receipt dots">
             <span class="receipt__slot" aria-hidden="true"></span>
             <div class="receipt__feed">
               <div class="receipt__sheet">
                 <div class="receipt__paper">
-                  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
                   <pre
                     class="card__receipt"
-                    tabindex="0"
-                    aria-label={item.alt}>{#each receipt as line, n (n)}{#if line.rule}<span
-                          aria-hidden="true">{line.text}</span
-                        >{:else}{line.text}{/if}{#if n < receipt.length - 1}{NEWLINE}{/if}{/each}</pre>
+                    role="group"
+                    aria-label={item.alt}>{#each receipt as line, n (n)}<span
+                        class="receipt__line receipt__line--hang{hang(line.text)}"
+                        class:receipt__line--rule={line.rule}
+                        aria-hidden={line.rule ? "true" : undefined}>{line.text}</span
+                      >{/each}</pre>
                   <svg
                     class="receipt__barcode"
                     viewBox="0 0 150 34"
@@ -210,13 +217,11 @@
     list-style: none;
   }
 
-  /* A card: a 2px ink outline and a thick ink edge underneath. It lifts and
-     tilts when hovered or focused, and arrives tilted as it scrolls in */
+  /* A card: a 2px ink outline and a thick ink edge underneath. It arrives
+     tilted as it scrolls in and, being no link, does nothing on hover but pop
+     its coin and sweep its title */
   .card {
     position: relative;
-    transition:
-      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     min-width: 0;
     display: grid;
     align-content: start;
@@ -244,13 +249,18 @@
     color: var(--muted);
     font-size: 0.9rem;
     line-height: 1.55;
+    text-wrap: pretty;
   }
 
   .card:nth-child(2) .card__body {
     color: var(--on-ink-muted);
   }
 
-  /* A real screen, cropped to its top, in a thick frame */
+  /* A real screen in a thick frame, cropped by ratio, not by height, so the
+     same part shows at every width. Each crop starts and ends in empty space,
+     never through a line of the app: the quick-ride card shows the whole modal
+     from its tab to Cancel; the summary card runs from the summary bar to the
+     gap under the first ride */
   .card__shot {
     align-self: start;
     overflow: hidden;
@@ -266,21 +276,18 @@
   .card__shot :global(img) {
     display: block;
     width: 100%;
-    height: 220px;
+    height: auto;
     object-fit: cover;
-    object-position: top;
   }
 
-  /* Each crop ends in empty space, never through a line of the app:
-     the quick-ride card shows the whole modal, Cancel included; the
-     summary card ends in the gap under the summary bar */
   .card:nth-child(1) .card__shot :global(img) {
-    height: 250px;
-    object-position: center 48.5%;
+    aspect-ratio: 1.318;
+    object-position: center 50.3%;
   }
 
   .card:nth-child(2) .card__shot :global(img) {
-    height: 182px;
+    aspect-ratio: 1.0245;
+    object-position: center 13.6%;
   }
 
   /* The receipt: a thermal-paper strip on a dotted band, fed out of a slot.
@@ -308,9 +315,11 @@
     box-shadow: 0 5px 0 var(--violet);
   }
 
-  /* Hides the paper above the slot while it feeds out */
+  /* Hides the paper above the slot while it feeds out. One track that can
+     shrink: an auto track took the text's full width and the band clipped it */
   .receipt__feed {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: center;
     margin-top: -10px;
     clip-path: inset(0 -40px -60px -40px);
@@ -318,6 +327,7 @@
 
   .receipt__sheet {
     position: relative;
+    min-width: 0;
     width: min(100%, 430px);
     transform: rotate(-1.6deg);
     filter: drop-shadow(0 10px 16px rgb(11 10 41 / 0.2));
@@ -326,7 +336,7 @@
   /* Torn top and bottom edges */
   .receipt__paper {
     padding: 28px 16px 26px;
-    background: #fffef8;
+    background: var(--thermal-paper);
     color: var(--ink);
     -webkit-mask:
       conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51%
@@ -342,9 +352,43 @@
 
   .card__receipt {
     margin: 0;
-    overflow-x: auto;
     font: 0.65rem/1.5 var(--font-receipt);
-    white-space: pre;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .receipt__line {
+    display: block;
+    min-height: 1lh;
+  }
+
+  /* The box rules are decoration: they stay on one line and give way at the
+     paper's edge rather than wrap */
+  .receipt__line--rule {
+    overflow: hidden;
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+
+  /* A wrapped line hangs by as much as it starts with */
+  .receipt__line--hang2 {
+    padding-left: 2ch;
+    text-indent: -2ch;
+  }
+
+  .receipt__line--hang3 {
+    padding-left: 3ch;
+    text-indent: -3ch;
+  }
+
+  .receipt__line--hang4 {
+    padding-left: 4ch;
+    text-indent: -4ch;
+  }
+
+  .receipt__line--hang5 {
+    padding-left: 5ch;
+    text-indent: -5ch;
   }
 
   .receipt__barcode {
@@ -364,6 +408,13 @@
     background: var(--lime);
     opacity: 0.92;
     transform: rotate(38deg);
+  }
+
+  /* On a phone the first lines run the paper's full width: no tape over them */
+  @media (max-width: 429px) {
+    .receipt__tape {
+      display: none;
+    }
   }
 
   /* The paper feeds out as the card scrolls into view: scroll-driven, so the
@@ -395,24 +446,18 @@
 
   /* Text and its screen side by side inside each card from 600px */
   @media (min-width: 600px) {
+    /* The screen grows with the card instead of leaving a blank half */
     .card {
-      grid-template-columns: minmax(22ch, 1fr) 180px;
+      grid-template-columns: minmax(22ch, 1fr) minmax(180px, 0.9fr);
+    }
+
+    /* The receipt's paper is too wide to sit beside the text until 960px */
+    .card:nth-child(3) {
+      grid-template-columns: 1fr;
     }
 
     .features__head {
       flex-direction: row;
-    }
-
-    .card:nth-child(n) .card__shot :global(img) {
-      height: 250px;
-    }
-
-    /* Beside the text the screen is narrower: the crop starts below the
-       route chips, inside the summary bar, and ends after the modal, before
-       the next ride's button */
-    .card:nth-child(1) .card__shot :global(img) {
-      height: 232px;
-      object-position: center 43%;
     }
   }
 
@@ -420,6 +465,11 @@
   @media (min-width: 760px) {
     .features {
       padding-block: 12px 44px;
+    }
+
+    /* The section heading leads the card titles by more than a step */
+    .features__title {
+      font-size: 1.75rem;
     }
 
     .card__receipt {
@@ -452,18 +502,15 @@
     .card:nth-child(3) .card__copy {
       display: flex;
       flex-direction: column;
-      align-self: stretch;
+      align-self: start;
     }
 
-    /* The total under the copy, the two steps down at the card's foot,
-       level with the paper's barcode */
+    /* Copy, total and steps grouped at the top, 28px apart; the paper runs
+       on alone below them */
     .card:nth-child(3) .settle {
       display: grid;
-      flex: 1;
-      align-content: space-between;
-      gap: 26px;
-      margin-top: 32px;
-      padding-bottom: 6px;
+      gap: 28px;
+      margin-top: 28px;
     }
   }
 
@@ -551,24 +598,6 @@
     margin-top: 23px;
   }
 
-  /* The dashes march from share to paid while the card is pointed at, as
-     on the hero's route */
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .card:hover .settle__trail path {
-      animation: settle-march 1.4s linear infinite;
-    }
-  }
-
-  @keyframes settle-march {
-    from {
-      stroke-dashoffset: 14;
-    }
-
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
   /* The coin: the hero's $ or Bs, popping onto the card's corner */
   .card__coin {
     position: absolute;
@@ -595,36 +624,18 @@
     color: var(--on-ink);
   }
 
-  /* What a card does when you point at it or tab to it. Hover only where
-     there is hover: on a touch screen a tap would leave it stuck */
+  /* What a card does when you point at it or tab to it: a coin pops on and
+     the highlighter sweeps across the title. Nothing lifts, tilts or leans,
+     since a card is no link. Hover only where there is hover: on a touch
+     screen a tap would leave it stuck */
   @media (hover: hover) {
-    .card:hover,
-    .card:focus-within {
-      transform: translateY(-7px) rotate(-0.7deg);
-      box-shadow: 0 13px 0 var(--ink);
-    }
-
-    .card:nth-child(2):hover,
-    .card:nth-child(2):focus-within {
-      box-shadow: 0 13px 0 var(--violet);
-    }
-
     .card:hover .card__coin,
     .card:focus-within .card__coin {
       transform: scale(1) rotate(0);
     }
 
-    /* The highlighter sweeps across the title again */
     .card:hover .card__title .hl {
       animation: sweep 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .card__shot {
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .card:hover .card__shot {
-      transform: translateY(-5px) rotate(2.2deg) scale(1.05);
     }
   }
 

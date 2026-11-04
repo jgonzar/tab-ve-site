@@ -101,12 +101,16 @@
   .closing__note {
     margin: 14px 0 0;
     max-width: 60ch;
+    text-wrap: pretty;
     color: var(--muted);
     font-size: 0.875rem;
   }
 
   @media (min-width: 720px) {
+    /* Each sentence is its own block, so this only lets each sit on one line:
+       the Spanish ones are 25 and 30 characters */
     .closing__line {
+      max-width: 32ch;
       font-size: 2.3rem;
     }
 

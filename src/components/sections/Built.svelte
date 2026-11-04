@@ -23,7 +23,7 @@
 
 <style>
   .built {
-    margin-bottom: 30px;
+    margin-block: 4px 30px;
     padding: 24px 22px;
     border-radius: var(--radius-band);
     background: var(--ink);

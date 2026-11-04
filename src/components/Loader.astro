@@ -6,7 +6,8 @@
 // underneath is already in the document, so a screen reader or a keyboard
 // never waits for it; the sheet is decoration (aria-hidden, no pointer
 // events) and takes no part in the tab order. Anyone who asks for reduced
-// motion never sees it.
+// motion never sees it, and nor does anyone who switches language: those
+// links end in #top, and the sheet hides when #top is the target.
 import Wordmark from "./Wordmark.astro";
 ---
 
@@ -53,6 +54,12 @@ import Wordmark from "./Wordmark.astro";
       pointer-events: none;
       /* Sets in after the last piece lands, then lifts and stays gone */
       animation: lift 0.6s cubic-bezier(0.76, 0, 0.24, 1) 1.55s forwards;
+    }
+
+    /* The language links lead to /{lang}/#top: a switch, not a first visit, so
+       the sheet is not drawn at all */
+    :global(:root:has(#top:target)) .intro {
+      display: none;
     }
 
     .intro :global(.intro__mark) {
