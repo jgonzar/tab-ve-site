@@ -23,10 +23,11 @@ STORY: The visitor reads what Tab is in one line, sees the real home screen on a
 
 FIRST VIEWPORT: Desktop: a 7/12 text column on the left (the lime eyebrow label, a two-line H1 at about 3.4rem with balanced wrap, the "before" line, the navy CTA with its violet edge and lime arrow circle), and on the right 5/12 the Inicio screen in a navy phone, tilted -5 degrees, over the route arc with pins and coins. Phone: text first, then the phone and its art.
 
-FORM: The A+ highlighter sheet from the user's two references, refined by the taste audit; first on the ordered list, pinned by the user. seed: none (pinned by the user's references)
+FORM: The A+ highlighter sheet from the user's two references, refined by the taste audit; first on the ordered list, pinned by the user. seed: none (pinned by the user's references; the user confirmed on 2026-11-04 that skipping the roll was intentional)
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
-## Unresolved
+## Decisions
 
 - The CTA's arrow circle is decoration, not copy; it stays `aria-hidden`.
+- Row 5 ("A household app") stays as a label above the headline. The craft floor bans an eyebrow above a heading; the user decided to keep it on 2026-11-04, after comparing it beside the wordmark, so it is an explicit, user-approved exception.
