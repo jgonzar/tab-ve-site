@@ -402,4 +402,4 @@ The real home screen in a navy phone frame tilted -5 degrees, over Tab's dashed 
 - **Don't** set Tab's content in Share Tech Mono or bring JAGR red into Tab's own sections.
 - **Don't** use thermal paper, torn edges or tape anywhere but the receipt.
 - **Don't** add Poppins weights beyond 400 and 700.
-- **Don't** put a small highlighted label above a heading. The hero's label ("A household app") is the one exception, kept as the approved mock has it while the user decides whether it moves beside the wordmark; don't copy it as a pattern.
+- **Don't** put a small highlighted label above a heading. The hero's label ("A household app") is the one exception: the user chose to keep it above the headline on 2026-11-04, after seeing it beside the wordmark too, as the approved mock and both reference pages have it. Don't copy it as a pattern.

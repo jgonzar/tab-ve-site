@@ -18,7 +18,7 @@ export default defineConfig({
   expect: {
     // Text antialiasing varies a little between runs; a real change is far
     // larger than 0.2% of the page
-    toHaveScreenshot: { maxDiffPixelRatio: 0.002 },
+    toHaveScreenshot: { maxDiffPixelRatio: 0.0002 },
   },
   use: {
     // localhost, not 127.0.0.1: browsers keep Secure cookies on http://localhost
