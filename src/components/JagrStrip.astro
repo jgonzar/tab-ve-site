@@ -1,7 +1,9 @@
 ---
 /*
- * JAGR strip v1.2.0 (2026-11-03)
+ * JAGR strip v1.2.1 (2026-11-04)
  *
+ * v1.2.1: the keyboard focus ring sits inside the link (outline-offset -4px), so
+ * the top of the page no longer clips it.
  * v1.2.0: the row lines up with the page's own width limit and gutter
  * (--page-max and --gutter, when the site sets them); the bar stays full width.
  * v1.1.0: the link target is a prop, so each app leads to its own quest page.
@@ -87,7 +89,9 @@ const t = COPY[lang];
 
   .jagr-strip__link:focus-visible {
     outline: 2px solid var(--jagr-fg);
-    outline-offset: 2px;
+    /* Inside the link: the strip sits at the very top of the page, where a ring
+       drawn outside would be cut off */
+    outline-offset: -4px;
   }
 
   /* JAGR's .hud-caret, pointing back */
