@@ -228,3 +228,32 @@ test.describe("the dot fields follow the pointer", () => {
     expect(await radius(page, ".ground")).toBe(0);
   });
 });
+
+test.describe("the entry loader", () => {
+  test("covers the page, then lifts off and stays gone", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/en/");
+    const intro = page.locator(".intro");
+    await expect(intro).toHaveAttribute("aria-hidden", "true");
+    expect(await intro.evaluate((el) => getComputedStyle(el).position)).toBe("fixed");
+    // Never in the way of a click or a tab stop, even while it is up
+    expect(await intro.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
+    // About 2.1 seconds, then nothing is left to paint
+    await expect
+      .poll(() => intro.evaluate((el) => getComputedStyle(el).visibility), { timeout: 5000 })
+      .toBe("hidden");
+  });
+
+  test("is not drawn under prefers-reduced-motion", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/en/");
+    expect(await page.locator(".intro").evaluate((el) => getComputedStyle(el).display)).toBe(
+      "none",
+    );
+  });
+
+  test("is only on the landing page", async ({ page }) => {
+    await page.goto("/en/credits/");
+    await expect(page.locator(".intro")).toHaveCount(0);
+  });
+});

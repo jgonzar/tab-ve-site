@@ -236,8 +236,14 @@ on any other):
 The rest is CSS: cards lift, tilt and pop a coin on hover and focus; the highlighter re-sweeps the
 title; the button's arrow turns; the footer link's underline draws itself; the cards settle straight
 and the receipt feeds out of its slot as they scroll into view (scroll-driven, so the visitor sets
-the pace, and static where unsupported). Nothing moves on its own for more than 5 seconds
-(WCAG 2.2.2), and reduced motion turns it all off.
+the pace, and static where unsupported). The hero's route marches its dashes and a dot rides it
+for three cycles, then rests, and again while the pointer is over it. Nothing moves on its own for
+more than 5 seconds (WCAG 2.2.2), and reduced motion turns it all off.
+
+The entry loader (`src/components/Loader.astro`, landing page only, through `<Base intro>`) is a
+violet sheet that draws the route, pops the wordmark in and lifts away in about 2.1 seconds. It is
+CSS only, `aria-hidden` and without pointer events, so the page underneath is never held back for
+a keyboard or a screen reader; it ends `visibility: hidden`, and reduced motion never shows it.
 
 ## The JAGR strip
 
