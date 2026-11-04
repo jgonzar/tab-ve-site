@@ -162,11 +162,11 @@ import Wordmark from "./Wordmark.astro";
     }
   }
 
-  /* visibility ends it for good: nothing left to paint or to catch focus */
+  /* Transform only, so the sheet's lift runs on the compositor; it ends fully
+     above the viewport, with nothing in it to focus or to read */
   @keyframes lift {
     to {
       transform: translateY(-101%);
-      visibility: hidden;
     }
   }
 </style>
