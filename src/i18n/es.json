@@ -45,7 +45,11 @@
         "body": "Comparte un resumen en texto de lo pendiente y luego marca las carreras como pagadas.",
         "alt": "El resumen en texto de las carreras pendientes."
       }
-    ]
+    ],
+    "steps": {
+      "share": "Compartir",
+      "paid": "Marcar pagado"
+    }
   },
   "built": {
     "eyebrow": "Cómo está hecha",

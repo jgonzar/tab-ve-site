@@ -50,6 +50,13 @@ for (const { locale, t } of PAGES) {
       await expect(receipt).toContainText("$34.50");
       await expect(receipt).toHaveAttribute("aria-label", t.features.items[2]?.alt ?? "");
 
+      // Its two steps carry their labels as visible text (copy rows 35 and 36),
+      // and the icons add no name of their own: the name is the visible text
+      const steps = main.locator(".settle__step");
+      await expect(steps).toHaveText([t.features.steps.share, t.features.steps.paid]);
+      await expect(steps.locator("[aria-label], [title]")).toHaveCount(0);
+      await expect(steps.locator("svg[aria-hidden='true']")).toHaveCount(2);
+
       await expect(main.locator(".chip")).toHaveText(t.built.chips);
       await expect(main.getByText(t.demo.note, { exact: true })).toBeVisible();
 
@@ -267,5 +274,32 @@ test("the hero route's dot is never drawn at rest or under reduced motion", asyn
     expect(await page.locator(".hero__dot").evaluate((el) => getComputedStyle(el).opacity)).toBe(
       "0",
     );
+  }
+});
+
+test.describe("the receipt card's steps", () => {
+  for (const locale of ["en", "es"] as const) {
+    test(`/${locale}/ hides them below 960px and fits them from 960px`, async ({ page }) => {
+      await page.setViewportSize({ width: 959, height: 900 });
+      await page.goto(`/${locale}/`);
+      await expect(page.locator(".settle")).toBeHidden();
+
+      await page.setViewportSize({ width: 960, height: 900 });
+      const settle = page.locator(".settle");
+      await expect(settle).toBeVisible();
+      const box = await settle.boundingBox();
+      const steps = await page.locator(".settle__step").evaluateAll((els) =>
+        els.map((el) => {
+          const r = el.getBoundingClientRect();
+          return { left: r.left, right: r.right, scroll: el.scrollWidth - el.clientWidth };
+        }),
+      );
+      if (!box) throw new Error("no settle block");
+      for (const step of steps) {
+        expect(step.left).toBeGreaterThanOrEqual(box.x - 1);
+        expect(step.right).toBeLessThanOrEqual(box.x + box.width + 1);
+        expect(step.scroll).toBeLessThanOrEqual(0);
+      }
+    });
   }
 });

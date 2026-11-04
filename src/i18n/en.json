@@ -45,7 +45,11 @@
         "body": "Share a text summary of what's pending, then mark rides paid.",
         "alt": "The shared text summary of pending rides."
       }
-    ]
+    ],
+    "steps": {
+      "share": "Share",
+      "paid": "Mark paid"
+    }
   },
   "built": {
     "eyebrow": "How it's built",
