@@ -6,6 +6,7 @@ import "../styles/global.css";
 import poppins400 from "@fontsource/poppins/files/poppins-latin-400-normal.woff2?url";
 import poppins700 from "@fontsource/poppins/files/poppins-latin-700-normal.woff2?url";
 import JagrStrip from "../components/JagrStrip.astro";
+import Loader from "../components/Loader.astro";
 import SeoHead from "../components/SeoHead.astro";
 import { strings, type Locale } from "../i18n";
 import type { Page } from "../seo";
@@ -14,9 +15,11 @@ import { JAGR_QUEST_URL } from "../site";
 interface Props {
   locale: Locale;
   page?: Page;
+  /** The entry loader, first in the body: the landing page only */
+  intro?: boolean;
 }
 
-const { locale, page = "home" } = Astro.props;
+const { locale, page = "home", intro = false } = Astro.props;
 const t = strings(locale);
 ---
 
@@ -39,6 +42,7 @@ const t = strings(locale);
     <link rel="preload" href={poppins700} as="font" type="font/woff2" crossorigin="anonymous" />
   </head>
   <body>
+    {intro && <Loader />}
     <a class="skip-link" href="#main">
       {t.skip}
     </a>

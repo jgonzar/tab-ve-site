@@ -1,0 +1,172 @@
+---
+// The entry loader: a violet sheet, the route drawing itself from pin to pin
+// with a lime dot riding it (the hero's arc), the wordmark popping in as the
+// dot lands, its period dropping in last, then the sheet lifting off the top.
+// About 2.1 seconds, CSS only: no script, so the CSP is untouched. The page
+// underneath is already in the document, so a screen reader or a keyboard
+// never waits for it; the sheet is decoration (aria-hidden, no pointer
+// events) and takes no part in the tab order. Anyone who asks for reduced
+// motion never sees it.
+import Wordmark from "./Wordmark.astro";
+---
+
+<div class="intro" aria-hidden="true">
+  <Wordmark class="intro__mark" />
+  <svg class="intro__route" viewBox="0 0 370 110" fill="none">
+    <path
+      class="intro__arc"
+      d="M30 80 C 100 0, 270 120, 340 30"
+      stroke="#ffffff"
+      stroke-width="2.5"
+    ></path>
+    <circle class="intro__dot" r="7" fill="#d7fe65" stroke="#0b0a29" stroke-width="2"></circle>
+    <g transform="translate(30 80)">
+      <g class="intro__pin intro__pin--a">
+        <circle r="16" fill="#0b0a29"></circle>
+        <circle cy="-2" r="3" fill="#d7fe65"></circle>
+      </g>
+    </g>
+    <g transform="translate(340 30)">
+      <g class="intro__pin intro__pin--b">
+        <circle r="16" fill="#0b0a29"></circle>
+        <circle cy="-2" r="3" fill="#d7fe65"></circle>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .intro {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-content: center;
+      justify-items: center;
+      gap: 22px;
+      background: var(--violet);
+      pointer-events: none;
+      /* Sets in after the last piece lands, then lifts and stays gone */
+      animation: lift 0.6s cubic-bezier(0.76, 0, 0.24, 1) 1.55s forwards;
+    }
+
+    .intro :global(.intro__mark) {
+      width: 150px;
+      height: auto;
+      color: #ffffff;
+      animation: mark 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+    }
+
+    .intro :global(.intro__mark .wordmark__period) {
+      color: var(--lime);
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: period 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1s both;
+    }
+
+    .intro__route {
+      width: min(78%, 300px);
+      height: auto;
+    }
+
+    .intro__arc {
+      stroke-dasharray: 7 7;
+      animation: reveal 0.8s linear 0.1s both;
+    }
+
+    .intro__dot {
+      offset-path: path("M30 80 C 100 0, 270 120, 340 30");
+      animation: ride 0.8s cubic-bezier(0.45, 0, 0.55, 1) 0.1s both;
+    }
+
+    .intro__pin {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: pop 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .intro__pin--b {
+      animation-delay: 0.7s;
+    }
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes reveal {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @keyframes ride {
+    0% {
+      offset-distance: 0%;
+      opacity: 1;
+    }
+
+    99% {
+      opacity: 1;
+    }
+
+    100% {
+      offset-distance: 100%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes mark {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.92);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes period {
+    0% {
+      opacity: 0;
+      transform: translateY(-50px) scale(0.6);
+    }
+
+    60% {
+      opacity: 1;
+      transform: translateY(5px) scale(1.15);
+    }
+
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* visibility ends it for good: nothing left to paint or to catch focus */
+  @keyframes lift {
+    to {
+      transform: translateY(-101%);
+      visibility: hidden;
+    }
+  }
+</style>
