@@ -514,9 +514,9 @@
       "name": "Receipt step",
       "kind": "custom",
       "refersTo": "settle-step",
-      "description": "On the receipt card from 960px, under the total panel: a 56px round icon (share in lime with an ink icon, paid in ink with a lime check, each with a 2px ink outline) over its label as visible text, 0.875rem 700 ink, never wrapping. Labels are copy rows 35 and 36: Share / Compartir, Mark paid / Marcar pagado. The icons are aria-hidden with no label of their own, so the accessible name is the visible text (WCAG 2.5.3).",
+      "description": "On the receipt card from 960px, under the total panel: a 56px round icon (share in lime with an ink icon, paid in ink with a lime check, each with a 2px ink outline) over its label as visible text, 0.875rem 700 ink, on one line where there is room and wrapped to two where the column is tight. Labels are copy rows 35 and 36: Share / Compartir, Mark paid / Marcar pagado. The icons are aria-hidden with no label of their own, so the accessible name is the visible text (WCAG 2.5.3).",
       "html": "<span class=\"ds-step\"><span class=\"ds-step__icon\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 13l4 4L19 7\"/></svg></span><span class=\"ds-step__label\">Mark paid</span></span>",
-      "css": ".ds-step { display: grid; justify-items: center; gap: 8px; font-family: var(--font-sans, Poppins, sans-serif); } .ds-step__icon { display: grid; place-items: center; width: 56px; height: 56px; border: 2px solid var(--ink, #0b0a29); border-radius: 50%; background: var(--ink, #0b0a29); color: var(--lime, #d7fe65); } .ds-step__label { color: var(--ink, #0b0a29); font-size: 0.875rem; font-weight: 700; line-height: 1.3; white-space: nowrap; }"
+      "css": ".ds-step { display: grid; justify-items: center; gap: 8px; font-family: var(--font-sans, Poppins, sans-serif); } .ds-step__icon { display: grid; place-items: center; width: 56px; height: 56px; border: 2px solid var(--ink, #0b0a29); border-radius: 50%; background: var(--ink, #0b0a29); color: var(--lime, #d7fe65); } .ds-step__label { color: var(--ink, #0b0a29); font-size: 0.875rem; font-weight: 700; line-height: 1.3; text-align: center; text-wrap: balance; }"
     }
   ],
   "narrative": {
