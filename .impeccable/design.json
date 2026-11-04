@@ -391,7 +391,7 @@
       },
       {
         "name": "hero-route-march",
-        "value": "march 1.4s linear 2.15s 3 (dashoffset 14 to 0, 10px/s); delay 0s under :root:has(#top:target); march-on 1.4s linear infinite on .hero__art:hover",
+        "value": "march 1.4s linear 2.15s 3 (dashoffset 14 to 0, 10px/s); delay 0s under :root:has(:target); march-on 1.4s linear infinite on .hero__art:hover",
         "purpose": "The hero's one motion: dashes march pin to pin, three cycles starting as the loader lifts (no delay when the loader is skipped), then rest (WCAG 2.2.2); replay while the pointer is over the art (hover devices). No riding dot, no phone float."
       }
     ],
@@ -590,7 +590,7 @@
       },
       {
         "name": "The Loader Is Decoration Rule",
-        "body": "The entry loader never gates the page. The document underneath is complete and focusable from the first frame; the violet sheet is `aria-hidden`, has `pointer-events: none`, takes no tab stop, and is CSS only (no script, so the CSP is untouched). It plays once, about 2.1s, on the landing page only, and is not drawn at all under `prefers-reduced-motion`. The language links go to `/{lang}/#top` (the body carries `id=\"top\"`), and the loader and the hero's march delay are skipped when `#top` is the target, in CSS alone (`:root:has(#top:target)`); a first visit keeps the full loader. It runs transform and clip-path only, and it ends fully off screen with nothing left to read or focus. Its easing is its own: a snap-in lift (cubic-bezier(0.76, 0, 0.24, 1)) and a single bounce on the period, the one place the page overshoots; do not copy either into pointer or scroll motion.",
+        "body": "The entry loader never gates the page. The document underneath is complete and focusable from the first frame; the violet sheet is `aria-hidden`, has `pointer-events: none`, takes no tab stop, and is CSS only (no script, so the CSP is untouched). It plays once, about 2.1s, on the landing page only, and is not drawn at all under `prefers-reduced-motion`. The language links go to `/{lang}/#top` (the body carries `id=\"top\"`), and the loader and the hero's march delay are skipped whenever the page has a fragment target, in CSS alone (`:root:has(:target)`: the language links' `#top`, and also the skip link or an in-page anchor used afterwards, so the sheet cannot come back); a first visit keeps the full loader. It runs transform and clip-path only, and it ends fully off screen with nothing left to read or focus. Its easing is its own: a snap-in lift (cubic-bezier(0.76, 0, 0.24, 1)) and a single bounce on the period, the one place the page overshoots; do not copy either into pointer or scroll motion.",
         "section": "elevation"
       },
       {

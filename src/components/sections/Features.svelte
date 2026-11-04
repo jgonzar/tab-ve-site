@@ -36,6 +36,14 @@
     return m ? { rides: m[1], usd: m[2], bs: m[3] } : null;
   });
 
+  // A price's "(Bs 5,253.90)" stays whole when its line wraps: split the line
+  // around it and keep that part on one line. The text itself is untouched
+  const pieces = (text: string) =>
+    text
+      .split(/(\(Bs\.?\s[^)]*\))/)
+      .filter(Boolean)
+      .map((t) => ({ t, whole: /^\(Bs/.test(t) }));
+
   // How far a receipt line hangs when it has to wrap: a numbered ride ("3. ")
   // hangs under its text, the lines beneath it keep their own indent. Classes,
   // not inline styles (the CSP)
@@ -115,7 +123,12 @@
                   fill="none"
                   aria-hidden="true"
                 >
-                  <path d="M2 5H118" stroke="#0b0a29" stroke-width="2" stroke-dasharray="7 7" />
+                  <path
+                    d="M2 5H118"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-dasharray="7 7"
+                  />
                 </svg>
                 <span class="settle__step">
                   <span class="settle__icon settle__icon--paid">
@@ -158,7 +171,10 @@
                     aria-label={item.alt}>{#each receipt as line, n (n)}<span
                         class="receipt__line receipt__line--hang{hang(line.text)}"
                         class:receipt__line--rule={line.rule}
-                        aria-hidden={line.rule ? "true" : undefined}>{line.text}</span
+                        aria-hidden={line.rule ? "true" : undefined}
+                        >{#each pieces(line.text) as piece, k (k)}{#if piece.whole}<span
+                              class="receipt__whole">{piece.t}</span
+                            >{:else}{piece.t}{/if}{/each}</span
                       >{/each}</pre>
                   <svg
                     class="receipt__barcode"
@@ -368,6 +384,10 @@
     overflow: hidden;
     white-space: nowrap;
     overflow-wrap: normal;
+  }
+
+  .receipt__whole {
+    white-space: nowrap;
   }
 
   /* A wrapped line hangs by as much as it starts with */
@@ -591,6 +611,7 @@
 
   /* Level with the icons' middle, the labels hanging below */
   .settle__trail {
+    color: var(--ink);
     flex: 1 1 24px;
     min-width: 16px;
     max-width: 120px;

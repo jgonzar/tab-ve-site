@@ -35,7 +35,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   - D1: under 430px the receipt wraps with a hanging indent at full size, nothing clipped, nothing scrolling; it is one block per line in a named group with no tab stop. The receipt card is one column below 960px (paper under the text) and side by side from 960px; an earlier note saying 760px was wrong.
   - D2: at 960px and up the receipt card's left column groups the copy, the total panel and the labelled steps at the top, 28px apart.
   - D3: the hero's one motion is the dash march, held until the loader lifts (2.15s). The riding dot and the phone float are removed.
-  - D4: the language links end in `#top`; the loader and the march's delay are skipped when `#top` is the target (a switch, not a first visit), in CSS alone.
+  - D4: the language links end in `#top`; the loader and the march's delay are skipped whenever the page has a fragment target (a switch, not a first visit; the skip link or an anchor used afterwards cannot bring the sheet back), in CSS alone.
   - D5: a card reacts to the pointer with its coin and the highlighter sweep only; no lift, tilt, edge growth or lean.
   - D6: the stack band comes before the closing band.
   - D7: the hero lead starts "Before Tab:" / "Antes de Tab:" (approved copy change).
