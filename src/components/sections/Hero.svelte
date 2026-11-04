@@ -178,14 +178,16 @@
   /* The route as in the app's ride sheet: the dashes march from the first pin
      to the second, ten pixels a second, and a dot rides the arc once. Three
      cycles when the page opens, then rest (under 5 seconds, WCAG 2.2.2); the
-     visitor's pointer over the art sets them going again. The dot sits under
-     the pins, so at rest it is hidden behind the first. */
+     visitor's pointer over the art sets them going again. The dot is
+     only drawn while it rides. */
   @media (prefers-reduced-motion: no-preference) {
     .hero__arc {
       animation: march 1.4s linear 3;
     }
 
+    /* Invisible at rest, so it never sits anywhere it should not */
     .hero__dot {
+      opacity: 0;
       offset-path: path("M40 330 C 60 150, 340 230, 360 60");
       animation: ride 4.2s cubic-bezier(0.45, 0, 0.55, 1) 1;
     }
@@ -220,10 +222,12 @@
   @keyframes ride {
     from {
       offset-distance: 0%;
+      opacity: 1;
     }
 
     to {
       offset-distance: 100%;
+      opacity: 1;
     }
   }
 
