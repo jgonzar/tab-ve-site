@@ -250,5 +250,4 @@ a keyboard or a screen reader; it ends above the viewport, and reduced motion ne
 `src/components/JagrStrip.astro` is the strip's one versioned source (see its header comment). Memo
 and Jenova copy it unchanged. Since v1.1.0 the link target is a prop: each site passes its own quest
 page (`JAGR_QUEST_URL` here). Since v1.2.1 the focus ring is drawn inside the link, so the top of the page
-does not clip it. Until L6 ships `/quests/tab` on JAGR, that link 404s, and `lychee.toml`
-allows it.
+does not clip it.
