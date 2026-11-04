@@ -243,7 +243,7 @@ more than 5 seconds (WCAG 2.2.2), and reduced motion turns it all off.
 The entry loader (`src/components/Loader.astro`, landing page only, through `<Base intro>`) is a
 violet sheet that draws the route, pops the wordmark in and lifts away in about 2.1 seconds. It is
 CSS only, `aria-hidden` and without pointer events, so the page underneath is never held back for
-a keyboard or a screen reader; it ends `visibility: hidden`, and reduced motion never shows it.
+a keyboard or a screen reader; it ends above the viewport, and reduced motion never shows it.
 
 ## The JAGR strip
 

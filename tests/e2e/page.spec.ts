@@ -238,10 +238,10 @@ test.describe("the entry loader", () => {
     expect(await intro.evaluate((el) => getComputedStyle(el).position)).toBe("fixed");
     // Never in the way of a click or a tab stop, even while it is up
     expect(await intro.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
-    // About 2.1 seconds, then nothing is left to paint
+    // About 2.1 seconds, then it rests wholly above the viewport
     await expect
-      .poll(() => intro.evaluate((el) => getComputedStyle(el).visibility), { timeout: 5000 })
-      .toBe("hidden");
+      .poll(() => intro.evaluate((el) => el.getBoundingClientRect().bottom), { timeout: 5000 })
+      .toBeLessThanOrEqual(0);
   });
 
   test("is not drawn under prefers-reduced-motion", async ({ page }) => {
