@@ -24,6 +24,11 @@ export default defineConfig([
     languageOptions: { parserOptions: { parser: tseslint.parser } },
   },
   {
+    // The page's own plain scripts run in the browser
+    files: ["src/scripts/**/*.js"],
+    languageOptions: { globals: globals.browser },
+  },
+  {
     // Repo scripts and config files run in Node
     files: ["scripts/**/*.mjs", "*.mjs"],
     languageOptions: { globals: globals.node },

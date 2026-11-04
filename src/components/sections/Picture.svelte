@@ -7,10 +7,12 @@
     image: PictureData;
     alt: string;
     priority?: boolean;
+    /** Fetched early and quietly, for an image not shown yet (see the landing page) */
+    warm?: boolean;
     class?: string;
   }
 
-  let { image, alt, priority = false, class: className = "" }: Props = $props();
+  let { image, alt, priority = false, warm = false, class: className = "" }: Props = $props();
 </script>
 
 <picture>
@@ -23,8 +25,8 @@
     {alt}
     width={image.width}
     height={image.height}
-    loading={priority ? "eager" : "lazy"}
+    loading={priority || warm ? "eager" : "lazy"}
     decoding={priority ? "sync" : "async"}
-    fetchpriority={priority ? "high" : "auto"}
+    fetchpriority={priority ? "high" : warm ? "low" : "auto"}
   />
 </picture>

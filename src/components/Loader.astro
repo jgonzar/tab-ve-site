@@ -2,13 +2,12 @@
 // The entry loader: a violet sheet, the route drawing itself from pin to pin
 // with a lime dot riding it (the hero's arc), the wordmark popping in as the
 // dot lands, its period dropping in last, then the sheet lifting off the top.
-// About 2.1 seconds, CSS only: no script, so the CSP is untouched. The page
-// underneath is already in the document, so a screen reader or a keyboard
-// never waits for it; the sheet is decoration (aria-hidden, no pointer
-// events) and takes no part in the tab order. Anyone who asks for reduced
-// motion never sees it, and nor does anyone who switches language: those
-// links end in #top, and the sheet hides whenever the page has a fragment
-// target.
+// About 2.1 seconds, and the animation itself is CSS only. The page underneath
+// is already in the document, so a screen reader or a keyboard never waits for
+// it; the sheet is decoration (aria-hidden, no pointer events) and takes no
+// part in the tab order. It is opt-in: hidden unless <html> carries data-intro,
+// which src/scripts/intro.js sets on the first visit of a browser session. So a
+// reload, a language switch, reduced motion or no script never show it.
 import Wordmark from "./Wordmark.astro";
 ---
 
@@ -43,7 +42,10 @@ import Wordmark from "./Wordmark.astro";
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .intro {
+    /* Drawn only on the first visit of a session: src/scripts/intro.js, in
+       <head>, flags <html> with data-intro before the first paint. Anything
+       else (a reload, a language switch, no script) never sees the sheet */
+    :global(:root[data-intro]) .intro {
       position: fixed;
       inset: 0;
       z-index: 100;
@@ -55,13 +57,6 @@ import Wordmark from "./Wordmark.astro";
       pointer-events: none;
       /* Sets in after the last piece lands, then lifts and stays gone */
       animation: lift 0.6s cubic-bezier(0.76, 0, 0.24, 1) 1.55s forwards;
-    }
-
-    /* The language links lead to /{lang}/#top: a switch, not a first visit, so
-       the sheet is not drawn at all. Any fragment target counts, so the skip
-       link or an in-page anchor used afterwards cannot bring it back */
-    :global(:root:has(:target)) .intro {
-      display: none;
     }
 
     .intro :global(.intro__mark) {
