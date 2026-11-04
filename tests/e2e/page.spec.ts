@@ -179,22 +179,34 @@ test("the skip link is first and moves focus to the content", async ({ page }) =
 });
 
 test.describe("motion", () => {
-  test("the hero floats when motion is welcome", async ({ page }) => {
+  test("the hero's one motion is the route's dash march, held until the loader lifts", async ({
+    page,
+  }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/en/");
-    const name = await page
+    const arc = await page.locator(".hero__arc").evaluate((el) => ({
+      name: getComputedStyle(el).animationName,
+      delay: getComputedStyle(el).animationDelay,
+    }));
+    expect(arc.name).toContain("march");
+    expect(arc.delay).toBe("2.15s");
+    // Nothing else in the hero runs: no float on the phone, no riding dot
+    const phone = await page
       .locator(".hero__phone")
       .evaluate((el) => getComputedStyle(el).animationName);
-    expect(name).toContain("float");
+    expect(phone).toBe("none");
+    await expect(page.locator(".hero__dot")).toHaveCount(0);
   });
 
   test("and stays still under prefers-reduced-motion", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/en/");
-    const name = await page
-      .locator(".hero__phone")
-      .evaluate((el) => getComputedStyle(el).animationName);
-    expect(name).toBe("none");
+    for (const selector of [".hero__phone", ".hero__arc"]) {
+      const name = await page
+        .locator(selector)
+        .evaluate((el) => getComputedStyle(el).animationName);
+      expect(name, selector).toBe("none");
+    }
   });
 });
 
@@ -265,16 +277,86 @@ test.describe("the entry loader", () => {
   });
 });
 
-test("the hero route's dot is never drawn at rest or under reduced motion", async ({ page }) => {
-  for (const reducedMotion of ["reduce", "no-preference"] as const) {
-    await page.emulateMedia({ reducedMotion });
+test("both coins sit on the route's arc, clear of the phone", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const width of [390, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
     await page.goto("/en/");
-    // After its one ride, and from the start for anyone who asked for calm
-    await page.waitForTimeout(reducedMotion === "reduce" ? 0 : 4600);
-    expect(await page.locator(".hero__dot").evaluate((el) => getComputedStyle(el).opacity)).toBe(
-      "0",
-    );
+    const phone = await page.locator(".hero__phone").boundingBox();
+    const arc = await page.locator(".hero__arc").boundingBox();
+    if (!phone || !arc) throw new Error("no hero art");
+    for (const kind of ["usd", "bs"]) {
+      const coin = await page.locator(`.hero__coin--${kind}`).boundingBox();
+      if (!coin) throw new Error(`no ${kind} coin`);
+      const cx = coin.x + coin.width / 2;
+      // Inside the arc's own span, and past the phone's edge, not over it
+      expect(cx, `${kind} at ${width}px`).toBeGreaterThan(arc.x);
+      expect(cx, `${kind} at ${width}px`).toBeLessThan(arc.x + arc.width);
+      const over = Math.min(coin.x + coin.width, phone.x + phone.width) - Math.max(coin.x, phone.x);
+      expect(over, `${kind} overlaps the phone at ${width}px`).toBeLessThanOrEqual(2);
+    }
   }
+});
+
+test.describe("the loader on a language switch", () => {
+  test("is drawn on a first visit, and skipped when the link ends in #top", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/es/");
+    expect(await page.locator(".intro").evaluate((el) => getComputedStyle(el).display)).toBe(
+      "grid",
+    );
+
+    // The EN link in the top bar is a switch: the sheet never comes back
+    await page.locator('a[hreflang="en"]').click();
+    await expect(page).toHaveURL(/\/en\/#top$/);
+    expect(await page.locator(".intro").evaluate((el) => getComputedStyle(el).display)).toBe(
+      "none",
+    );
+    // ...and the hero's march starts at once, with nothing to wait for
+    expect(
+      await page.locator(".hero__arc").evaluate((el) => getComputedStyle(el).animationDelay),
+    ).toBe("0s");
+  });
+});
+
+test.describe("the cards react to the pointer with a coin and a sweep, nothing else", () => {
+  test("no lift, tilt, deeper edge or lean on hover", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/en/");
+    const card = page.locator(".card").first();
+    const read = () =>
+      card.evaluate((el) => {
+        const cs = getComputedStyle(el);
+        const shot = getComputedStyle(el.querySelector(".card__shot") ?? el);
+        return { transform: cs.transform, shadow: cs.boxShadow, shot: shot.transform };
+      });
+    const before = await read();
+    await card.hover();
+    await page.waitForTimeout(500);
+    expect(await read()).toEqual(before);
+    // The coin still pops on
+    expect(await card.locator(".card__coin").evaluate((el) => getComputedStyle(el).transform)).toBe(
+      "matrix(1, 0, 0, 1, 0, 0)",
+    );
+  });
+});
+
+test("the page ends on the closing band, after the stack band", async ({ page }) => {
+  await page.goto("/en/");
+  const order = await page
+    .locator("main > .container > section")
+    .evaluateAll((els) => els.map((el) => el.className.split(" ")[0]));
+  expect(order.slice(-2)).toEqual(["built", "closing"]);
+});
+
+test("the receipt is plain text in a named group: no tab stop, no scroll", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto("/en/");
+  const pre = page.locator("pre.card__receipt");
+  await expect(pre).toHaveAttribute("role", "group");
+  await expect(pre).not.toHaveAttribute("tabindex", /.*/);
+  expect(await pre.evaluate((el) => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(0);
 });
 
 test.describe("the receipt card's steps", () => {
@@ -301,5 +383,48 @@ test.describe("the receipt card's steps", () => {
         expect(step.scroll).toBeLessThanOrEqual(0);
       }
     });
+  }
+});
+
+test.describe("the receipt fits its paper", () => {
+  // The band clipped every line it could not hold, and the overflow test
+  // passed because the clip hid the overflow. So measure the text itself: the
+  // right edge of every rendered line of the receipt must fall inside the band
+  // that clips it (a few pixels of slack for the paper's tilt).
+  for (const locale of ["en", "es"] as const) {
+    for (const width of [320, 390, 768, 1024]) {
+      test(`/${locale}/ at ${width}px: no line of the receipt is cut off`, async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(`/${locale}/`);
+        await page.evaluate(() => document.fonts.ready);
+        const { bandRight, lines } = await page.evaluate(() => {
+          const pre = document.querySelector("pre.card__receipt");
+          const band = document.querySelector(".receipt");
+          if (!pre || !band) throw new Error("no receipt");
+          const walker = document.createTreeWalker(pre, NodeFilter.SHOW_TEXT);
+          const found: { text: string; right: number }[] = [];
+          for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            const text = node.textContent ?? "";
+            if (!text.trim()) continue;
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            // Each rect is one rendered line of this text; rules are
+            // decoration and may be clipped on purpose
+            for (const rect of range.getClientRects()) {
+              if (/^[─\s]+$/.test(text)) continue;
+              found.push({ text: text.trim().slice(0, 40), right: rect.right });
+            }
+          }
+          return { bandRight: band.getBoundingClientRect().right, lines: found };
+        });
+        expect(lines.length).toBeGreaterThan(5);
+        for (const line of lines) {
+          expect(line.right, `"${line.text}" runs past the band`).toBeLessThanOrEqual(
+            bandRight + 4,
+          );
+        }
+      });
+    }
   }
 });

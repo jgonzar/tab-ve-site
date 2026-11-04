@@ -12,6 +12,7 @@
   /* The sheet */
   --paper: #ffffff;
   --soft: #ecebf3; /* the closing band and the receipt */
+  --thermal-paper: #fffef8; /* the receipt's paper. Ink on it is 19.07 */
   --ink: #0b0a29; /* text, outlines, fills. 19.27 on paper, 16.28 on soft */
   --muted: #4a4868; /* secondary text. 8.68 on paper, 7.34 on soft */
   --dim: #5b5a78; /* the inactive language. 6.61 on paper */

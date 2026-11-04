@@ -73,6 +73,9 @@ const mark = await picture(icon, { width: 96, sizes: "(min-width: 720px) 96px, 5
       />
     </div>
     <div class="container">
+      <Built heading={t.built.eyebrow} subheading={t.built.title} chips={t.built.chips} />
+    </div>
+    <div class="container">
       <Closing
         line={t.hero.sub}
         pill={t.hero.subPill}
@@ -81,9 +84,6 @@ const mark = await picture(icon, { width: 96, sizes: "(min-width: 720px) 96px, 5
         note={t.demo.note}
         icon={mark}
       />
-    </div>
-    <div class="container">
-      <Built heading={t.built.eyebrow} subheading={t.built.title} chips={t.built.chips} />
     </div>
   </main>
   <SiteFooter locale={locale} />
@@ -103,5 +103,13 @@ const mark = await picture(icon, { width: 96, sizes: "(min-width: 720px) 96px, 5
   .ground {
     --fade: radial-gradient(ellipse 72% 90% at 50% 40%, #000 20%, transparent 100%);
     --dot-alpha: 0.18;
+  }
+
+  /* Stacked, the copy sits above the art: the dots gather around the art, not
+     behind the headline and the lead */
+  @media (max-width: 899px) {
+    .ground {
+      --fade: radial-gradient(ellipse 72% 60% at 50% 78%, #000 20%, transparent 100%);
+    }
   }
 </style>

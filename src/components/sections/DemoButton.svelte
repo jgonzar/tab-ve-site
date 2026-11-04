@@ -51,6 +51,11 @@
     box-shadow: 0 6px 0 var(--violet);
   }
 
+  /* The ring clears the pressed edge instead of merging with it */
+  .demo:focus-visible {
+    outline-offset: 9px;
+  }
+
   /* The press: the button sinks onto its edge */
   .demo:active {
     transform: translateY(5px);

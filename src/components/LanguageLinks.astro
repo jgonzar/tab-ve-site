@@ -3,6 +3,8 @@
 // src/scripts/lang-cookie.ts saves the choice in a cookie on click, and the
 // `/` redirect in vercel.json reads it on the next visit. Each link names its
 // language in that language (copy row 4), with lang and hreflang to match.
+// They end in #top (the body's id): that marks a switch, and the entry loader
+// stays away for it, in CSS alone.
 import { LOCALES, strings, type Locale } from "../i18n";
 import { pagePath, type Page } from "../seo";
 
@@ -21,7 +23,7 @@ const t = strings(locale);
     <li>
       <a
         class="lang-links__link"
-        href={pagePath(l, page)}
+        href={`${pagePath(l, page)}#top`}
         hreflang={l}
         lang={l}
         data-lang={l}

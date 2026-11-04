@@ -5,7 +5,7 @@
 // playwright-report artifact of a CI run.
 import { expect, test } from "@playwright/test";
 
-for (const width of [390, 1280]) {
+for (const width of [390, 768, 1280]) {
   for (const locale of ["en", "es"]) {
     test(`/${locale}/ at ${width}px`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: "reduce" });
