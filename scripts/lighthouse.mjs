@@ -104,6 +104,17 @@ for (const path of ["/en/", "/es/"]) {
       ),
     );
   }
+  // Every run's TBT and its long tasks (start and length in ms, as observed,
+  // before Lighthouse scales them for the simulated phone), so a miss in a CI
+  // log shows whether the median sat on a noisy run or the page is slow
+  console.log(`${path} runs`);
+  for (const [i, r] of results.entries()) {
+    const longTasks = (r.lhr.audits["main-thread-tasks"]?.details?.items ?? [])
+      .filter((t) => t.duration > 50)
+      .map((t) => `${Math.round(t.startTime)}+${Math.round(t.duration)}`);
+    const tbtMs = Math.round(r.lhr.audits["total-blocking-time"].numericValue);
+    console.log(`  run ${i + 1}: TBT ${tbtMs} ms  long tasks [${longTasks.join(", ")}]`);
+  }
   const result = medianRun(results);
   const lhr = result.lhr;
   const name = path.replaceAll("/", "") || "root";
