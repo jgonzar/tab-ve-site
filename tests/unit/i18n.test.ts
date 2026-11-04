@@ -47,6 +47,11 @@ describe("i18n parity", () => {
     for (const t of [en, es]) expect(t.hero.sub).toContain(t.hero.subPill);
   });
 
+  it("labels the receipt card's two steps with the approved copy (rows 35 and 36)", () => {
+    expect(en.features.steps).toEqual({ share: "Share", paid: "Mark paid" });
+    expect(es.features.steps).toEqual({ share: "Compartir", paid: "Marcar pagado" });
+  });
+
   it("serves each locale its own file", () => {
     expect(strings("en")).toBe(en);
     expect(strings("es")).toBe(es);

@@ -197,6 +197,11 @@ components:
     textColor: "{colors.lime}"
     rounded: "16px"
     padding: "22px 24px 26px"
+  settle-step:
+    backgroundColor: "{colors.lime}"
+    textColor: "{colors.ink}"
+    rounded: "999px"
+    size: "56px"
   jagr-strip:
     backgroundColor: "{colors.jagr-void}"
     textColor: "{colors.jagr-fg}"
@@ -303,7 +308,7 @@ One centred sheet: `page-max` (1120px) with a fluid `gutter` (clamp(20px, 4.3vw,
 
 - **Hero:** text then art on phones (art 392px tall, phone 168px wide); from 900px a 7fr / 5fr grid with a 40px gap, art 470px tall, phone 200px wide.
 - **Dot ground:** the hero, the closing band and the receipt band each carry a field of 1.4px ink dots on an 18px pitch (`--dot-alpha` 0.18, 0.22 and 0.24), in a radial mask (`--fade`) that thins them toward the edges. The hero's field spans full width behind the column. Over the faint dots sit three layers of brand dots (violet, navy, lime; 3.4px to 3.6px, one colour per column) on the same lattice, hidden until the pointer arrives.
-- **Features:** cards stack with a 22px gap. From 600px text and screen sit side by side inside each card (text min 22ch, screen 180px). From 760px the receipt card goes side by side (0.8fr / 1.2fr). From 960px two cards share a row and the receipt card spans both; there its left column stacks the copy, the total panel and the two icon steps (hidden below 960px).
+- **Features:** cards stack with a 22px gap. From 600px text and screen sit side by side inside each card (text min 22ch, screen 180px). From 760px the receipt card goes side by side (0.8fr / 1.2fr). From 960px two cards share a row and the receipt card spans both; there its left column stacks the copy, the total panel and the two labelled steps (hidden below 960px).
 - **Closing band:** padded 28px 22px, then 40px 44px from 720px with the app icon in the bottom right corner.
 - **Stack band:** padded 24px 22px, then a 1fr / 1.4fr grid at 32px 36px from 720px.
 - **Footer:** one column under 640px, a spaced row above.
@@ -379,7 +384,7 @@ The demo button is the page's one action, tactile and pressable. The page has ex
 
 ### Receipt
 
-The real shared receipt as text, never an image, printed on thermal paper. From the top: a navy printer slot (24px tall, 12px corners, the violet 5px edge, up to 470px wide), then the paper (up to 430px wide, thermal-paper fill, padding 28px 16px 26px, tilted -1.6 degrees, torn top and bottom edges, the soft receipt drop shadow), then a decorative barcode at its foot and a lime tape strip (86px by 26px, 3px corners, rotated 38 degrees) across the top right corner. The slot and paper sit on a soft band (14px corners, padding 18px 14px 34px) with a dot ground. On wide screens (960px and up) the card's left column carries, under its copy, a total panel and two icon steps. The panel is an ink fill with 16px corners and a violet 6px edge, holding the receipt's own total read back from its last line: rides and Bs in on-ink muted at 0.875rem, the USD figure in lime at 3.5rem 700. No new copy. At the card's foot sit two 56px round steps, share (lime fill, ink icon) and paid (ink fill, lime check), each with a 2px ink outline, joined by a 7 7 dashed trail that marches from share to paid while the card is hovered (hover devices, no reduced motion). All of it is `aria-hidden` and hidden below 960px. The paper feeds out of the slot as the card scrolls into view, scroll-driven and behind the guards described in Elevation & Depth. The text is a `pre` in the system mono stack that scrolls sideways on its own (and is focusable) when a narrow phone needs it; the box-drawing rules, barcode, slot and tape are hidden from screen readers.
+The real shared receipt as text, never an image, printed on thermal paper. From the top: a navy printer slot (24px tall, 12px corners, the violet 5px edge, up to 470px wide), then the paper (up to 430px wide, thermal-paper fill, padding 28px 16px 26px, tilted -1.6 degrees, torn top and bottom edges, the soft receipt drop shadow), then a decorative barcode at its foot and a lime tape strip (86px by 26px, 3px corners, rotated 38 degrees) across the top right corner. The slot and paper sit on a soft band (14px corners, padding 18px 14px 34px) with a dot ground. On wide screens (960px and up) the card's left column carries, under its copy, a total panel and two labelled steps. The panel is an ink fill with 16px corners and a violet 6px edge, holding the receipt's own total read back from its last line: rides and Bs in on-ink muted at 0.875rem, the USD figure in lime at 3.5rem 700. The panel adds no copy of its own. At the card's foot sit two steps, each a 56px round icon over its label as visible text: share (lime fill, ink icon) labelled "Share" / "Compartir", and paid (ink fill, lime check) labelled "Mark paid" / "Marcar pagado" (copy rows 35 and 36). Labels are 0.875rem 700 ink on the white card (19.27:1), never wrap, and the icons are `aria-hidden` with no label of their own, so the accessible name is the visible text (WCAG 2.5.3). A 7 7 dashed trail joins the icons and marches from share to paid while the card is hovered (hover devices, no reduced motion). The panel is `aria-hidden` (the receipt text holds its numbers); the steps are read. All of it is hidden below 960px. The paper feeds out of the slot as the card scrolls into view, scroll-driven and behind the guards described in Elevation & Depth. The text is a `pre` in the system mono stack that scrolls sideways on its own (and is focusable) when a narrow phone needs it; the box-drawing rules, barcode, slot and tape are hidden from screen readers.
 
 ### Entry loader
 

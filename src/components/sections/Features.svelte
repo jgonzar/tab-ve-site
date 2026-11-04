@@ -15,13 +15,15 @@
     heading: string;
     subheading: string;
     items: Item[];
+    /** The two steps named under the receipt card's icons (copy rows 35 and 36) */
+    steps: { share: string; paid: string };
     /** The screens for the first two cards, in order */
     screens: PictureData[];
     /** The receipt's lines; a rule drawn with box characters is hidden from screen readers */
     receipt: { text: string; rule: boolean }[];
   }
 
-  let { heading, subheading, items, screens, receipt }: Props = $props();
+  let { heading, subheading, items, steps, screens, receipt }: Props = $props();
 
   // The coin that pops onto a card when it's hovered: the hero's two currencies
   const COINS = ["$", "Bs", "$"];
@@ -68,47 +70,63 @@
           <h3 class="card__title"><span class="hl">{item.title}</span></h3>
           <p class="card__body">{item.body}</p>
           {#if !screens[i] && total}
-            <!-- Beside the tall paper: its total as a figure, and the two steps
-                 the card names, share then paid, as icons. Decoration only;
-                 the receipt text holds every one of these numbers -->
-            <div class="settle" aria-hidden="true">
-              <div class="settle__total">
+            <!-- Beside the tall paper: its total as a figure (decoration, the
+                 receipt text holds every number) and the two steps the card
+                 names, each an icon with its label as visible text, so the
+                 accessible name is the visible one -->
+            <div class="settle">
+              <div class="settle__total" aria-hidden="true">
                 <span class="settle__rides">{total.rides}</span>
                 <span class="settle__usd">{total.usd}</span>
                 <span class="settle__bs">{total.bs}</span>
               </div>
               <div class="settle__steps">
-                <span class="settle__step settle__step--share">
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="22"
-                    height="22"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    ><circle cx="6" cy="12" r="2.6" /><circle cx="18" cy="6" r="2.6" /><circle
-                      cx="18"
-                      cy="18"
-                      r="2.6"
-                    /><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6" /></svg
-                  >
+                <span class="settle__step">
+                  <span class="settle__icon settle__icon--share">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="22"
+                      height="22"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                      ><circle cx="6" cy="12" r="2.6" /><circle cx="18" cy="6" r="2.6" /><circle
+                        cx="18"
+                        cy="18"
+                        r="2.6"
+                      /><path d="M8.3 10.8l7.4-3.6M8.3 13.2l7.4 3.6" /></svg
+                    >
+                  </span>
+                  <span class="settle__label">{steps.share}</span>
                 </span>
-                <svg class="settle__trail" viewBox="0 0 120 10" width="120" height="10" fill="none">
+                <svg
+                  class="settle__trail"
+                  viewBox="0 0 120 10"
+                  width="120"
+                  height="10"
+                  fill="none"
+                  aria-hidden="true"
+                >
                   <path d="M2 5H118" stroke="#0b0a29" stroke-width="2" stroke-dasharray="7 7" />
                 </svg>
-                <span class="settle__step settle__step--paid">
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="22"
-                    height="22"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"><path d="M5 13l4 4L19 7" /></svg
-                  >
+                <span class="settle__step">
+                  <span class="settle__icon settle__icon--paid">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="22"
+                      height="22"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"><path d="M5 13l4 4L19 7" /></svg
+                    >
+                  </span>
+                  <span class="settle__label">{steps.paid}</span>
                 </span>
               </div>
             </div>
@@ -481,11 +499,18 @@
 
   .settle__steps {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
   }
 
+  /* An icon over its label */
   .settle__step {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+  }
+
+  .settle__icon {
     display: grid;
     place-items: center;
     width: 56px;
@@ -494,19 +519,32 @@
     border-radius: 50%;
   }
 
-  .settle__step--share {
+  .settle__icon--share {
     background: var(--lime);
     color: var(--ink);
   }
 
-  .settle__step--paid {
+  .settle__icon--paid {
     background: var(--ink);
     color: var(--lime);
   }
 
+  /* Ink on the white card: 19.27:1. Never wraps, so Spanish keeps one line */
+  .settle__label {
+    color: var(--ink);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  /* Level with the icons' middle, the labels hanging below */
   .settle__trail {
-    width: min(120px, 30%);
+    flex: 1 1 24px;
+    min-width: 24px;
+    max-width: 120px;
     height: 10px;
+    margin-top: 23px;
   }
 
   /* The dashes march from share to paid while the card is pointed at, as
