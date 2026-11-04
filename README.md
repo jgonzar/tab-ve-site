@@ -3,7 +3,7 @@
 The landing page for [Tab](https://tab-ve-demo.vercel.app), a household ride tracker, and part of
 JAGR, Ángel's portfolio. Its one job is to lead to the demo.
 
-A static [Astro](https://astro.build) site: no client framework, almost no JavaScript (two small modules),
+A static [Astro](https://astro.build) site: no client framework, almost no JavaScript (three small files),
 no third-party requests, and a strict CSP. Production lives at `tab-ve-site.vercel.app` once the
 first production deploy is made.
 
@@ -222,7 +222,7 @@ macOS arm64, so `og-cards` isn't a required check until it has passed on Linux x
 ## Motion
 
 The sections are Svelte components rendered at build time, so they ship no JavaScript. The only
-scripts are two small external modules (`script-src 'self'` is untouched; `pnpm check:dist` fails
+scripts are three small external files (`script-src 'self'` is untouched; `pnpm check:dist` fails
 on any other):
 
 - `src/scripts/lang-cookie.ts`: saves the language choice when a language link is used.
@@ -232,18 +232,35 @@ on any other):
   their place. It runs only for a fine pointer that can hover and no request for reduced motion;
   on a phone, or for anyone who asked for calm, the dots stay still. The hero, the closing band and
   the receipt band are dot fields.
+- `src/scripts/intro.js`: marks the first visit of a browser session (see the entry loader below).
+  A plain blocking script in `<head>` of the landing page, about 280 bytes, so it runs before the
+  first paint; a module would run after it.
 
-The rest is CSS: cards lift, tilt and pop a coin on hover and focus; the highlighter re-sweeps the
-title; the button's arrow turns; the footer link's underline draws itself; the cards settle straight
-and the receipt feeds out of its slot as they scroll into view (scroll-driven, so the visitor sets
-the pace, and static where unsupported). The hero's route marches its dashes and a dot rides it
-for three cycles, then rests, and again while the pointer is over it. Nothing moves on its own for
-more than 5 seconds (WCAG 2.2.2), and reduced motion turns it all off.
+The rest is CSS: a card pops a coin and the highlighter re-sweeps its title on hover and focus; the
+button's arrow turns; the footer link's underline draws itself; the cards settle straight and the
+receipt feeds out of its slot as they scroll into view (scroll-driven, so the visitor sets the
+pace, and static where unsupported). The hero's route marches its dashes for three cycles, then
+rests, and again while the pointer is over it. Nothing moves on its own for more than 5 seconds
+(WCAG 2.2.2), and reduced motion turns it all off.
 
 The entry loader (`src/components/Loader.astro`, landing page only, through `<Base intro>`) is a
 violet sheet that draws the route, pops the wordmark in and lifts away in about 2.1 seconds. It is
-CSS only, `aria-hidden` and without pointer events, so the page underneath is never held back for
-a keyboard or a screen reader; it ends above the viewport, and reduced motion never shows it.
+opt-in: hidden unless `<html>` carries `data-intro`, which `intro.js` sets on the first visit of a
+browser session (with a `tab-intro` flag in `sessionStorage`). A reload, a language switch,
+reduced motion, no JavaScript or blocked storage never show it, and the hero's march then starts at
+once instead of waiting for it. The animation is CSS only, and the sheet is `aria-hidden` and
+without pointer events, so the page underneath is never held back for a keyboard or a screen
+reader; it ends above the viewport.
+
+A language switch is a new page that reads as one page changing its words. Cross-document view
+transitions (`@view-transition` in `src/styles/global.css`, Chrome and Safari 18.2 and later; other
+browsers just load the page, and reduced motion turns it off) keep the old page until the new one is
+ready and crossfade the two in 0.2 seconds. The JAGR strip and the top bar have their own
+`view-transition-name`s, so they stay put and only the content fades. The landing page also quietly
+fetches the other language's home screen behind the page (a hidden, low-priority `img`: Safari
+ignores `rel=prefetch`, and `rel=preload` warns in Chrome when unused), so the new hero's screen is
+there when the crossfade ends instead of popping in. The language links still end in `#top`, which
+keeps shared links working and puts the new page at its top.
 
 ## The JAGR strip
 
