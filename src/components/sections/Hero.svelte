@@ -219,15 +219,21 @@
     }
   }
 
+  /* Drawn while it rides and in neither resting state: base and end are both
+     invisible */
   @keyframes ride {
-    from {
+    0% {
       offset-distance: 0%;
       opacity: 1;
     }
 
-    to {
-      offset-distance: 100%;
+    99% {
       opacity: 1;
+    }
+
+    100% {
+      offset-distance: 100%;
+      opacity: 0;
     }
   }
 
