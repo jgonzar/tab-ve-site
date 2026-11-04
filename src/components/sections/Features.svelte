@@ -508,6 +508,7 @@
     display: grid;
     justify-items: center;
     gap: 8px;
+    min-width: 0;
   }
 
   .settle__icon {
@@ -529,19 +530,22 @@
     color: var(--lime);
   }
 
-  /* Ink on the white card: 19.27:1. Never wraps, so Spanish keeps one line */
+  /* Ink on the white card: 19.27:1. One line where there is room; where the
+     column is tight (Spanish beside a wide system mono) it wraps to two,
+     centred under its icon, rather than spill out of the card */
   .settle__label {
     color: var(--ink);
     font-size: 0.875rem;
     font-weight: 700;
     line-height: 1.3;
-    white-space: nowrap;
+    text-align: center;
+    text-wrap: balance;
   }
 
   /* Level with the icons' middle, the labels hanging below */
   .settle__trail {
     flex: 1 1 24px;
-    min-width: 24px;
+    min-width: 16px;
     max-width: 120px;
     height: 10px;
     margin-top: 23px;
