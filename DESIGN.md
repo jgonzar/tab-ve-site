@@ -189,6 +189,14 @@ components:
     size: "{spacing.tap-min}"
   lang-link-current:
     textColor: "{colors.ink}"
+  entry-loader:
+    backgroundColor: "{colors.violet}"
+    textColor: "{colors.on-ink}"
+  settle-total:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.lime}"
+    rounded: "16px"
+    padding: "22px 24px 26px"
   jagr-strip:
     backgroundColor: "{colors.jagr-void}"
     textColor: "{colors.jagr-fg}"
@@ -204,11 +212,11 @@ components:
 
 Tab is shown the way a person marks up a printed page. The page is a white sheet with navy ink for text, outlines and fills. Lime is a highlighter dragged behind the words that matter. Real app screens are pasted onto the sheet inside thick ink frames, and the real receipt text is printed on a strip of thermal paper. Violet appears only as a pressed edge under the main action, on the focus ring and as the period of the wordmark. The look replaced an earlier dark SaaS treatment and rejects its pattern: a centred headline over a row of equal glassy cards.
 
-The density is calm and print-like: one column of content inside a 1120px sheet, short lines, cards that alternate white, navy, then white and wide. Line art is Tab's own: a dashed route arc between two map pins with a lime $ coin and a violet Bs coin. Depth is physical, not atmospheric: cards and the main button sit on a solid bottom edge, like card stock or a key, and the soft shadows belong to the two objects lifted off the sheet, the floating phone and the receipt paper. The hero, the closing band and the receipt band sit on a dot ground, like the dotted grid of a notebook page, so the wide margins read as paper rather than blank. Faint ink dots are still until a pointer arrives; then they clear around it and violet, navy and lime dots take their place on the same lattice.
+The density is calm and print-like: one column of content inside a 1120px sheet, short lines, cards that alternate white, navy, then white and wide. Line art is Tab's own: a dashed route arc between two map pins with a lime $ coin and a violet Bs coin, the same route the entry loader draws in white on violet. Depth is physical, not atmospheric: cards and the main button sit on a solid bottom edge, like card stock or a key, and the soft shadows belong to the two objects lifted off the sheet, the floating phone and the receipt paper. The hero, the closing band and the receipt band sit on a dot ground, like the dotted grid of a notebook page, so the wide margins read as paper rather than blank. Faint ink dots are still until a pointer arrives; then they clear around it and violet, navy and lime dots take their place on the same lattice.
 
 The page is framed by the JAGR thread, a black mono strip above and a black mono footer below, which carries JAGR's own values and is not part of Tab's palette.
 
-The system is shaped by hard constraints. A strict CSP forbids inline styles, so every state and variant is a class, an attribute selector or an `nth-child` rule, never a style attribute. Client JS is two small modules, the language cookie and the pointer module for the dot fields (about 0.6 KB gzipped, an external file so the CSP is untouched); nothing else is interactive beyond links and CSS states. Every target is at least 44px. Motion is limited, optional and answers the visitor. The only automatic motion is one 4s float of the hero phone. Scroll sets the pace of the receipt paper feeding out and of each card settling straight. The pointer (or focus) drives the dot field, the card response, the button arrow and the footer underline. All of it sits under `prefers-reduced-motion: no-preference` (the dot module also needs a fine, hovering pointer), the scroll-driven parts also behind `@supports`, and all new easing is the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce. Without support or under reduced motion everything is simply there.
+The system is shaped by hard constraints. A strict CSP forbids inline styles, so every state and variant is a class, an attribute selector or an `nth-child` rule, never a style attribute. Client JS is two small modules, the language cookie and the pointer module for the dot fields (about 0.6 KB gzipped, an external file so the CSP is untouched); nothing else is interactive beyond links and CSS states. Every target is at least 44px. Motion is limited, optional and answers the visitor. The automatic motion is bounded: a 2.1s entry loader on the landing page, one 4s float of the hero phone, and three marching cycles of the hero's route, then rest. Scroll sets the pace of the receipt paper feeding out and of each card settling straight. The pointer (or focus) drives the dot field, the card response, the button arrow, the footer underline and a replay of the marching route and the receipt card's step trail. All of it sits under `prefers-reduced-motion: no-preference` (the dot module also needs a fine, hovering pointer), the scroll-driven parts also behind `@supports`, and all new pointer and scroll easing is the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce (the loader's own timing is the one recorded exception). Without support or under reduced motion everything is simply there.
 
 **Key Characteristics:**
 
@@ -217,7 +225,7 @@ The system is shaped by hard constraints. A strict CSP forbids inline styles, so
 - Real screens in thick ink frames, never mockups.
 - Dot fields as ground, still until a pointer clears them and brand-coloured dots follow it.
 - Cards that lift, tilt and grow their ink edge when pointed at, and arrive tilted as they scroll in.
-- Motion answers the visitor (scroll, pointer, focus); the hero phone's single float is the only motion that runs by itself.
+- Motion answers the visitor (scroll, pointer, focus); only the entry loader, the hero phone's single float and three cycles of the hero route run by themselves, each once and then still.
 - Poppins 400 and 700 only; mono belongs to the receipt and the JAGR thread.
 - Real colours for every text and border, never opacity; every text at least 4.5:1, every control border at least 3:1.
 - States through classes and structural selectors only (strict CSP).
@@ -232,11 +240,11 @@ A white sheet inked in deep navy, with one lime highlighter and one violet edge.
 
 ### Secondary
 
-- **Highlighter lime** (lime): only behind ink text (16.75:1), as the highlighter on section and card titles, the CTA's arrow circle, text selection, the skip link, the $ coins (the hero's and the first and third cards') and the tape strip on the receipt corner. Lime is never text and never sits on the white page without ink on it (1.08:1). The one other lime is the third colour of the pointer's dots, decoration that exists only under the pointer.
+- **Highlighter lime** (lime): only behind ink text (16.75:1), as the highlighter on section and card titles, the CTA's arrow circle, text selection, the skip link, the $ coins (the hero's and the first and third cards'), the tape strip on the receipt corner, the receipt card's total figure on its ink panel and share step, and the dot, pin centres and period in the loader and the hero's route (decoration). Lime is never text and never sits on the white page without ink on it (1.08:1). The one other lime is the third colour of the pointer's dots, decoration that exists only under the pointer.
 
 ### Tertiary
 
-- **Pressed violet** (violet): the thick edge under the demo button, the 2px focus ring, the wordmark's period, the Bs coin (the hero's and the navy card's), the navy card's grown edge on hover and one of the three pointer dot colours. 6.29:1 on paper.
+- **Pressed violet** (violet): the thick edge under the demo button, the 2px focus ring, the wordmark's period, the Bs coin (the hero's and the navy card's), the navy card's grown edge on hover, the receipt card's total panel edge, one of the three pointer dot colours and, for about 2.1s on load, the entry loader's full-screen sheet (white wordmark on it, 6.29:1). 6.29:1 on paper.
 
 ### Neutral
 
@@ -255,7 +263,7 @@ A white sheet inked in deep navy, with one lime highlighter and one violet edge.
 
 **The Highlighter Rule.** Lime lives behind ink words, never as text and never as a field on its own. It marks headings, not paragraphs.
 
-**The One Edge Rule.** Violet is a mark, not a surface: the CTA's edge, the focus ring, the wordmark's period, the Bs coins, the navy card's hover edge and the pointer's violet dots. Nothing else is violet.
+**The One Edge Rule.** Violet is a mark, not a surface: the CTA's edge, the focus ring, the wordmark's period, the Bs coins, the navy card's hover edge, the receipt card's total panel edge and the pointer's violet dots. Nothing else is violet. The one other violet is the entry loader's sheet, which is gone in about 2.1s and never part of the resting page.
 
 **The Real Colour Rule.** Every colour is a solid token with its measured ratio beside it in tokens.css. Never reach a lighter tone with opacity. Text and borders only: the faint dots are decoration and the only place a translucent ink is built.
 
@@ -295,7 +303,7 @@ One centred sheet: `page-max` (1120px) with a fluid `gutter` (clamp(20px, 4.3vw,
 
 - **Hero:** text then art on phones (art 392px tall, phone 168px wide); from 900px a 7fr / 5fr grid with a 40px gap, art 470px tall, phone 200px wide.
 - **Dot ground:** the hero, the closing band and the receipt band each carry a field of 1.4px ink dots on an 18px pitch (`--dot-alpha` 0.18, 0.22 and 0.24), in a radial mask (`--fade`) that thins them toward the edges. The hero's field spans full width behind the column. Over the faint dots sit three layers of brand dots (violet, navy, lime; 3.4px to 3.6px, one colour per column) on the same lattice, hidden until the pointer arrives.
-- **Features:** cards stack with a 22px gap. From 600px text and screen sit side by side inside each card (text min 22ch, screen 180px). From 760px the receipt card goes side by side (0.8fr / 1.2fr). From 960px two cards share a row and the receipt card spans both.
+- **Features:** cards stack with a 22px gap. From 600px text and screen sit side by side inside each card (text min 22ch, screen 180px). From 760px the receipt card goes side by side (0.8fr / 1.2fr). From 960px two cards share a row and the receipt card spans both; there its left column stacks the copy, the total panel and the two icon steps (hidden below 960px).
 - **Closing band:** padded 28px 22px, then 40px 44px from 720px with the app icon in the bottom right corner.
 - **Stack band:** padded 24px 22px, then a 1fr / 1.4fr grid at 32px 36px from 720px.
 - **Footer:** one column under 640px, a spaced row above.
@@ -319,9 +327,11 @@ Flat paper with a physical edge. Depth is a solid, unblurred bottom edge in the 
 
 **The Straight Down Rule.** Edges drop vertically with 0 blur in the outline's own colour. No diagonal offsets, no blurred card shadows. The two lifted objects are the only soft shadows.
 
-**The Two Lifted Objects Rule.** Only the hero phone and the receipt paper have a soft shadow. The phone floats once for 4s when the page opens, the one motion that runs by itself; the paper feeds out as its card scrolls into view. Both run under `prefers-reduced-motion: no-preference` only, and the paper's feed also behind `@supports (animation-timeline: view())`. A card that rises on hover is lifted by its solid edge growing, never by a soft shadow.
+**The Two Lifted Objects Rule.** Only the hero phone and the receipt paper have a soft shadow. The phone floats once for 4s when the page opens; the paper feeds out as its card scrolls into view. Both run under `prefers-reduced-motion: no-preference` only, and the paper's feed also behind `@supports (animation-timeline: view())`. A card that rises on hover is lifted by its solid edge growing, never by a soft shadow.
 
-**The Visitor Sets The Pace Rule.** Everything but the hero float answers the visitor, so none of it needs a pause control. Scroll-driven motion (the paper feed, each card settling from its own tilt) uses a linear `view()` timeline, behind `@supports` and reduced motion. The card's individual `rotate` and `translate` properties carry the scroll arrival so they never fight the hover's `transform`. Pointer and focus motion (cards, button arrow, footer underline, dot field) uses the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce, and hover effects sit inside `@media (hover: hover)`. The static state is always the complete design.
+**The Visitor Sets The Pace Rule.** Everything but the hero float answers the visitor, so none of it needs a pause control. Scroll-driven motion (the paper feed, each card settling from its own tilt) uses a linear `view()` timeline, behind `@supports` and reduced motion. The card's individual `rotate` and `translate` properties carry the scroll arrival so they never fight the hover's `transform`. Pointer and focus motion (cards, button arrow, footer underline, dot field) uses the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce, and hover effects sit inside `@media (hover: hover)`. The static state is always the complete design. Two automatic motions fit this: the hero's marching route runs three cycles on load (1.4s each, 10px/s like the app's ride sheet, under 5s, WCAG 2.2.2) and then rests, replaying only while the pointer is over the art, and the receipt card's step trail marches only while the card is hovered.
+
+**The Loader Is Decoration Rule.** The entry loader never gates the page. The document underneath is complete and focusable from the first frame; the violet sheet is `aria-hidden`, has `pointer-events: none`, takes no tab stop, and is CSS only (no script, so the CSP is untouched). It plays once, about 2.1s, on the landing page only, and is not drawn at all under `prefers-reduced-motion`. It runs transform and clip-path only, and it ends fully off screen with nothing left to read or focus. Its easing is its own: a snap-in lift (cubic-bezier(0.76, 0, 0.24, 1)) and a single bounce on the period, the one place the page overshoots; do not copy either into pointer or scroll motion.
 
 **The Pointer Dots Rule.** A `.dots` field reacts to the pointer through three custom properties (`--mx`, `--my`, `--r`) set by `src/scripts/dots.ts`: faint dots clear within about 150px of the pointer and violet, navy and lime dots take their place, eased so they follow smoothly. The look is all CSS (two masks and a circle). The module runs only for `(hover: hover) and (pointer: fine)` without reduced motion; otherwise the dots stay still. It is decoration over paper and soft bands, kept out of text areas, and the field is deliberate: do not strip it as a grid-background finding.
 
@@ -369,11 +379,15 @@ The demo button is the page's one action, tactile and pressable. The page has ex
 
 ### Receipt
 
-The real shared receipt as text, never an image, printed on thermal paper. From the top: a navy printer slot (24px tall, 12px corners, the violet 5px edge, up to 470px wide), then the paper (up to 430px wide, thermal-paper fill, padding 28px 16px 26px, tilted -1.6 degrees, torn top and bottom edges, the soft receipt drop shadow), then a decorative barcode at its foot and a lime tape strip (86px by 26px, 3px corners, rotated 38 degrees) across the top right corner. The slot and paper sit on a soft band (14px corners, padding 18px 14px 34px) with a dot ground. The paper feeds out of the slot as the card scrolls into view, scroll-driven and behind the guards described in Elevation & Depth. The text is a `pre` in the system mono stack that scrolls sideways on its own (and is focusable) when a narrow phone needs it; the box-drawing rules, barcode, slot and tape are hidden from screen readers.
+The real shared receipt as text, never an image, printed on thermal paper. From the top: a navy printer slot (24px tall, 12px corners, the violet 5px edge, up to 470px wide), then the paper (up to 430px wide, thermal-paper fill, padding 28px 16px 26px, tilted -1.6 degrees, torn top and bottom edges, the soft receipt drop shadow), then a decorative barcode at its foot and a lime tape strip (86px by 26px, 3px corners, rotated 38 degrees) across the top right corner. The slot and paper sit on a soft band (14px corners, padding 18px 14px 34px) with a dot ground. On wide screens (960px and up) the card's left column carries, under its copy, a total panel and two icon steps. The panel is an ink fill with 16px corners and a violet 6px edge, holding the receipt's own total read back from its last line: rides and Bs in on-ink muted at 0.875rem, the USD figure in lime at 3.5rem 700. No new copy. At the card's foot sit two 56px round steps, share (lime fill, ink icon) and paid (ink fill, lime check), each with a 2px ink outline, joined by a 7 7 dashed trail that marches from share to paid while the card is hovered (hover devices, no reduced motion). All of it is `aria-hidden` and hidden below 960px. The paper feeds out of the slot as the card scrolls into view, scroll-driven and behind the guards described in Elevation & Depth. The text is a `pre` in the system mono stack that scrolls sideways on its own (and is focusable) when a narrow phone needs it; the box-drawing rules, barcode, slot and tape are hidden from screen readers.
+
+### Entry loader
+
+The landing page opens on a full-screen violet sheet (`Loader.astro`, wired through `<Base intro>`, landing page only): a white wordmark with a lime period, and under it a white dashed route (2.5px, 7 7) drawn pin to pin with a lime dot riding it, between two ink pins with lime centres. The wordmark pops in as the dot lands (0.6s), the period drops and bounces last (1s), then the sheet lifts off the top (0.6s from 1.55s, transform only). About 2.1s in all. It is drawn from the hero's route and the wordmark's period drop, without a dot lattice on purpose: the lattice was dropped as too many dots. It is `aria-hidden`, ignores the pointer, takes no tab stop, is CSS only and is not drawn under `prefers-reduced-motion`. See The Loader Is Decoration Rule.
 
 ### Hero art
 
-The real home screen in a navy phone frame tilted -5 degrees, over Tab's dashed route arc (2px ink, 7 7 dash) between two ink map pins, with the lime $ coin and the violet Bs coin riding the line. The art clips sideways only, so the tilt never widens the page. Behind the hero sits the dot ground.
+The real home screen in a navy phone frame tilted -5 degrees, over Tab's dashed route arc (2px ink, 7 7 dash) between two ink map pins, with the lime $ coin and the violet Bs coin riding the line. The dashes march from the first pin to the second at 10px a second (14px per 1.4s linear cycle, as in the app's QuickRideModal), and a 6px lime dot with an ink outline rides the arc once (4.2s). Both run three cycles when the page opens, then rest (WCAG 2.2.2), and replay while the pointer is over the art (hover devices only). The dot is invisible at rest and never drawn under reduced motion. The art clips sideways only, so the tilt never widens the page. Behind the hero sits the dot ground.
 
 ## Do's and Don'ts
 
@@ -386,7 +400,8 @@ The real home screen in a navy phone frame tilted -5 degrees, over Tab's dashed 
 - **Do** give every link and control at least 44px.
 - **Do** show real screens and the real receipt text, cropped to end in empty space.
 - **Do** gate any motion behind `prefers-reduced-motion: no-preference`, keep automatic motion to one short cycle, drive longer motion from scroll behind `@supports` and from the pointer behind `@media (hover: hover)`, so the static state is complete.
-- **Do** ease new motion with cubic-bezier(0.22, 1, 0.36, 1) and keep it free of overshoot and bounce.
+- **Do** ease new pointer and scroll motion with cubic-bezier(0.22, 1, 0.36, 1) and keep it free of overshoot and bounce.
+- **Do** keep any entry or automatic motion decoration only: CSS, `aria-hidden`, never blocking the page, absent under reduced motion, and resting within 5 seconds.
 - **Do** build texture from dot fields (1.4px faint dots, 18px pitch, masked), keep it out of text areas, and let the pointer module drive any new field through `.dots`.
 - **Do** use the individual `rotate` and `translate` properties for scroll-driven motion on an element that also moves with `transform`.
 
@@ -394,7 +409,8 @@ The real home screen in a navy phone frame tilted -5 degrees, over Tab's dashed 
 
 - **Don't** return to the dark SaaS hero: a centred headline over a row of equal glassy cards.
 - **Don't** use lime as text, as a large field, or on paper without ink on top of it (1.08:1).
-- **Don't** use violet as a fill or text colour beyond the edges, the focus ring, the wordmark's period, the Bs coins and the pointer dots.
+- **Don't** use violet as a fill or text colour beyond the edges, the focus ring, the wordmark's period, the Bs coins and the pointer dots. The loader's sheet is the one timed exception.
+- **Don't** gate the page behind the loader, add script to it, or play it on any page but the landing page.
 - **Don't** add a trail, pins or any scroll-drawn line in the margin; it was tried and removed.
 - **Don't** make the dots react without a fine hovering pointer, or load more client JS for decoration.
 - **Don't** reach lighter tones with opacity; add a real colour token instead.
