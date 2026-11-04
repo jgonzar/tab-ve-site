@@ -248,7 +248,7 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "The hero H1 only, balanced wrap."
+        "purpose": "The hero H1 only: fluid up to 3.4rem under 900px and from 1100px (display-mid between)."
       },
       "headline": {
         "displayName": "Headline",
@@ -256,7 +256,7 @@
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Highlighted section headings."
+        "purpose": "Highlighted section headings, 1.375rem under 760px (title-wide above)."
       },
       "title-card": {
         "displayName": "Card title",
@@ -276,7 +276,7 @@
       },
       "receipt": {
         "displayName": "Receipt",
-        "purpose": "The real receipt text on thermal paper, system mono with box-drawing glyphs; 0.78125rem from 760px."
+        "purpose": "The real receipt text on thermal paper, system mono with box-drawing glyphs, wrapping with a hanging indent; 0.78125rem from 760px."
       },
       "jagr-mono": {
         "displayName": "JAGR mono",
@@ -293,13 +293,29 @@
       "credits-title": {
         "displayName": "Credits title",
         "purpose": "The credits page's H1 only."
+      },
+      "settle-usd": {
+        "displayName": "Settle figure",
+        "purpose": "The USD total on the receipt card's ink panel, lime, from 960px."
+      },
+      "display-mid": {
+        "displayName": "Display, mid",
+        "purpose": "The hero H1 from 900px to 1099px (3rem), so English keeps two lines while the copy column is the narrower share."
+      },
+      "title-wide": {
+        "displayName": "Title, wide",
+        "purpose": "The section heading (What it does) from 760px (1.75rem), so it leads the card titles by more than a step."
+      },
+      "lead-wide": {
+        "displayName": "Lead, wide",
+        "purpose": "The hero lead from 900px (1.0625rem, max 38ch)."
       }
     },
     "shadows": [
       {
         "name": "card-edge",
         "value": "0 6px 0 var(--ink)",
-        "purpose": "The solid straight down edge under every feature card; 13px on hover and focus (violet on the navy card)."
+        "purpose": "The solid straight down edge under every feature card; unchanged on hover."
       },
       {
         "name": "pressed-edge",
@@ -307,9 +323,9 @@
         "purpose": "The demo button's edge: 6px on hover, 0 when pressed."
       },
       {
-        "name": "phone-float",
+        "name": "phone-lift",
         "value": "0 18px 34px rgb(11 10 41 / 0.22)",
-        "purpose": "The hero phone only."
+        "purpose": "The hero phone only, still."
       },
       {
         "name": "receipt-paper",
@@ -325,11 +341,6 @@
         "name": "current-ring",
         "value": "inset 0 0 0 2px var(--ink)",
         "purpose": "The current language link."
-      },
-      {
-        "name": "card-edge-hover",
-        "value": "0 13px 0 var(--ink)",
-        "purpose": "The grown edge under a hovered or focused card; var(--violet) on the navy card."
       }
     ],
     "motion": [
@@ -349,19 +360,14 @@
         "purpose": "The arrow circle's nudge (3px up and right) and 45 degree turn on hover."
       },
       {
-        "name": "hero-float",
-        "value": "float 4s ease-in-out 1",
-        "purpose": "One 6px float of the hero phone on load, under prefers-reduced-motion: no-preference only."
-      },
-      {
         "name": "receipt-feed",
         "value": "feed linear both, animation-timeline: view(), range entry 15% to entry 100%",
         "purpose": "The paper feeds out of the slot as its card scrolls in. Behind @supports and prefers-reduced-motion: no-preference."
       },
       {
         "name": "card-hover",
-        "value": "translateY(-7px) rotate(-0.7deg), edge 6px to 13px, 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
-        "purpose": "Card response on hover (inside @media (hover: hover)) and focus-within; coin pops in (0.4s), title highlighter re-sweeps (0.55s), screen leans out."
+        "value": "coin scale(0) to scale(1) 0.4s cubic-bezier(0.22, 1, 0.36, 1); title highlighter sweep 0.55s",
+        "purpose": "Card response, hover devices only (the coin also on focus-within): the coin pops in and the title highlighter re-sweeps. No lift, tilt, edge growth or screen lean."
       },
       {
         "name": "card-settle",
@@ -381,17 +387,12 @@
       {
         "name": "entry-loader",
         "value": "lift 0.6s cubic-bezier(0.76, 0, 0.24, 1) 1.55s forwards; route reveal 0.8s linear, dot ride 0.8s, mark 0.45s at 0.6s, period 0.5s at 1s",
-        "purpose": "About 2.1s violet sheet on the landing page only: route drawn pin to pin, lime dot riding, wordmark pops in, period drops and bounces, sheet lifts off the top (transform only). Decoration: CSS only, aria-hidden, pointer-events none, not drawn under prefers-reduced-motion."
+        "purpose": "About 2.1s violet sheet on the landing page only: route drawn pin to pin, lime dot riding, wordmark pops in, period drops and bounces, sheet lifts off the top (transform only). Decoration: CSS only, aria-hidden, pointer-events none, not drawn under prefers-reduced-motion. Skipped when the page is reached through a language link (/{lang}/#top), in CSS alone."
       },
       {
         "name": "hero-route-march",
-        "value": "march 1.4s linear 3 (dashoffset 14 to 0, 10px/s); ride 4.2s cubic-bezier(0.45, 0, 0.55, 1) 1; march-on 1.4s linear infinite on .hero__art:hover",
-        "purpose": "Dashes march pin to pin and a lime dot rides the arc once; three cycles on load then rest (WCAG 2.2.2), replay while the pointer is over the art (hover devices). Dot invisible at rest and under reduced motion."
-      },
-      {
-        "name": "settle-march",
-        "value": "settle-march 1.4s linear infinite on .card:hover .settle__trail path",
-        "purpose": "The receipt card's share to paid dashed trail marches while the card is hovered. Hover devices, no reduced motion; the steps are hidden below 960px."
+        "value": "march 1.4s linear 2.15s 3 (dashoffset 14 to 0, 10px/s); delay 0s under :root:has(#top:target); march-on 1.4s linear infinite on .hero__art:hover",
+        "purpose": "The hero's one motion: dashes march pin to pin, three cycles starting as the loader lifts (no delay when the loader is skipped), then rest (WCAG 2.2.2); replay while the pointer is over the art (hover devices). No riding dot, no phone float."
       }
     ],
     "breakpoints": [
@@ -408,7 +409,7 @@
         "value": "720px"
       },
       {
-        "name": "receipt-split",
+        "name": "receipt-type",
         "value": "760px"
       },
       {
@@ -418,6 +419,14 @@
       {
         "name": "two-cards",
         "value": "960px"
+      },
+      {
+        "name": "hero-wide",
+        "value": "1100px"
+      },
+      {
+        "name": "receipt-narrow",
+        "value": "430px"
       }
     ]
   },
@@ -428,7 +437,7 @@
       "refersTo": "button-demo",
       "description": "The page's one action: navy with a violet pressed edge and a lime arrow circle. Exactly two per page.",
       "html": "<a class=\"ds-demo\" href=\"#\"><span>Try the demo</span><span class=\"ds-demo__arrow\" aria-hidden=\"true\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0b0a29\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 17L17 7M9 7h8v8\"/></svg></span></a>",
-      "css": ".ds-demo { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 16px 0 20px; border-radius: var(--radius-control, 12px); background: var(--ink, #0b0a29); color: var(--on-ink, #ffffff); font-family: var(--font-sans, Poppins, sans-serif); font-size: 0.9375rem; font-weight: 700; text-decoration: none; box-shadow: 0 5px 0 var(--violet, #4342f5); transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-demo:hover { transform: translateY(-1px); box-shadow: 0 6px 0 var(--violet, #4342f5); } .ds-demo:active { transform: translateY(5px); box-shadow: 0 0 0 var(--violet, #4342f5); } .ds-demo:focus-visible { outline: 2px solid var(--violet, #4342f5); outline-offset: 3px; } .ds-demo__arrow { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--lime, #d7fe65); transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-demo:hover .ds-demo__arrow { transform: translate(3px, -3px) rotate(45deg); }"
+      "css": ".ds-demo { display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 16px 0 20px; border-radius: var(--radius-control, 12px); background: var(--ink, #0b0a29); color: var(--on-ink, #ffffff); font-family: var(--font-sans, Poppins, sans-serif); font-size: 0.9375rem; font-weight: 700; text-decoration: none; box-shadow: 0 5px 0 var(--violet, #4342f5); transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-demo:hover { transform: translateY(-1px); box-shadow: 0 6px 0 var(--violet, #4342f5); } .ds-demo:active { transform: translateY(5px); box-shadow: 0 0 0 var(--violet, #4342f5); } .ds-demo:focus-visible { outline: 2px solid var(--violet, #4342f5); outline-offset: 9px; } .ds-demo__arrow { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--lime, #d7fe65); transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-demo:hover .ds-demo__arrow { transform: translate(3px, -3px) rotate(45deg); }"
     },
     {
       "name": "Highlighted heading",
@@ -444,7 +453,7 @@
       "refersTo": "card",
       "description": "2px ink outline on a solid 6px ink edge, a highlighted title, a muted body and a real screen in a thick ink frame.",
       "html": "<div class=\"ds-card\"><div><h3 class=\"ds-card__title\"><span class=\"ds-card__hl\">One tap per ride.</span></h3><p class=\"ds-card__body\">Usual routes are one tap away, and rides save even offline.</p></div><div class=\"ds-card__shot\"></div></div>",
-      "css": ".ds-card { display: grid; grid-template-columns: minmax(22ch, 1fr) 120px; gap: 14px; padding: 18px; border: 2px solid var(--ink, #0b0a29); border-radius: var(--radius-card, 18px); background: var(--paper, #ffffff); color: var(--ink, #0b0a29); font-family: var(--font-sans, Poppins, sans-serif); box-shadow: 0 6px 0 var(--ink, #0b0a29); } .ds-card__title { margin: 0; font-size: 1.125rem; font-weight: 700; line-height: 1.35; } .ds-card__hl { padding: 0.05em 0.3em; border-radius: 5px; background: var(--lime, #d7fe65); box-decoration-break: clone; -webkit-box-decoration-break: clone; } .ds-card__body { margin: 8px 0 0; color: var(--muted, #4a4868); font-size: 0.9rem; line-height: 1.55; } .ds-card__shot { height: 160px; border: 4px solid var(--ink, #0b0a29); border-radius: 14px; background: var(--ink, #0b0a29); }"
+      "css": ".ds-card { display: grid; grid-template-columns: minmax(22ch, 1fr) minmax(180px, 0.9fr); gap: 14px; padding: 18px; border: 2px solid var(--ink, #0b0a29); border-radius: var(--radius-card, 18px); background: var(--paper, #ffffff); color: var(--ink, #0b0a29); font-family: var(--font-sans, Poppins, sans-serif); box-shadow: 0 6px 0 var(--ink, #0b0a29); } .ds-card__title { margin: 0; font-size: 1.125rem; font-weight: 700; line-height: 1.35; } .ds-card__hl { padding: 0.05em 0.3em; border-radius: 5px; background: var(--lime, #d7fe65); box-decoration-break: clone; -webkit-box-decoration-break: clone; } .ds-card__body { margin: 8px 0 0; color: var(--muted, #4a4868); font-size: 0.9rem; line-height: 1.55; } .ds-card__shot { height: 160px; border: 4px solid var(--ink, #0b0a29); border-radius: 14px; background: var(--ink, #0b0a29); }"
     },
     {
       "name": "Navy feature card",
@@ -474,9 +483,9 @@
       "name": "Receipt",
       "kind": "custom",
       "refersTo": "receipt-paper",
-      "description": "The real receipt as text on thermal paper: torn edges, a soft drop shadow, a slight tilt, a barcode and a lime tape strip, fed from a navy slot on a dotted soft band. From 960px the card's left column adds a total panel (ink fill, violet edge, the receipt's own total as a lime figure) and two labelled steps, each a round icon over its label as visible text (Share, Mark paid), joined by a dashed trail that marches on hover.",
-      "html": "<div class=\"ds-receipt-band\"><span class=\"ds-slot\" aria-hidden=\"true\"></span><div class=\"ds-sheet\"><div class=\"ds-paper\"><pre class=\"ds-receipt\" tabindex=\"0\">TAB\nPending rides as of October 15, 2026\n\n1. Oct 15  El Limon to El Rocio\n   Ana, Luis\n   $6.00  (Bs 5,253.90)</pre></div><span class=\"ds-tape\" aria-hidden=\"true\"></span></div></div>",
-      "css": ".ds-receipt-band { position: relative; padding: 18px 14px 34px; overflow: clip; border-radius: 14px; background-color: var(--soft, #ecebf3); background-image: radial-gradient(rgb(11 10 41 / 0.24) 1.4px, transparent 1.7px); background-size: 18px 18px; } .ds-slot { position: relative; z-index: 2; display: block; width: min(100%, 470px); height: 24px; margin-inline: auto; border-radius: 12px; background: var(--ink, #0b0a29); box-shadow: 0 5px 0 var(--violet, #4342f5); } .ds-sheet { position: relative; width: min(100%, 430px); margin: -10px auto 0; transform: rotate(-1.6deg); filter: drop-shadow(0 10px 16px rgb(11 10 41 / 0.2)); } .ds-paper { padding: 28px 16px 26px; background: #fffef8; color: var(--ink, #0b0a29); -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51% repeat-x, conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / 12px 51% repeat-x; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51% repeat-x, conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / 12px 51% repeat-x; } .ds-receipt { margin: 0; overflow-x: auto; font: 0.65rem/1.5 var(--font-receipt, ui-monospace, Menlo, monospace); white-space: pre; } .ds-receipt:focus-visible { outline: 2px solid var(--violet, #4342f5); outline-offset: 3px; } .ds-tape { position: absolute; top: 44px; right: -18px; width: 86px; height: 26px; border-radius: 3px; background: var(--lime, #d7fe65); transform: rotate(38deg); }"
+      "description": "The real receipt as text on thermal paper: torn edges, a soft drop shadow, a slight tilt, a barcode and a lime tape strip (hidden under 430px), fed from a navy slot on a dotted soft band. One block span per line, wrapping with a hanging indent at full size, no tab stop. The paper sits under the card's text below 960px. From 960px the card's left column groups, at the top with 28px gaps, the copy, a total panel (ink fill, violet edge, the receipt's own total as a lime figure) and two labelled steps, each a round icon over its label as visible text (Share, Mark paid), joined by a still dashed trail.",
+      "html": "<div class=\"ds-receipt-band\"><span class=\"ds-slot\" aria-hidden=\"true\"></span><div class=\"ds-sheet\"><div class=\"ds-paper\"><pre class=\"ds-receipt\" role=\"group\" aria-label=\"Receipt\">TAB\nPending rides as of October 15, 2026\n\n1. Oct 15  El Limon to El Rocio\n   Ana, Luis\n   $6.00  (Bs 5,253.90)</pre></div><span class=\"ds-tape\" aria-hidden=\"true\"></span></div></div>",
+      "css": ".ds-receipt-band { position: relative; padding: 18px 14px 34px; overflow: clip; border-radius: 14px; background-color: var(--soft, #ecebf3); background-image: radial-gradient(rgb(11 10 41 / 0.24) 1.4px, transparent 1.7px); background-size: 18px 18px; } .ds-slot { position: relative; z-index: 2; display: block; width: min(100%, 470px); height: 24px; margin-inline: auto; border-radius: 12px; background: var(--ink, #0b0a29); box-shadow: 0 5px 0 var(--violet, #4342f5); } .ds-sheet { position: relative; width: min(100%, 430px); margin: -10px auto 0; transform: rotate(-1.6deg); filter: drop-shadow(0 10px 16px rgb(11 10 41 / 0.2)); } .ds-paper { padding: 28px 16px 26px; background: var(--thermal-paper, #fffef8); color: var(--ink, #0b0a29); -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51% repeat-x, conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / 12px 51% repeat-x; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% 100% / 12px 51% repeat-x, conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% 0 / 12px 51% repeat-x; } .ds-receipt { margin: 0; font: 0.65rem/1.5 var(--font-receipt, ui-monospace, Menlo, monospace); white-space: pre-wrap; overflow-wrap: anywhere; } .ds-tape { position: absolute; top: 44px; right: -18px; width: 86px; height: 26px; border-radius: 3px; background: var(--lime, #d7fe65); transform: rotate(38deg); }"
     },
     {
       "name": "JAGR strip",
@@ -490,7 +499,7 @@
       "name": "Card coin",
       "kind": "custom",
       "refersTo": "card-coin",
-      "description": "The hero's $ or Bs coin that pops into a card's corner on hover and focus; violet on the navy card.",
+      "description": "The hero's $ or Bs coin that pops into a card's corner on hover (and focus within); violet on the navy card.",
       "html": "<div class=\"ds-coin-row\"><span class=\"ds-coin\">$</span><span class=\"ds-coin ds-coin--ink\">Bs</span></div>",
       "css": ".ds-coin-row { display: flex; gap: 16px; padding: 16px; } .ds-coin { display: grid; place-items: center; width: 32px; height: 32px; border: 2px solid var(--ink, #0b0a29); border-radius: 50%; background: var(--lime, #d7fe65); color: var(--ink, #0b0a29); font-family: var(--font-sans, Poppins, sans-serif); font-size: 0.8125rem; font-weight: 700; line-height: 1; } .ds-coin--ink { background: var(--violet, #4342f5); color: var(--on-ink, #ffffff); }"
     },
@@ -521,14 +530,14 @@
   ],
   "narrative": {
     "northStar": "The highlighter sheet",
-    "overview": "Tab is shown the way a person marks up a printed page. The page is a white sheet with navy ink for text, outlines and fills. Lime is a highlighter dragged behind the words that matter. Real app screens are pasted onto the sheet inside thick ink frames, and the real receipt text is printed on a strip of thermal paper. Violet appears only as a pressed edge under the main action, on the focus ring and as the period of the wordmark. The look replaced an earlier dark SaaS treatment and rejects its pattern: a centred headline over a row of equal glassy cards.\n\nThe density is calm and print-like: one column of content inside a 1120px sheet, short lines, cards that alternate white, navy, then white and wide. Line art is Tab's own: a dashed route arc between two map pins with a lime $ coin and a violet Bs coin, the same route the entry loader draws in white on violet. Depth is physical, not atmospheric: cards and the main button sit on a solid bottom edge, like card stock or a key, and the soft shadows belong to the two objects lifted off the sheet, the floating phone and the receipt paper. The hero, the closing band and the receipt band sit on a dot ground, like the dotted grid of a notebook page, so the wide margins read as paper rather than blank. Faint ink dots are still until a pointer arrives; then they clear around it and violet, navy and lime dots take their place on the same lattice.\n\nThe page is framed by the JAGR thread, a black mono strip above and a black mono footer below, which carries JAGR's own values and is not part of Tab's palette.\n\nThe system is shaped by hard constraints. A strict CSP forbids inline styles, so every state and variant is a class, an attribute selector or an `nth-child` rule, never a style attribute. Client JS is two small modules, the language cookie and the pointer module for the dot fields (about 0.6 KB gzipped, an external file so the CSP is untouched); nothing else is interactive beyond links and CSS states. Every target is at least 44px. Motion is limited, optional and answers the visitor. The automatic motion is bounded: a 2.1s entry loader on the landing page, one 4s float of the hero phone, and three marching cycles of the hero's route, then rest. Scroll sets the pace of the receipt paper feeding out and of each card settling straight. The pointer (or focus) drives the dot field, the card response, the button arrow, the footer underline and a replay of the marching route and the receipt card's step trail. All of it sits under `prefers-reduced-motion: no-preference` (the dot module also needs a fine, hovering pointer), the scroll-driven parts also behind `@supports`, and all new pointer and scroll easing is the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce (the loader's own timing is the one recorded exception). Without support or under reduced motion everything is simply there.",
+    "overview": "Tab is shown the way a person marks up a printed page. The page is a white sheet with navy ink for text, outlines and fills. Lime is a highlighter dragged behind the words that matter. Real app screens are pasted onto the sheet inside thick ink frames, and the real receipt text is printed on a strip of thermal paper. Violet appears only as a pressed edge under the main action, on the focus ring and as the period of the wordmark. The look replaced an earlier dark SaaS treatment and rejects its pattern: a centred headline over a row of equal glassy cards.\n\nThe density is calm and print-like: one column of content inside a 1120px sheet, short lines, cards that alternate white, navy, then white and wide. Line art is Tab's own: a dashed route arc between two map pins with a lime $ coin and a violet Bs coin, the same route the entry loader draws in white on violet. Depth is physical, not atmospheric: cards and the main button sit on a solid bottom edge, like card stock or a key, and the soft shadows belong to the two objects lifted off the sheet, the hero phone and the receipt paper. The hero, the closing band and the receipt band sit on a dot ground, like the dotted grid of a notebook page, so the wide margins read as paper rather than blank. Faint ink dots are still until a pointer arrives; then they clear around it and violet, navy and lime dots take their place on the same lattice.\n\nThe page is framed by the JAGR thread, a black mono strip above and a black mono footer below, which carries JAGR's own values and is not part of Tab's palette.\n\nThe system is shaped by hard constraints. A strict CSP forbids inline styles, so every state and variant is a class, an attribute selector or an `nth-child` rule, never a style attribute. Client JS is two small modules, the language cookie and the pointer module for the dot fields (about 0.6 KB gzipped, an external file so the CSP is untouched); nothing else is interactive beyond links and CSS states. Every target is at least 44px. Motion is limited, optional and answers the visitor. The automatic motion is bounded: a 2.1s entry loader on the landing page and three marching cycles of the hero's route, which begin as the loader lifts, then rest. A language switch skips both the loader and the march delay. Scroll sets the pace of the receipt paper feeding out and of each card settling straight. The pointer (or focus) drives the dot field, each card's coin and title sweep, the button arrow, the footer underline and a replay of the marching route. All of it sits under `prefers-reduced-motion: no-preference` (the dot module also needs a fine, hovering pointer), the scroll-driven parts also behind `@supports`, and all new pointer and scroll easing is the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce (the loader's own timing is the one recorded exception). Without support or under reduced motion everything is simply there.",
     "keyCharacteristics": [
       "White paper, navy ink, lime only as highlighter, violet only as an edge or focus mark.",
       "2px ink outlines with a solid 6px ink edge underneath on cards.",
       "Real screens in thick ink frames, never mockups.",
       "Dot fields as ground, still until a pointer clears them and brand-coloured dots follow it.",
-      "Cards that lift, tilt and grow their ink edge when pointed at, and arrive tilted as they scroll in.",
-      "Motion answers the visitor (scroll, pointer, focus); only the entry loader, the hero phone's single float and three cycles of the hero route run by themselves, each once and then still.",
+      "Cards that arrive tilted as they scroll in and settle straight; pointed at, they only pop a coin and sweep the title highlighter.",
+      "Motion answers the visitor (scroll, pointer, focus); only the entry loader and three cycles of the hero route run by themselves, each once and then still.",
       "Poppins 400 and 700 only; mono belongs to the receipt and the JAGR thread.",
       "Real colours for every text and border, never opacity; every text at least 4.5:1, every control border at least 3:1.",
       "States through classes and structural selectors only (strict CSP)."
@@ -541,7 +550,7 @@
       },
       {
         "name": "The One Edge Rule",
-        "body": "Violet is a mark, not a surface: the CTA's edge, the focus ring, the wordmark's period, the Bs coins, the navy card's hover edge, the receipt card's total panel edge and the pointer's violet dots. Nothing else is violet. The one other violet is the entry loader's sheet, which is gone in about 2.1s and never part of the resting page.",
+        "body": "Violet is a mark, not a surface: the CTA's edge, the focus ring, the wordmark's period, the Bs coins, the receipt card's total panel edge and the pointer's violet dots. Nothing else is violet. The one other violet is the entry loader's sheet, which is gone in about 2.1s and never part of the resting page.",
         "section": "colors"
       },
       {
@@ -571,17 +580,17 @@
       },
       {
         "name": "The Two Lifted Objects Rule",
-        "body": "Only the hero phone and the receipt paper have a soft shadow. The phone floats once for 4s when the page opens; the paper feeds out as its card scrolls into view. Both run under `prefers-reduced-motion: no-preference` only, and the paper's feed also behind `@supports (animation-timeline: view())`. A card that rises on hover is lifted by its solid edge growing, never by a soft shadow.",
+        "body": "Only the hero phone and the receipt paper have a soft shadow. The phone sits still; the paper feeds out as its card scrolls into view, under `prefers-reduced-motion: no-preference` and behind `@supports (animation-timeline: view())`. Cards do not lift on hover, and none is ever lifted by a soft shadow.",
         "section": "elevation"
       },
       {
         "name": "The Visitor Sets The Pace Rule",
-        "body": "Everything but the hero float answers the visitor, so none of it needs a pause control. Scroll-driven motion (the paper feed, each card settling from its own tilt) uses a linear `view()` timeline, behind `@supports` and reduced motion. The card's individual `rotate` and `translate` properties carry the scroll arrival so they never fight the hover's `transform`. Pointer and focus motion (cards, button arrow, footer underline, dot field) uses the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce, and hover effects sit inside `@media (hover: hover)`. The static state is always the complete design. Two automatic motions fit this: the hero's marching route runs three cycles on load (1.4s each, 10px/s like the app's ride sheet, under 5s, WCAG 2.2.2) and then rests, replaying only while the pointer is over the art, and the receipt card's step trail marches only while the card is hovered.",
+        "body": "Everything but the hero route's march answers the visitor, so none of it needs a pause control. Scroll-driven motion (the paper feed, each card settling from its own tilt) uses a linear `view()` timeline, behind `@supports` and reduced motion. The card's individual `rotate` and `translate` properties carry the scroll arrival, so a card needs no `transform` for it. Pointer and focus motion (the cards' coin and title sweep, button arrow, footer underline, dot field) uses the exponential ease-out cubic-bezier(0.22, 1, 0.36, 1) with no overshoot or bounce, and hover effects sit inside `@media (hover: hover)`. The static state is always the complete design. The hero's one automatic motion fits this: the marching route runs three cycles (1.4s each, 10px/s like the app's ride sheet, under 5s, WCAG 2.2.2), delayed 2.15s so it starts as the loader lifts (0s when the loader is skipped), and then rests, replaying only while the pointer is over the art. Nothing else in the hero moves: no riding dot, no phone float.",
         "section": "elevation"
       },
       {
         "name": "The Loader Is Decoration Rule",
-        "body": "The entry loader never gates the page. The document underneath is complete and focusable from the first frame; the violet sheet is `aria-hidden`, has `pointer-events: none`, takes no tab stop, and is CSS only (no script, so the CSP is untouched). It plays once, about 2.1s, on the landing page only, and is not drawn at all under `prefers-reduced-motion`. It runs transform and clip-path only, and it ends fully off screen with nothing left to read or focus. Its easing is its own: a snap-in lift (cubic-bezier(0.76, 0, 0.24, 1)) and a single bounce on the period, the one place the page overshoots; do not copy either into pointer or scroll motion.",
+        "body": "The entry loader never gates the page. The document underneath is complete and focusable from the first frame; the violet sheet is `aria-hidden`, has `pointer-events: none`, takes no tab stop, and is CSS only (no script, so the CSP is untouched). It plays once, about 2.1s, on the landing page only, and is not drawn at all under `prefers-reduced-motion`. The language links go to `/{lang}/#top` (the body carries `id=\"top\"`), and the loader and the hero's march delay are skipped when `#top` is the target, in CSS alone (`:root:has(#top:target)`); a first visit keeps the full loader. It runs transform and clip-path only, and it ends fully off screen with nothing left to read or focus. Its easing is its own: a snap-in lift (cubic-bezier(0.76, 0, 0.24, 1)) and a single bounce on the period, the one place the page overshoots; do not copy either into pointer or scroll motion.",
         "section": "elevation"
       },
       {
