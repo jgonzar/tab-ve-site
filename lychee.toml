@@ -6,13 +6,3 @@
 max_retries = 3
 timeout = 20
 accept = ["200..=299"]
-
-exclude = [
-  # The site's own production address: canonical, hreflang and og:url point
-  # here, and production isn't live until the user's "deploy" (L4's outward
-  # step). Checked again against production after the promote.
-  '^https://tab-ve-site\.vercel\.app/',
-  # Tab's quest page on JAGR ships with L6 and 404s until then.
-  # Remove this entry in L6.
-  '^https://portfolio-site-beige-omega-23\.vercel\.app/quests/tab$',
-]
