@@ -39,11 +39,13 @@
       aria-hidden="true"
     >
       <path
+        class="hero__arc"
         d="M40 330 C 60 150, 340 230, 360 60"
         stroke="#0b0a29"
         stroke-width="2"
         stroke-dasharray="7 7"
       />
+      <circle class="hero__dot" r="6" fill="#d7fe65" stroke="#0b0a29" stroke-width="2" />
       <g transform="translate(40 330)">
         <circle r="17" fill="#0b0a29" />
         <path d="M0 7s-6-5-6-9a6 6 0 0 1 12 0c0 4-6 9-6 9z" stroke="#ffffff" stroke-width="2" />
@@ -170,6 +172,58 @@
 
     50% {
       transform: translateX(-50%) rotate(-5deg) translateY(-6px);
+    }
+  }
+
+  /* The route as in the app's ride sheet: the dashes march from the first pin
+     to the second, ten pixels a second, and a dot rides the arc once. Three
+     cycles when the page opens, then rest (under 5 seconds, WCAG 2.2.2); the
+     visitor's pointer over the art sets them going again. The dot sits under
+     the pins, so at rest it is hidden behind the first. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__arc {
+      animation: march 1.4s linear 3;
+    }
+
+    .hero__dot {
+      offset-path: path("M40 330 C 60 150, 340 230, 360 60");
+      animation: ride 4.2s cubic-bezier(0.45, 0, 0.55, 1) 1;
+    }
+
+    @media (hover: hover) {
+      .hero__art:hover .hero__arc {
+        animation: march-on 1.4s linear infinite;
+      }
+    }
+  }
+
+  @keyframes march {
+    from {
+      stroke-dashoffset: 14;
+    }
+
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes march-on {
+    from {
+      stroke-dashoffset: 14;
+    }
+
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes ride {
+    from {
+      offset-distance: 0%;
+    }
+
+    to {
+      offset-distance: 100%;
     }
   }
 
