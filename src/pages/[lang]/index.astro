@@ -37,7 +37,8 @@ const shots = await Promise.all(
   (["quick-ride", "summary"] as const).map((name) =>
     picture(screen(locale, name), {
       width: 640,
-      sizes: "(min-width: 600px) 172px, calc(100vw - 80px)",
+      sizes:
+        "(min-width: 1100px) 210px, (min-width: 960px) 180px, (min-width: 600px) calc((100vw - 90px) * 0.47), calc(100vw - 80px)",
       widths: [172, 344, 516, 640, 1024],
     }),
   ),

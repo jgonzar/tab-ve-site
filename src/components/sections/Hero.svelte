@@ -58,13 +58,13 @@
         <circle class="hero__pin-dot" cy="-2" r="2" />
       </g>
       <!-- Both coins sit on the arc, where it clears the phone -->
-      <g transform="translate(82 264)">
+      <g transform="translate(68 273)">
         <circle class="hero__coin hero__coin--usd" r="21" stroke-width="2" />
         <text class="hero__coin-text hero__coin-text--usd" y="6" text-anchor="middle" font-size="17"
           >$</text
         >
       </g>
-      <g transform="translate(448 149)">
+      <g transform="translate(460 138)">
         <circle class="hero__coin hero__coin--bs" r="23" stroke-width="2" />
         <text class="hero__coin-text hero__coin-text--bs" y="6" text-anchor="middle" font-size="15"
           >Bs</text
@@ -202,7 +202,7 @@
       animation: march 1.4s linear 2.15s 3 both;
     }
 
-    :global(:root:has(#top:target)) .hero__arc {
+    :global(:root:has(:target)) .hero__arc {
       animation-delay: 0s;
     }
 

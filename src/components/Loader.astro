@@ -7,7 +7,8 @@
 // never waits for it; the sheet is decoration (aria-hidden, no pointer
 // events) and takes no part in the tab order. Anyone who asks for reduced
 // motion never sees it, and nor does anyone who switches language: those
-// links end in #top, and the sheet hides when #top is the target.
+// links end in #top, and the sheet hides whenever the page has a fragment
+// target.
 import Wordmark from "./Wordmark.astro";
 ---
 
@@ -57,8 +58,9 @@ import Wordmark from "./Wordmark.astro";
     }
 
     /* The language links lead to /{lang}/#top: a switch, not a first visit, so
-       the sheet is not drawn at all */
-    :global(:root:has(#top:target)) .intro {
+       the sheet is not drawn at all. Any fragment target counts, so the skip
+       link or an in-page anchor used afterwards cannot bring it back */
+    :global(:root:has(:target)) .intro {
       display: none;
     }
 

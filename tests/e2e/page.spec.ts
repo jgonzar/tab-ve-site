@@ -316,6 +316,14 @@ test.describe("the loader on a language switch", () => {
     expect(
       await page.locator(".hero__arc").evaluate((el) => getComputedStyle(el).animationDelay),
     ).toBe("0s");
+
+    // A later hash change (the skip link) must not bring the sheet back
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/#main$/);
+    expect(await page.locator(".intro").evaluate((el) => getComputedStyle(el).display)).toBe(
+      "none",
+    );
   });
 });
 
