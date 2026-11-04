@@ -169,3 +169,40 @@ a {
   white-space: nowrap;
   border: 0;
 }
+
+/* A language switch is a new page, but it should read as one page changing
+   its words. Cross-document view transitions (Chrome, Safari 18.2 and later;
+   others load the page as ever) keep the old page on screen until the new one
+   is ready, then crossfade the two, briefly and calmly. The JAGR strip and the
+   top bar are the same chrome on both pages, so they get their own names: they
+   stay put and swap in place instead of fading with the content. Nothing runs
+   for those who asked for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  .jagr-strip {
+    view-transition-name: jagr-strip;
+  }
+
+  .top-bar {
+    view-transition-name: top-bar;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.2s;
+    animation-timing-function: ease;
+  }
+
+  ::view-transition-old(jagr-strip),
+  ::view-transition-old(top-bar) {
+    display: none;
+  }
+
+  ::view-transition-new(jagr-strip),
+  ::view-transition-new(top-bar) {
+    animation: none;
+  }
+}

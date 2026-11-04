@@ -11,6 +11,7 @@ import SiteFooter from "../../components/SiteFooter.astro";
 import Hero from "../../components/sections/Hero.svelte";
 import Features from "../../components/sections/Features.svelte";
 import Closing from "../../components/sections/Closing.svelte";
+import Picture from "../../components/sections/Picture.svelte";
 import Built from "../../components/sections/Built.svelte";
 import { LOCALES, strings, type Locale } from "../../i18n";
 import { receipt, screen } from "../../captures";
@@ -43,6 +44,16 @@ const shots = await Promise.all(
     }),
   ),
 );
+
+// The other language's home screen, fetched quietly behind the page: a switch
+// is a new page, and without it the new hero's screen pops in after the
+// crossfade. Same width and sizes, so the browser picks the same candidate for
+// the visitor's screen density
+const otherLocale = LOCALES.find((l) => l !== locale) ?? locale;
+const otherHero = await picture(screen(otherLocale, "inicio"), {
+  width: 190,
+  sizes: "(min-width: 900px) 190px, 158px",
+});
 
 const mark = await picture(icon, { width: 96, sizes: "(min-width: 720px) 96px, 56px" });
 ---
@@ -87,6 +98,10 @@ const mark = await picture(icon, { width: 96, sizes: "(min-width: 720px) 96px, 5
       />
     </div>
   </main>
+  <!-- Not shown, not read: it only warms the cache for a language switch -->
+  <div hidden aria-hidden="true">
+    <Picture image={otherHero} alt="" warm />
+  </div>
   <SiteFooter locale={locale} />
 </Base>
 

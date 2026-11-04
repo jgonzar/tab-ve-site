@@ -194,16 +194,18 @@
   /* The route as in the app's ride sheet: the dashes march from the first pin
      to the second, ten pixels a second. Three cycles, then rest (under 5
      seconds, WCAG 2.2.2); the visitor's pointer over the art sets them going
-     again. The march is the one motion in the hero: it starts as the entry
-     loader lifts (about 2.15 seconds), so none of it runs unseen, and at once
-     when there is no loader (the language switch, #top). */
+     again. The march is the one motion in the hero: when the entry loader
+     plays it starts as the loader lifts (about 2.15 seconds), so none of it
+     runs unseen, and at once when there is no loader. */
   @media (prefers-reduced-motion: no-preference) {
     .hero__arc {
-      animation: march 1.4s linear 2.15s 3 both;
+      animation: march 1.4s linear 3 both;
     }
 
-    :global(:root:has(:target)) .hero__arc {
-      animation-delay: 0s;
+    /* Held for the entry loader, which is drawn only on the first visit of a
+       session (<html data-intro>); everywhere else it starts at once */
+    :global(:root[data-intro]) .hero__arc {
+      animation-delay: 2.15s;
     }
 
     @media (hover: hover) {

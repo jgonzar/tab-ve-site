@@ -298,32 +298,149 @@ test("both coins sit on the route's arc, clear of the phone", async ({ page }) =
   }
 });
 
-test.describe("the loader on a language switch", () => {
-  test("is drawn on a first visit, and skipped when the link ends in #top", async ({ page }) => {
+test.describe("the loader is shown once per session", () => {
+  const display = (page: import("@playwright/test").Page) =>
+    page.locator(".intro").evaluate((el) => getComputedStyle(el).display);
+  const delay = (page: import("@playwright/test").Page) =>
+    page.locator(".hero__arc").evaluate((el) => getComputedStyle(el).animationDelay);
+
+  test("drawn on the first visit, never again in the same session", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/es/");
-    expect(await page.locator(".intro").evaluate((el) => getComputedStyle(el).display)).toBe(
-      "grid",
-    );
+    await expect(page.locator("html")).toHaveAttribute("data-intro", "");
+    expect(await display(page)).toBe("grid");
+    // ...and the hero's march waits for it
+    expect(await delay(page)).toBe("2.15s");
 
-    // The EN link in the top bar is a switch: the sheet never comes back
+    // A language switch inside the session: no sheet, the march starts at once
     await page.locator('a[hreflang="en"]').click();
     await expect(page).toHaveURL(/\/en\/#top$/);
-    expect(await page.locator(".intro").evaluate((el) => getComputedStyle(el).display)).toBe(
-      "none",
-    );
-    // ...and the hero's march starts at once, with nothing to wait for
-    expect(
-      await page.locator(".hero__arc").evaluate((el) => getComputedStyle(el).animationDelay),
-    ).toBe("0s");
+    await expect(page.locator("html")).not.toHaveAttribute("data-intro", /.*/);
+    expect(await display(page)).toBe("none");
+    expect(await delay(page)).toBe("0s");
 
-    // A later hash change (the skip link) must not bring the sheet back
+    // A reload, and the skip link afterwards, do not bring it back either
+    await page.reload();
+    expect(await display(page)).toBe("none");
     await page.keyboard.press("Tab");
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/#main$/);
+    expect(await display(page)).toBe("none");
+  });
+
+  test("a new session (a fresh tab) sees it again", async ({ page, context }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/en/");
+    expect(await display(page)).toBe("grid");
+    const other = await context.newPage();
+    await other.emulateMedia({ reducedMotion: "no-preference" });
+    await other.goto("/en/");
+    expect(await display(other)).toBe("grid");
+  });
+
+  test("never drawn under prefers-reduced-motion, even on a first visit", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/en/");
+    expect(await display(page)).toBe("none");
+  });
+
+  test("never drawn when sessionStorage is blocked, and the page still works", async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(window, "sessionStorage", {
+        get() {
+          throw new Error("blocked");
+        },
+      });
+    });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    await page.goto("/en/");
+    expect(await display(page)).toBe("none");
+    expect(errors).toEqual([]);
+    await expect(page.locator("h1")).toBeVisible();
+  });
+
+  test("the flag script is a plain blocking script in <head>, under 300 bytes", async ({
+    page,
+    request,
+  }) => {
+    await page.goto("/en/");
+    const script = page.locator('head script[src*="/_astro/intro."]');
+    await expect(script).toHaveCount(1);
+    expect(await script.getAttribute("type")).toBeNull();
+    expect(await script.getAttribute("defer")).toBeNull();
+    expect(await script.getAttribute("async")).toBeNull();
+    const src = (await script.getAttribute("src")) ?? "";
+    const body = await (await request.get(src)).body();
+    expect(body.length).toBeLessThan(300);
+  });
+});
+
+test.describe("with JavaScript off", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("the loader is never drawn and the hero's march starts at once", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/en/");
     expect(await page.locator(".intro").evaluate((el) => getComputedStyle(el).display)).toBe(
       "none",
     );
+    expect(
+      await page.locator(".hero__arc").evaluate((el) => getComputedStyle(el).animationDelay),
+    ).toBe("0s");
+  });
+});
+
+test.describe("a language switch crossfades the page, not the chrome", () => {
+  test("the strip and the top bar are named, and nothing runs for reduced motion", async ({
+    page,
+  }) => {
+    const name = (selector: string) =>
+      page.locator(selector).evaluate((el) => getComputedStyle(el).viewTransitionName);
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/en/");
+    expect(await name(".jagr-strip")).toBe("jagr-strip");
+    expect(await name(".top-bar")).toBe("top-bar");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    expect(await name(".jagr-strip")).toBe("none");
+    expect(await name(".top-bar")).toBe("none");
+  });
+
+  test("the opt-in rule is in the stylesheet, under no-preference", async ({ page }) => {
+    await page.goto("/en/");
+    const found = await page.evaluate(() => {
+      const walk = (rules: CSSRuleList, inMotionQuery: boolean): boolean =>
+        [...rules].some((rule) => {
+          if (rule.constructor.name === "CSSViewTransitionRule") return inMotionQuery;
+          const media = rule instanceof CSSMediaRule && /no-preference/.test(rule.conditionText);
+          return "cssRules" in rule
+            ? walk(rule.cssRules as CSSRuleList, inMotionQuery || media)
+            : false;
+        });
+      return [...document.styleSheets].some((sheet) => {
+        try {
+          return walk(sheet.cssRules, false);
+        } catch {
+          return false;
+        }
+      });
+    });
+    expect(found).toBe(true);
+  });
+
+  test("the other language's hero screen is warmed, hidden and unread", async ({ page }) => {
+    await page.goto("/en/");
+    const warm = page.locator('[hidden] img[fetchpriority="low"]');
+    await expect(warm).toHaveCount(1);
+    await expect(warm).toHaveAttribute("alt", "");
+    expect(await warm.locator("xpath=ancestor::*[@aria-hidden='true']").count()).toBeGreaterThan(0);
+    // It is the Spanish home screen, and the Spanish page warms the English one
+    const sources = await warm
+      .locator("xpath=preceding-sibling::source")
+      .evaluateAll((els) => els.map((el) => el.getAttribute("srcset")));
+    const own = await page.locator(".hero__phone source").first().getAttribute("srcset");
+    expect(sources.join()).not.toContain((own ?? "").split(" ")[0]);
   });
 });
 

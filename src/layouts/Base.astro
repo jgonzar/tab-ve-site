@@ -5,6 +5,7 @@
 import "../styles/global.css";
 import poppins400 from "@fontsource/poppins/files/poppins-latin-400-normal.woff2?url";
 import poppins700 from "@fontsource/poppins/files/poppins-latin-700-normal.woff2?url";
+import introScript from "../scripts/intro.js?url";
 import JagrStrip from "../components/JagrStrip.astro";
 import Loader from "../components/Loader.astro";
 import SeoHead from "../components/SeoHead.astro";
@@ -28,6 +29,11 @@ const t = strings(locale);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Flags the first visit of a session on <html> before the first paint, so
+         the entry loader is shown only then. A plain blocking script, not a
+         module: a module would run after the first frame. External, for the CSP.
+         Only where the loader lives: a visit to another page uses up nothing -->
+    {intro && <script is:inline src={introScript} />}
     <SeoHead locale={locale} page={page} />
     <meta name="color-scheme" content="light" />
     <!-- The browser bar matches the JAGR strip at the top -->

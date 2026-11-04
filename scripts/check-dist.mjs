@@ -2,10 +2,11 @@
 // Checks the built HTML against the CSP, so a violation fails CI instead of
 // breaking the page silently in the browser:
 //   - no inline <script> (every script must have a same-origin src), and no
-//     script but the two modules we write: the language links' cookie
-//     (src/scripts/lang-cookie.ts) and the dot fields' pointer feed
-//     (src/scripts/dots.ts). The Svelte sections render at build time and ship
-//     no JavaScript (plan decision 17)
+//     script but the three files we write: the language links' cookie
+//     (src/scripts/lang-cookie.ts), the dot fields' pointer feed
+//     (src/scripts/dots.ts) and the first-visit flag for the entry loader
+//     (src/scripts/intro.js, a blocking script in <head>). The Svelte sections
+//     render at build time and ship no JavaScript (plan decision 17)
 //   - no <style> element and no style="" attribute (style-src 'self')
 //   - no inline event handlers (onclick= and the like)
 //   - no resource loaded from another origin (src, srcset, and <link> hrefs).
@@ -29,6 +30,9 @@ function* walk(dir) {
 // and the landing page (which loads dots.ts)
 const OUR_MODULES =
   /^\/_astro\/(?:LanguageLinks|index)\.astro_astro_type_script_index_0_lang\.[\w-]+\.js$/;
+// ...and the first-visit flag (src/scripts/intro.js), a plain blocking script
+// in <head> so it runs before the first paint
+const INTRO = /^\/_astro\/intro\.[\w-]+\.js$/;
 const isRemote = (url) => /^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(url.trim());
 const problems = [];
 let count = 0;
@@ -42,7 +46,14 @@ for (const file of walk(DIST)) {
   for (const m of html.matchAll(/<script\b([^>]*)>/gi)) {
     if (!/\bsrc\s*=/i.test(m[1])) report(`inline <script${m[1]}>`);
     const src = /\bsrc\s*=\s*["']([^"']*)["']/i.exec(m[1])?.[1] ?? "";
-    if (src && !OUR_MODULES.test(src)) report(`a script other than our two modules: ${src}`);
+    if (src && INTRO.test(src)) {
+      // It must run before the first paint: classic, not deferred, in <head>
+      if (/\b(?:type\s*=\s*["']module|defer|async)\b/i.test(m[1]))
+        report(`${src} must be a plain blocking script`);
+      if (html.indexOf(m[0]) > html.indexOf("</head>")) report(`${src} must be in <head>`);
+    } else if (src && !OUR_MODULES.test(src)) {
+      report(`a script other than our own: ${src}`);
+    }
   }
   if (/<style\b/i.test(html)) report("inline <style> element");
   if (/<[a-z][^>]*\sstyle\s*=/i.test(html)) report("style= attribute");
