@@ -404,7 +404,7 @@ The demo button is the page's one action, tactile and pressable. The page has ex
 
 - **Top bar:** the "tab." wordmark (ink letters, violet period, 1.5rem tall, a 10px focus radius) on the left; the language links on the right.
 - **Language links:** 44px squares, 10px corners, dim at 700 with 0.04em tracking; hover to ink; current page in ink with a 2px inset ink ring. Plain links that work with JS off; they lead to `/{lang}/#top`, which marks a switch and keeps the loader away.
-- **JAGR strip and footer:** void black, Share Tech Mono, uppercase at 0.16em, a red clip-path caret pointing back, red on hover, a jagr-fg focus ring. The strip is copied unchanged from its versioned source. The footer's back link gets a hand-drawn JAGR red underline (2.5px, round caps) that draws itself on hover and focus (an SVG path with `pathLength`, dasharray 1 2 so no dot shows at rest, dash offset, 0.5s on the exponential ease-out).
+- **JAGR strip and footer:** void black, Share Tech Mono, uppercase at 0.16em, a red clip-path caret pointing back, red on hover, a jagr-fg focus ring drawn 4px inside the link (v1.2.1), since the strip sits at the very top of the page and a ring outside it would be clipped. The strip is copied unchanged from its versioned source. The footer's back link gets a hand-drawn JAGR red underline (2.5px, round caps) that draws itself on hover and focus (an SVG path with `pathLength`, dasharray 1 2 so no dot shows at rest, dash offset, 0.5s on the exponential ease-out).
 
 ### Receipt
 
