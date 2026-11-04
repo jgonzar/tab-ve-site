@@ -257,3 +257,15 @@ test.describe("the entry loader", () => {
     await expect(page.locator(".intro")).toHaveCount(0);
   });
 });
+
+test("the hero route's dot is never drawn at rest or under reduced motion", async ({ page }) => {
+  for (const reducedMotion of ["reduce", "no-preference"] as const) {
+    await page.emulateMedia({ reducedMotion });
+    await page.goto("/en/");
+    // After its one ride, and from the start for anyone who asked for calm
+    await page.waitForTimeout(reducedMotion === "reduce" ? 0 : 4600);
+    expect(await page.locator(".hero__dot").evaluate((el) => getComputedStyle(el).opacity)).toBe(
+      "0",
+    );
+  }
+});
