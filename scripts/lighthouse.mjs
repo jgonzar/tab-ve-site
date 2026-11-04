@@ -23,6 +23,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { chromium } from "@playwright/test";
 import * as chromeLauncher from "chrome-launcher";
 import lighthouse from "lighthouse";
+import { blockingTimeAfterPaint } from "./blocking-time.mjs";
 import { serve } from "./serve-dist.mjs";
 
 const BUDGETS = {
@@ -58,10 +59,11 @@ const failures = [];
 const rows = [];
 mkdirSync(new URL("../lighthouse-report", import.meta.url), { recursive: true });
 
-// Five, as Lighthouse CI recommends: on shared CI runners one run in three
-// or so carries a few hundred ms of unattributed main-thread work (TBT 261
-// and 362 ms, with the page's own scripting at 15 ms), and a median of three
-// can still land on it
+// Five, as Lighthouse CI recommends. On a CI runner the page's own first
+// render (one task of about 100 ms before the first paint) sometimes splits
+// into two tasks and sometimes does not; Lighthouse's simulated TBT counts it
+// as blocking when it does not, on a fast host (see scripts/blocking-time.mjs),
+// which is why the budget is the blocking time after the first paint
 const RUNS = 5;
 
 // Discarded runs first, two passes over both pages: Chrome's own cold start
@@ -104,16 +106,25 @@ for (const path of ["/en/", "/es/"]) {
       ),
     );
   }
-  // Every run's TBT and its long tasks (start and length in ms, as observed,
-  // before Lighthouse scales them for the simulated phone), so a miss in a CI
-  // log shows whether the median sat on a noisy run or the page is slow
+  // Every run's blocking time and its long tasks (start and length in ms, as
+  // observed, before Lighthouse scales them for the simulated phone), so a
+  // miss in a CI log shows whether the median sat on a noisy run or the page
+  // is slow. "TBT" is what Lighthouse reports; "blocking" is the budgeted one,
+  // from the observed tasks after the first paint (scripts/blocking-time.mjs)
   console.log(`${path} runs`);
+  const blocking = results.map((r) => {
+    const tasks = r.lhr.audits["main-thread-tasks"]?.details?.items ?? [];
+    const paint = r.lhr.audits.metrics.details.items[0].observedFirstContentfulPaint;
+    return blockingTimeAfterPaint(tasks, paint);
+  });
   for (const [i, r] of results.entries()) {
     const longTasks = (r.lhr.audits["main-thread-tasks"]?.details?.items ?? [])
       .filter((t) => t.duration > 50)
       .map((t) => `${Math.round(t.startTime)}+${Math.round(t.duration)}`);
     const tbtMs = Math.round(r.lhr.audits["total-blocking-time"].numericValue);
-    console.log(`  run ${i + 1}: TBT ${tbtMs} ms  long tasks [${longTasks.join(", ")}]`);
+    console.log(
+      `  run ${i + 1}: blocking ${Math.round(blocking[i])} ms  TBT ${tbtMs} ms  long tasks [${longTasks.join(", ")}]`,
+    );
   }
   const result = medianRun(results);
   const lhr = result.lhr;
@@ -130,7 +141,9 @@ for (const path of ["/en/", "/es/"]) {
 
   const lcp = audit("largest-contentful-paint").numericValue;
   const cls = audit("cumulative-layout-shift").numericValue;
-  const tbt = audit("total-blocking-time").numericValue;
+  // The median run's blocking time, not the median-score run's: one number
+  // from the same runs, whichever run Lighthouse's score happens to pick
+  const tbt = [...blocking].sort((x, y) => x - y)[Math.floor(blocking.length / 2)];
   const items = audit("resource-summary").details?.items ?? [];
   const bytes = (type) => items.find((i) => i.resourceType === type)?.transferSize ?? 0;
   const script = bytes("script");
@@ -138,7 +151,7 @@ for (const path of ["/en/", "/es/"]) {
 
   if (lcp > BUDGETS.lcpMs) fail(`LCP ${Math.round(lcp)} ms > ${BUDGETS.lcpMs} ms`);
   if (cls > BUDGETS.cls) fail(`CLS ${cls.toFixed(3)} > ${BUDGETS.cls}`);
-  if (tbt > BUDGETS.tbtMs) fail(`TBT ${Math.round(tbt)} ms > ${BUDGETS.tbtMs} ms`);
+  if (tbt > BUDGETS.tbtMs) fail(`blocking time ${Math.round(tbt)} ms > ${BUDGETS.tbtMs} ms`);
   if (script > BUDGETS.scriptBytes) fail(`JS ${script} B > ${BUDGETS.scriptBytes} B`);
   if (total > BUDGETS.totalBytes) fail(`total ${total} B > ${BUDGETS.totalBytes} B`);
 
@@ -160,7 +173,7 @@ for (const path of ["/en/", "/es/"]) {
 
   rows.push(
     `  ${path.padEnd(5)} perf ${scores.performance}  a11y ${scores.accessibility}  bp ${scores["best-practices"]}  seo ${scores.seo}` +
-      `  |  LCP ${Math.round(lcp)} ms  CLS ${cls.toFixed(3)}  TBT ${Math.round(tbt)} ms  JS ${script} B  total ${Math.round(total / 1024)} KB`,
+      `  |  LCP ${Math.round(lcp)} ms  CLS ${cls.toFixed(3)}  blocking ${Math.round(tbt)} ms  JS ${script} B  total ${Math.round(total / 1024)} KB`,
   );
 }
 
