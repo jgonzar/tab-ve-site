@@ -67,7 +67,7 @@
     place-items: center;
     width: 28px;
     height: 28px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--lime);
     color: var(--ink);
     transition: transform var(--dur-sm) var(--ease-out);

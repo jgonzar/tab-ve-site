@@ -134,7 +134,7 @@
     left: 50%;
     width: 168px;
     border: 5px solid var(--ink);
-    border-radius: 26px;
+    border-radius: var(--radius-device);
     background: var(--ink);
     overflow: hidden;
     box-shadow: var(--shadow-phone);
@@ -145,7 +145,7 @@
     display: block;
     width: 100%;
     height: auto;
-    border-radius: 20px;
+    border-radius: var(--radius-screen);
   }
 
   /* The route's colours are the tokens, not copies of them */

@@ -89,7 +89,7 @@
     /* 34px, off the spacing scale: the band's foot under the tilted paper */
     padding: var(--space-4-5) var(--space-3-5) 34px;
     overflow: clip;
-    border-radius: 14px;
+    border-radius: var(--radius-inset);
     background-color: var(--soft);
     --dot-alpha: 0.24;
   }
@@ -102,7 +102,7 @@
     width: min(100%, 470px);
     height: 24px;
     margin-inline: auto;
-    border-radius: 12px;
+    border-radius: var(--radius-slot);
     background: var(--ink);
     box-shadow: 0 5px 0 var(--violet);
   }
@@ -123,7 +123,7 @@
     min-width: 0;
     width: min(100%, 430px);
     transform: rotate(-1.6deg);
-    filter: drop-shadow(0 10px 16px rgb(11 10 41 / 0.2));
+    filter: drop-shadow(var(--shadow-paper));
   }
 
   /* Torn top and bottom edges */
@@ -203,7 +203,7 @@
     right: -18px;
     width: 86px;
     height: 26px;
-    border-radius: 3px;
+    border-radius: var(--radius-tape);
     background: var(--lime);
     opacity: 0.92;
     transform: rotate(38deg);

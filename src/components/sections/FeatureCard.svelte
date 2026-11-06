@@ -91,7 +91,7 @@
     align-self: start;
     overflow: hidden;
     border: 4px solid var(--ink);
-    border-radius: 14px;
+    border-radius: var(--radius-inset);
     background: var(--ink);
   }
 
@@ -157,7 +157,7 @@
     width: 32px;
     height: 32px;
     border: 2px solid var(--ink);
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: var(--lime);
     color: var(--ink);
     font-size: var(--text-2xs);

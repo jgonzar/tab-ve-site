@@ -14,6 +14,7 @@
   --soft: #ecebf3; /* the closing band and the receipt */
   --thermal-paper: #fffef8; /* the receipt's paper. Ink on it is 19.07 */
   --ink: #0b0a29; /* text, outlines, fills. 19.27 on paper, 16.28 on soft */
+  --ink-rgb: 11 10 41; /* --ink as channels, for see-through ink: shadows, dots. Keep in step */
   --muted: #4a4868; /* secondary text. 8.68 on paper, 7.34 on soft */
   --dim: #5b5a78; /* the inactive language. 6.61 on paper */
 
@@ -28,8 +29,10 @@
   --violet: #4342f5; /* the CTA's edge, the focus ring and the wordmark's period. 6.29 on paper */
   --on-violet: #ffffff; /* the entry loader's wordmark and route. 6.29 on violet */
 
-  /* A soft, offset shadow for the floating phone */
-  --shadow-phone: 0 18px 34px rgb(11 10 41 / 0.22);
+  /* Soft, offset shadows: the floating phone, and the receipt's paper (a
+     drop-shadow() filter, so it follows the torn edges) */
+  --shadow-phone: 0 18px 34px rgb(var(--ink-rgb) / 0.22);
+  --shadow-paper: 0 10px 16px rgb(var(--ink-rgb) / 0.2);
 
   /* JAGR thread (the strip and the footer). JAGR's own values */
   --jagr-void: #000000;
@@ -92,10 +95,22 @@
   --tap-min: 44px;
   --gutter: clamp(20px, 4.3vw, 48px);
   --page-max: 1120px;
+  --edge: 6px; /* the thick bottom edge under cards */
+
+  /* Radii, smallest first, each named by its job */
+  --radius-tape: 3px; /* the receipt's strip of tape */
+  --radius-mark: 5px; /* the highlighter behind words */
+  --radius-focus: 10px; /* small links whose focus ring follows it: the wordmark, the languages */
   --radius-control: 12px;
+  --radius-slot: 12px; /* the receipt's printer slot */
+  --radius-inset: 14px; /* a panel inside a card: the screen frame, the receipt band */
+  --radius-tile: 16px; /* the settle-up total, the closing icon on a phone */
   --radius-card: 18px;
   --radius-band: 20px;
-  --edge: 6px; /* the thick bottom edge under cards */
+  --radius-screen: 20px; /* the hero phone's screen */
+  --radius-device: 26px; /* the hero phone's frame, the closing icon on a wide screen */
+  --radius-pill: 999px; /* pills: the demo arrow, chips, the closing line's pill */
+  --radius-round: 50%; /* circles: the coins, the step icons */
 
   /* Motion. One arrival curve for everything that pops, presses or draws in;
      the entry loader adds two of its own */
