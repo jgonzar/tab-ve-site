@@ -68,7 +68,7 @@
     display: block;
     width: 100%;
     height: auto;
-    border-radius: 16px;
+    border-radius: var(--radius-tile);
   }
 
   .closing__line {
@@ -92,7 +92,7 @@
     /* In em, off the spacing scale: it grows with the line's two sizes */
     padding: 0 0.35em;
     border: 2px solid var(--ink);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     white-space: nowrap;
   }
 
@@ -131,7 +131,7 @@
     }
 
     .closing__icon :global(img) {
-      border-radius: 26px;
+      border-radius: var(--radius-device);
     }
 
     .closing__note {

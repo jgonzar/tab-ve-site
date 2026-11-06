@@ -54,7 +54,7 @@
   .chip {
     padding: var(--space-1-5) var(--space-3);
     border: 1.5px solid var(--on-ink-line);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     font-size: var(--text-2xs);
   }
 

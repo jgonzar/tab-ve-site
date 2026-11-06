@@ -85,7 +85,7 @@ a {
 .hl {
   /* In em, off the spacing scale: it follows the size of the text it marks */
   padding: 0.05em 0.3em;
-  border-radius: 5px;
+  border-radius: var(--radius-mark);
   /* A gradient, not a flat colour, so a card can sweep it in again */
   background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 0 / 100% 100%;
   color: var(--ink);
@@ -118,7 +118,10 @@ a {
 }
 
 .dots::before {
-  background-image: radial-gradient(rgb(11 10 41 / var(--dot-alpha, 0.2)) 1.4px, transparent 1.7px);
+  background-image: radial-gradient(
+    rgb(var(--ink-rgb) / var(--dot-alpha, 0.2)) 1.4px,
+    transparent 1.7px
+  );
   background-size: 18px 18px;
   -webkit-mask-image:
     var(--fade, linear-gradient(#000, #000)),

@@ -103,7 +103,7 @@
     gap: 2px;
     max-width: 360px;
     padding: var(--space-5-5) var(--space-6) var(--space-6-5);
-    border-radius: 16px;
+    border-radius: var(--radius-tile);
     background: var(--ink);
     box-shadow: 0 6px 0 var(--violet);
     color: var(--on-ink);
@@ -144,7 +144,7 @@
     width: 56px;
     height: 56px;
     border: 2px solid var(--ink);
-    border-radius: 50%;
+    border-radius: var(--radius-round);
   }
 
   .settle__icon--share {
