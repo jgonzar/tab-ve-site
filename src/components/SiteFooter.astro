@@ -39,7 +39,7 @@ const t = strings(locale);
     background: var(--jagr-void);
     color: var(--jagr-fg);
     font-family: var(--font-mono);
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
     letter-spacing: 0.06em;
   }
 
@@ -48,16 +48,17 @@ const t = strings(locale);
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 0.25rem 1.5rem;
+    gap: var(--space-1) var(--space-6);
     max-width: var(--page-max);
     margin: 0 auto;
-    padding: 0.75rem var(--gutter);
+    padding: var(--space-3) var(--gutter);
   }
 
   .site-footer__back,
   .site-footer__credits {
     display: inline-flex;
     align-items: center;
+    /* In em, off the spacing scale: the caret's gap follows the text */
     gap: 0.5em;
     min-height: var(--tap-min);
     color: var(--jagr-fg);

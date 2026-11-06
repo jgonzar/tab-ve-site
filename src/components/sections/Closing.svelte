@@ -47,8 +47,8 @@
   .closing {
     position: relative;
     isolation: isolate;
-    margin-block: 4px 30px;
-    padding: 28px 22px;
+    margin-block: var(--space-1) var(--space-7-5);
+    padding: var(--space-7) var(--space-5-5);
     overflow: hidden;
     border-radius: var(--radius-band);
     background: var(--soft);
@@ -61,7 +61,7 @@
 
   .closing__icon {
     width: 56px;
-    margin-bottom: 16px;
+    margin-bottom: var(--space-4);
   }
 
   .closing__icon :global(img) {
@@ -75,7 +75,8 @@
     margin: 0;
     max-width: 20ch;
     /* Two fixed steps, not a vw clamp: a vw size inherited into the pill
-       could stay stale after a viewport change and render the pill smaller */
+       could stay stale after a viewport change and render the pill smaller.
+       Both are off the type scale, sized to the line's own measure */
     font-size: 1.65rem;
     font-weight: 700;
     line-height: 1.25;
@@ -88,6 +89,7 @@
   }
 
   .closing__pill {
+    /* In em, off the spacing scale: it grows with the line's two sizes */
     padding: 0 0.35em;
     border: 2px solid var(--ink);
     border-radius: 999px;
@@ -95,15 +97,15 @@
   }
 
   .closing__cta {
-    margin-top: 22px;
+    margin-top: var(--space-5-5);
   }
 
   .closing__note {
-    margin: 14px 0 0;
+    margin: var(--space-3-5) 0 0;
     max-width: 60ch;
     text-wrap: pretty;
     color: var(--muted);
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
   }
 
   @media (min-width: 720px) {
@@ -115,15 +117,15 @@
     }
 
     .closing {
-      margin-block: 4px 40px;
-      padding: 40px 44px;
+      margin-block: var(--space-1) var(--space-10);
+      padding: var(--space-10) var(--space-11);
     }
 
     /* The icon sits in the band's corner, the line keeps the left */
     .closing__icon {
       position: absolute;
-      right: 44px;
-      bottom: 40px;
+      right: var(--space-11);
+      bottom: var(--space-10);
       width: 96px;
       margin: 0;
     }

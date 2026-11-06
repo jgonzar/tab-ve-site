@@ -86,7 +86,8 @@
   .receipt {
     position: relative;
     min-width: 0;
-    padding: 18px 14px 34px;
+    /* 34px, off the spacing scale: the band's foot under the tilted paper */
+    padding: var(--space-4-5) var(--space-3-5) 34px;
     overflow: clip;
     border-radius: 14px;
     background-color: var(--soft);
@@ -112,6 +113,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;
+    /* An overlap, not a gap: the paper starts under the slot's lower edge */
     margin-top: -10px;
     clip-path: inset(0 -40px -60px -40px);
   }
@@ -126,7 +128,7 @@
 
   /* Torn top and bottom edges */
   .receipt__paper {
-    padding: 28px 16px 26px;
+    padding: var(--space-7) var(--space-4) var(--space-6-5);
     background: var(--thermal-paper);
     color: var(--ink);
     -webkit-mask:
@@ -141,6 +143,8 @@
         repeat-x;
   }
 
+  /* The receipt's two text sizes are off the type scale: they are set by
+     how many mono characters a line of the paper must hold */
   .card__receipt {
     margin: 0;
     font: 0.65rem/1.5 var(--font-receipt);
@@ -188,7 +192,7 @@
 
   .receipt__barcode {
     display: block;
-    margin: 12px auto 0;
+    margin: var(--space-3) auto 0;
     fill: var(--ink);
   }
 
@@ -246,11 +250,11 @@
     }
 
     .receipt {
-      padding-inline: 20px;
+      padding-inline: var(--space-5);
     }
 
     .receipt__paper {
-      padding-inline: 22px;
+      padding-inline: var(--space-5-5);
     }
   }
 </style>

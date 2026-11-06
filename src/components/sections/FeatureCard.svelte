@@ -49,8 +49,8 @@
     min-width: 0;
     display: grid;
     align-content: start;
-    gap: 14px;
-    padding: 18px;
+    gap: var(--space-3-5);
+    padding: var(--space-4-5);
     border: 2px solid var(--ink);
     border-radius: var(--radius-card);
     background: var(--paper);
@@ -64,13 +64,14 @@
 
   .card__title {
     margin: 0;
-    font-size: 1.125rem;
+    font-size: var(--text-lg);
     line-height: 1.35;
   }
 
   .card__body {
-    margin: 8px 0 0;
+    margin: var(--space-2) 0 0;
     color: var(--muted);
+    /* 14.4px, between two steps of the type scale: set for the card's measure */
     font-size: 0.9rem;
     line-height: 1.55;
     text-wrap: pretty;
@@ -158,7 +159,7 @@
     border-radius: 50%;
     background: var(--lime);
     color: var(--ink);
-    font-size: 0.8125rem;
+    font-size: var(--text-2xs);
     font-weight: 700;
     line-height: 1;
     transform: scale(0) rotate(-40deg);

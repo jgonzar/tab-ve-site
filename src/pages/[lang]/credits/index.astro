@@ -58,18 +58,18 @@ const t = strings(locale);
 
   .credits {
     max-width: 44rem;
-    padding-block: clamp(2rem, 6vw, 4rem) clamp(3rem, 8vw, 5rem);
+    padding-block: var(--space-page-start) var(--space-page-end);
   }
 
   .credits__title {
-    margin: 0 0 1.5rem;
-    font-size: clamp(2rem, 7vw, 2.75rem);
+    margin: 0 0 var(--space-6);
+    font-size: var(--text-page-title);
     line-height: 1.15;
   }
 
   .credits__heading {
-    margin: 2rem 0 0.5rem;
-    font-size: 1.25rem;
+    margin: var(--space-8) 0 var(--space-2);
+    font-size: var(--text-xl);
   }
 
   .credits p {
@@ -86,12 +86,12 @@ const t = strings(locale);
   }
 
   .credits__links {
-    margin: 0.5rem 0 0;
+    margin: var(--space-2) 0 0;
     padding: 0;
     list-style: none;
   }
 
   .credits__back {
-    margin-top: 2rem;
+    margin-top: var(--space-8);
   }
 </style>

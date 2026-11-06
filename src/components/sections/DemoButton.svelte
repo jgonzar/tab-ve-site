@@ -31,13 +31,13 @@
   .demo {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-2-5);
     min-height: 50px;
-    padding: 0 16px 0 20px;
+    padding: 0 var(--space-4) 0 var(--space-5);
     border-radius: var(--radius-control);
     background: var(--ink);
     color: var(--on-ink);
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     font-weight: 700;
     text-decoration: none;
     box-shadow: 0 5px 0 var(--violet);
