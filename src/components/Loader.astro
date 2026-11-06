@@ -73,7 +73,7 @@ import Wordmark from "./Wordmark.astro";
       background: var(--violet);
       pointer-events: none;
       /* Sets in after the last piece lands, then lifts and stays gone */
-      animation: lift 0.6s var(--ease-in-out) 1.55s forwards;
+      animation: lift 0.6s var(--ease-in-out-quart) 1.55s forwards;
     }
 
     .intro :global(.intro__mark) {
@@ -102,7 +102,7 @@ import Wordmark from "./Wordmark.astro";
 
     .intro__dot {
       offset-path: path("M30 80 C 100 0, 270 120, 340 30");
-      animation: ride 0.8s var(--ease-sine) 0.1s both;
+      animation: ride 0.8s var(--ease-in-out-sine) 0.1s both;
     }
 
     .intro__pin {

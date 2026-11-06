@@ -44,8 +44,8 @@
   --font-receipt: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 
   /* Type scale, taken from the sizes the page already used. The receipt, the
-     closing line and the settle-up total keep sizes of their own, each with
-     its reason where it is set */
+     card body, the closing line and the settle-up total keep sizes of their
+     own, each with its reason where it is set */
   --text-2xs: 0.8125rem; /* 13px: labels, chips, coins */
   --text-xs: 0.875rem; /* 14px: secondary text, notes, the footer */
   --text-sm: 0.9375rem; /* 15px: the hero lead on a phone, the demo button */
@@ -58,7 +58,7 @@
   --text-4xl: 3rem; /* 48px: the hero title, mid widths */
   --text-5xl: 3.4rem; /* 54.4px: the hero title, wide */
   /* Fluid: the hero title below 900px, the credits title */
-  --text-hero: clamp(2.125rem, 7.6vw, 3.4rem);
+  --text-hero: clamp(2.125rem, 7.6vw, var(--text-5xl));
   --text-page-title: clamp(2rem, 7vw, 2.75rem);
 
   /* Spacing scale: padding, margins and gaps. A 4px grid named by its
@@ -100,15 +100,15 @@
   /* Motion. One arrival curve for everything that pops, presses or draws in;
      the entry loader adds two of its own */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* fast start, soft landing */
-  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1); /* the loader sheet's lift */
-  --ease-sine: cubic-bezier(0.45, 0, 0.55, 1); /* the loader's dot riding the route */
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1); /* the loader sheet's lift */
+  --ease-in-out-sine: cubic-bezier(0.45, 0, 0.55, 1); /* the loader's dot riding the route */
 
   --dur-xs: 120ms; /* a press and its release */
   --dur-sm: 160ms; /* a small nudge */
-  --dur-md: 0.2s; /* a crossfade */
-  --dur-lg: 0.4s; /* a pop */
-  --dur-xl: 0.5s; /* a line drawing itself */
-  --dur-2xl: 0.55s; /* a sweep */
+  --dur-md: 200ms; /* a crossfade */
+  --dur-lg: 400ms; /* a pop */
+  --dur-xl: 500ms; /* a line drawing itself */
+  --dur-2xl: 550ms; /* a sweep */
 }
 
 /* Breakpoints. Custom properties can't be read inside @media, so this list
@@ -120,7 +120,8 @@
      600   feature cards put text beside the screen; the features heading
            and subtitle share a row (index.astro: the card screens' `sizes`)
      640   the footer runs in one row (SiteFooter: max-width 639px stacks it)
-     720   the closing and stack bands take their wide layout
+     720   the closing and stack bands take their wide layout (index.astro:
+           the closing icon's `sizes`)
      760   the features heading grows; the receipt text goes to 12.5px
      900   the hero splits into two columns (index.astro: the dot field's
            max-width 899px fade; the hero screen's `sizes`)
