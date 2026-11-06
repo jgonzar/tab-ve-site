@@ -42,8 +42,8 @@
     text-decoration: none;
     box-shadow: 0 5px 0 var(--violet);
     transition:
-      transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform var(--dur-xs) var(--ease-out),
+      box-shadow var(--dur-xs) var(--ease-out);
   }
 
   .demo:hover {
@@ -69,7 +69,7 @@
     height: 28px;
     border-radius: 999px;
     background: var(--lime);
-    transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform var(--dur-sm) var(--ease-out);
   }
 
   /* The arrow circle nudges up and turns a quarter */

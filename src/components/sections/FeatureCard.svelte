@@ -162,7 +162,7 @@
     font-weight: 700;
     line-height: 1;
     transform: scale(0) rotate(-40deg);
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform var(--dur-lg) var(--ease-out);
   }
 
   .card:nth-child(2) .card__coin {
@@ -181,7 +181,7 @@
     }
 
     .card:hover .card__title .hl {
-      animation: sweep 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: sweep var(--dur-2xl) var(--ease-out);
     }
   }
 
