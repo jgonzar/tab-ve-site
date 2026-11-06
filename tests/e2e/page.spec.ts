@@ -72,7 +72,8 @@ for (const { locale, t } of PAGES) {
           "href",
           `https://tab-ve-demo.vercel.app/?lang=${locale}`,
         );
-        await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+        // Same tab: no opener to guard, so no rel (the referrer goes through)
+        await expect(link).not.toHaveAttribute("target", /.*/);
       }
     });
 
@@ -81,7 +82,8 @@ for (const { locale, t } of PAGES) {
       const back = page.locator("footer").getByRole("link", { name: t.footer.back });
       for (const link of [strip, back]) {
         await expect(link).toHaveAttribute("href", JAGR_QUEST_URL);
-        await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+        // Same tab: no opener to guard, so no rel (the referrer goes through)
+        await expect(link).not.toHaveAttribute("target", /.*/);
       }
     });
 
