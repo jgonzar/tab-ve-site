@@ -110,3 +110,25 @@
   --dur-xl: 0.5s; /* a line drawing itself */
   --dur-2xl: 0.55s; /* a sweep */
 }
+
+/* Breakpoints. Custom properties can't be read inside @media, so this list
+   is the source: a query uses one of these widths, and a new layout change
+   picks one of them before it adds another. Mobile first, min-width, except
+   where a max-width is the narrow fix noted beside it.
+
+     430   the receipt's tape shows (ReceiptCard: max-width 429px hides it)
+     600   feature cards put text beside the screen; the features heading
+           and subtitle share a row (index.astro: the card screens' `sizes`)
+     640   the footer runs in one row (SiteFooter: max-width 639px stacks it)
+     720   the closing and stack bands take their wide layout
+     760   the features heading grows; the receipt text goes to 12.5px
+     900   the hero splits into two columns (index.astro: the dot field's
+           max-width 899px fade; the hero screen's `sizes`)
+     960   two feature cards to a row, the receipt card across both
+           (index.astro: the card screens' `sizes`)
+     1100  the hero art grows (index.astro: the card screens' `sizes`)
+
+   These are where the layout changes. The widths it is checked at are
+   360, 768, 1024 and 1440. The close pairs (600/640, 720/760, 900/960)
+   stay apart: merging any of them moves the layout at the widths between
+   them (s03 audit, finding 3). */
