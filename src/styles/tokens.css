@@ -26,6 +26,7 @@
   /* Brand accents */
   --lime: #d7fe65; /* highlighter only, under ink text: ink on lime is 16.75 */
   --violet: #4342f5; /* the CTA's edge, the focus ring and the wordmark's period. 6.29 on paper */
+  --on-violet: #ffffff; /* the entry loader's wordmark and route. 6.29 on violet */
 
   /* A soft, offset shadow for the floating phone */
   --shadow-phone: 0 18px 34px rgb(11 10 41 / 0.22);
