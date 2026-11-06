@@ -80,36 +80,36 @@
 <style>
   .hero {
     display: grid;
-    gap: 24px;
-    padding-block: 26px 32px;
+    gap: var(--space-6);
+    padding-block: var(--space-6-5) var(--space-8);
     align-items: center;
   }
 
   .hero__label {
     margin: 0;
-    font-size: 0.8125rem;
+    font-size: var(--text-2xs);
     font-weight: 700;
   }
 
   .hero__title {
-    margin: 14px 0 0;
-    font-size: clamp(2.125rem, 7.6vw, 3.4rem);
+    margin: var(--space-3-5) 0 0;
+    font-size: var(--text-hero);
     line-height: 1.1;
     letter-spacing: -0.025em;
     text-wrap: balance;
   }
 
   .hero__before {
-    margin: 14px 0 0;
+    margin: var(--space-3-5) 0 0;
     max-width: 34ch;
     color: var(--muted);
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     line-height: 1.6;
     text-wrap: pretty;
   }
 
   .hero__cta {
-    margin-top: 22px;
+    margin-top: var(--space-5-5);
   }
 
   /* The art: the route behind, the phone tilted on top. Clipped sideways
@@ -242,18 +242,18 @@
   @media (min-width: 900px) {
     .hero {
       grid-template-columns: 3fr 2fr;
-      gap: 40px;
-      padding-block: 44px 56px;
+      gap: var(--space-10);
+      padding-block: var(--space-11) var(--space-14);
     }
 
     .hero__before {
       max-width: 38ch;
-      font-size: 1.0625rem;
+      font-size: var(--text-md);
     }
 
     /* Two lines in English while the copy column is still the narrower share */
     .hero__title {
-      font-size: 3rem;
+      font-size: var(--text-4xl);
     }
   }
 
@@ -263,7 +263,7 @@
     }
 
     .hero__title {
-      font-size: 3.4rem;
+      font-size: var(--text-5xl);
     }
 
     .hero__art {

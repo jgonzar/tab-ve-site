@@ -18,7 +18,7 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: var(--text-base);
   line-height: 1.6;
 }
 
@@ -64,10 +64,10 @@ a {
 /* Shown on keyboard focus only, first in the tab order */
 .skip-link {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
+  top: var(--space-2);
+  left: var(--space-2);
   z-index: 10;
-  padding: 0.75rem 1rem;
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-control);
   background: var(--lime);
   color: var(--ink);
@@ -83,6 +83,7 @@ a {
 
 /* The highlighter: lime behind ink, kept on every line a phrase wraps to */
 .hl {
+  /* In em, off the spacing scale: it follows the size of the text it marks */
   padding: 0.05em 0.3em;
   border-radius: 5px;
   /* A gradient, not a flat colour, so a card can sweep it in again */
@@ -163,7 +164,7 @@ a {
   width: 1px;
   height: 1px;
   padding: 0;
-  margin: -1px;
+  margin: -1px; /* the standard visually hidden pattern, not spacing */
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;

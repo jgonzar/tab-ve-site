@@ -92,16 +92,17 @@
   @media (min-width: 960px) {
     .settle {
       display: grid;
-      gap: 28px;
-      margin-top: 28px;
+      gap: var(--space-7);
+      margin-top: var(--space-7);
     }
   }
 
   .settle__total {
     display: grid;
+    /* 2px, under the spacing scale: the figure's three lines read as one */
     gap: 2px;
     max-width: 360px;
-    padding: 22px 24px 26px;
+    padding: var(--space-5-5) var(--space-6) var(--space-6-5);
     border-radius: 16px;
     background: var(--ink);
     box-shadow: 0 6px 0 var(--violet);
@@ -111,11 +112,12 @@
   .settle__rides,
   .settle__bs {
     color: var(--on-ink-muted);
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
   }
 
   .settle__usd {
     color: var(--lime);
+    /* A figure, not text: its own size, above the type scale */
     font-size: 3.5rem;
     font-weight: 700;
     line-height: 1.1;
@@ -125,14 +127,14 @@
   .settle__steps {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: var(--space-2-5);
   }
 
   /* An icon over its label */
   .settle__step {
     display: grid;
     justify-items: center;
-    gap: 8px;
+    gap: var(--space-2);
     min-width: 0;
   }
 
@@ -160,7 +162,7 @@
      centred under its icon, rather than spill out of the card */
   .settle__label {
     color: var(--ink);
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
     font-weight: 700;
     line-height: 1.3;
     text-align: center;
@@ -174,6 +176,7 @@
     min-width: 16px;
     max-width: 120px;
     height: 10px;
+    /* Geometry, not spacing: half the 56px icon less half the 10px trail */
     margin-top: 23px;
   }
 </style>

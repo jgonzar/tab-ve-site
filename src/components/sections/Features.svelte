@@ -61,7 +61,7 @@
 
 <style>
   .features {
-    padding-block: 8px 32px;
+    padding-block: var(--space-2) var(--space-8);
   }
 
   /* Stacked on a phone; the subtitle beside the title from 600px */
@@ -70,25 +70,25 @@
     flex-direction: column;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 6px 14px;
-    margin-bottom: 20px;
+    gap: var(--space-1-5) var(--space-3-5);
+    margin-bottom: var(--space-5);
   }
 
   .features__title {
     margin: 0;
-    font-size: 1.375rem;
+    font-size: var(--text-2xl);
     line-height: 1.3;
   }
 
   .features__sub {
     margin: 0;
     color: var(--muted);
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
   }
 
   .features__cards {
     display: grid;
-    gap: 22px;
+    gap: var(--space-5-5);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -102,12 +102,12 @@
 
   @media (min-width: 760px) {
     .features {
-      padding-block: 12px 44px;
+      padding-block: var(--space-3) var(--space-11);
     }
 
     /* The section heading leads the card titles by more than a step */
     .features__title {
-      font-size: 1.75rem;
+      font-size: var(--text-3xl);
     }
   }
 

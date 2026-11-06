@@ -23,8 +23,8 @@
 
 <style>
   .built {
-    margin-block: 4px 30px;
-    padding: 24px 22px;
+    margin-block: var(--space-1) var(--space-7-5);
+    padding: var(--space-6) var(--space-5-5);
     border-radius: var(--radius-band);
     background: var(--ink);
     color: var(--on-ink);
@@ -32,30 +32,30 @@
 
   .built__title {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: var(--text-xl);
     line-height: 1.3;
   }
 
   .built__sub {
-    margin: 8px 0 16px;
+    margin: var(--space-2) 0 var(--space-4);
     color: var(--on-ink-muted);
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
   }
 
   .built__chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--space-2);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .chip {
-    padding: 6px 12px;
+    padding: var(--space-1-5) var(--space-3);
     border: 1.5px solid var(--on-ink-line);
     border-radius: 999px;
-    font-size: 0.8125rem;
+    font-size: var(--text-2xs);
   }
 
   @media (min-width: 720px) {
@@ -63,9 +63,9 @@
       display: grid;
       grid-template-columns: 1fr 1.4fr;
       align-items: center;
-      gap: 24px;
-      margin-bottom: 40px;
-      padding: 32px 36px;
+      gap: var(--space-6);
+      margin-bottom: var(--space-10);
+      padding: var(--space-8) var(--space-9);
     }
 
     .built__sub {
