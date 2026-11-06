@@ -9,7 +9,7 @@
   let { href, label }: Props = $props();
 </script>
 
-<a class="demo" {href}>
+<a class="demo" {href} rel="noopener noreferrer">
   <span>{label}</span>
   <span class="demo__arrow" aria-hidden="true">
     <svg

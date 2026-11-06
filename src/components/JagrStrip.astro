@@ -1,11 +1,7 @@
 ---
 /*
- * JAGR strip v1.2.2 (2026-11-05)
+ * JAGR strip v1.2.1 (2026-11-04)
  *
- * v1.2.2: no rel on the link. It opens in the same tab, so noopener did
- * nothing, and noreferrer hid the app's landing page from JAGR as referrer.
- * The sizes stay raw px and rem, not the site's scale tokens: the copies in
- * other sites don't share Tab's tokens.
  * v1.2.1: the keyboard focus ring sits inside the link (outline-offset -4px), so
  * the top of the page no longer clips it.
  * v1.2.0: the row lines up with the page's own width limit and gutter
@@ -50,7 +46,7 @@ const t = COPY[lang];
 ---
 
 <nav class="jagr-strip" aria-label="JAGR">
-  <a class="jagr-strip__link" href={href} aria-label={t.linkName}>
+  <a class="jagr-strip__link" href={href} rel="noopener noreferrer" aria-label={t.linkName}>
     <span class="jagr-strip__caret" aria-hidden="true"></span>
     <span>{t.link}</span>
   </a>
