@@ -14,23 +14,18 @@ import Wordmark from "./Wordmark.astro";
 <div class="intro" aria-hidden="true">
   <Wordmark class="intro__mark" />
   <svg class="intro__route" viewBox="0 0 370 110" fill="none">
-    <path
-      class="intro__arc"
-      d="M30 80 C 100 0, 270 120, 340 30"
-      stroke="#ffffff"
-      stroke-width="2.5"
-    ></path>
-    <circle class="intro__dot" r="7" fill="#d7fe65" stroke="#0b0a29" stroke-width="2"></circle>
+    <path class="intro__arc" d="M30 80 C 100 0, 270 120, 340 30" stroke-width="2.5"></path>
+    <circle class="intro__dot" r="7" stroke-width="2"></circle>
     <g transform="translate(30 80)">
       <g class="intro__pin intro__pin--a">
-        <circle r="16" fill="#0b0a29"></circle>
-        <circle cy="-2" r="3" fill="#d7fe65"></circle>
+        <circle class="intro__pin-head" r="16"></circle>
+        <circle class="intro__pin-dot" cy="-2" r="3"></circle>
       </g>
     </g>
     <g transform="translate(340 30)">
       <g class="intro__pin intro__pin--b">
-        <circle r="16" fill="#0b0a29"></circle>
-        <circle cy="-2" r="3" fill="#d7fe65"></circle>
+        <circle class="intro__pin-head" r="16"></circle>
+        <circle class="intro__pin-dot" cy="-2" r="3"></circle>
       </g>
     </g>
   </svg>
@@ -39,6 +34,24 @@ import Wordmark from "./Wordmark.astro";
 <style>
   .intro {
     display: none;
+  }
+
+  /* The route's colours are the tokens, not copies of them */
+  .intro__arc {
+    stroke: var(--on-violet);
+  }
+
+  .intro__dot {
+    fill: var(--lime);
+    stroke: var(--ink);
+  }
+
+  .intro__pin-head {
+    fill: var(--ink);
+  }
+
+  .intro__pin-dot {
+    fill: var(--lime);
   }
 
   /* The durations and delays below stay raw on purpose: they are one
@@ -66,7 +79,7 @@ import Wordmark from "./Wordmark.astro";
     .intro :global(.intro__mark) {
       width: 150px;
       height: auto;
-      color: #ffffff;
+      color: var(--on-violet);
       animation: mark 0.45s var(--ease-out) 0.6s both;
     }
 

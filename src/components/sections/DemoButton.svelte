@@ -17,7 +17,7 @@
       height="13"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#0b0a29"
+      stroke="currentColor"
       stroke-width="3"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -69,6 +69,7 @@
     height: 28px;
     border-radius: 999px;
     background: var(--lime);
+    color: var(--ink);
     transition: transform var(--dur-sm) var(--ease-out);
   }
 
