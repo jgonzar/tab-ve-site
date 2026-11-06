@@ -50,4 +50,17 @@
   --radius-card: 18px;
   --radius-band: 20px;
   --edge: 6px; /* the thick bottom edge under cards */
+
+  /* Motion. One arrival curve for everything that pops, presses or draws in;
+     the entry loader adds two of its own */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* fast start, soft landing */
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1); /* the loader sheet's lift */
+  --ease-sine: cubic-bezier(0.45, 0, 0.55, 1); /* the loader's dot riding the route */
+
+  --dur-xs: 120ms; /* a press and its release */
+  --dur-sm: 160ms; /* a small nudge */
+  --dur-md: 0.2s; /* a crossfade */
+  --dur-lg: 0.4s; /* a pop */
+  --dur-xl: 0.5s; /* a line drawing itself */
+  --dur-2xl: 0.55s; /* a sweep */
 }

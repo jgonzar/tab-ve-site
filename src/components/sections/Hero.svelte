@@ -196,7 +196,9 @@
      seconds, WCAG 2.2.2); the visitor's pointer over the art sets them going
      again. The march is the one motion in the hero: when the entry loader
      plays it starts as the loader lifts (about 2.15 seconds), so none of it
-     runs unseen, and at once when there is no loader. */
+     runs unseen, and at once when there is no loader. The 1.4s cycle and
+     the 2.15s delay stay raw: one is the march's pace (14px of dash at ten
+     pixels a second), the other is the loader's timeline (Loader.astro). */
   @media (prefers-reduced-motion: no-preference) {
     .hero__arc {
       animation: march 1.4s linear 3 both;
