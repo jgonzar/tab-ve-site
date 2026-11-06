@@ -66,7 +66,7 @@ for (const [locale, other, demoLabel] of [
     // The hero's button; page.spec.ts checks both
     const demo = page.getByRole("link", { name: demoLabel }).first();
     await expect(demo).toHaveAttribute("href", `https://tab-ve-demo.vercel.app/?lang=${locale}`);
-    await expect(demo).toHaveAttribute("rel", "noopener noreferrer");
+    await expect(demo).not.toHaveAttribute("target", /.*/);
     expect(errors).toEqual([]);
   });
 }
