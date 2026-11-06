@@ -24,7 +24,8 @@
   let { title, body, alt, coin, screen, extra, children }: Props = $props();
 </script>
 
-<li class="card">
+<!-- A card without a screen holds the receipt and takes its wider layout -->
+<li class="card" class:card--receipt={!screen}>
   <span class="card__coin" aria-hidden="true">{coin}</span>
   <div class="card__copy">
     <h3 class="card__title"><span class="hl">{title}</span></h3>
@@ -123,7 +124,7 @@
     }
 
     /* The receipt's paper is too wide to sit beside the text until 960px */
-    .card:nth-child(3) {
+    .card--receipt {
       grid-template-columns: 1fr;
     }
   }
@@ -131,14 +132,14 @@
   /* The receipt card across both columns with its paper beside the text,
      from 960px; below that the paper sits under the text */
   @media (min-width: 960px) {
-    .card:nth-child(3) {
+    .card--receipt {
       grid-column: 1 / 3;
       grid-template-columns: minmax(22ch, 0.8fr) minmax(0, 1.2fr);
     }
 
     /* The copy starts at the top; under it the total and the two steps
        take the column the tall paper leaves */
-    .card:nth-child(3) .card__copy {
+    .card--receipt .card__copy {
       display: flex;
       flex-direction: column;
       align-self: start;
@@ -228,7 +229,8 @@
         --tilt: 3deg;
       }
 
-      .card:nth-child(3) {
+      /* The receipt card leans as its paper does */
+      .card--receipt {
         --tilt: -1.6deg;
       }
     }
