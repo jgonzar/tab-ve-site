@@ -67,26 +67,28 @@
   /* Spacing scale: padding, margins and gaps. A 4px grid named by its
      multiple (--space-4 is 16px). The page also sits on the 2px between
      steps, so the half steps it uses more than once are here too (-3-5 is
-     3.5 steps, 14px); those would move the look if rounded */
-  --space-1: 4px;
-  --space-1-5: 6px;
-  --space-2: 8px;
-  --space-2-5: 10px;
-  --space-3: 12px;
-  --space-3-5: 14px;
-  --space-4: 16px;
-  --space-4-5: 18px;
-  --space-5: 20px;
-  --space-5-5: 22px;
-  --space-6: 24px;
-  --space-6-5: 26px;
-  --space-7: 28px;
-  --space-7-5: 30px;
-  --space-8: 32px;
-  --space-9: 36px;
-  --space-10: 40px;
-  --space-11: 44px;
-  --space-14: 56px;
+     3.5 steps, 14px); those would move the look if rounded. In rem, like
+     the type scale, so spacing grows with the visitor's default font size
+     along with the text; the px beside each step is at the default 16px */
+  --space-1: 0.25rem; /* 4px */
+  --space-1-5: 0.375rem; /* 6px */
+  --space-2: 0.5rem; /* 8px */
+  --space-2-5: 0.625rem; /* 10px */
+  --space-3: 0.75rem; /* 12px */
+  --space-3-5: 0.875rem; /* 14px */
+  --space-4: 1rem; /* 16px */
+  --space-4-5: 1.125rem; /* 18px */
+  --space-5: 1.25rem; /* 20px */
+  --space-5-5: 1.375rem; /* 22px */
+  --space-6: 1.5rem; /* 24px */
+  --space-6-5: 1.625rem; /* 26px */
+  --space-7: 1.75rem; /* 28px */
+  --space-7-5: 1.875rem; /* 30px */
+  --space-8: 2rem; /* 32px */
+  --space-9: 2.25rem; /* 36px */
+  --space-10: 2.5rem; /* 40px */
+  --space-11: 2.75rem; /* 44px */
+  --space-14: 3.5rem; /* 56px */
   /* Fluid: the credits page's top and bottom */
   --space-page-start: clamp(2rem, 6vw, 4rem);
   --space-page-end: clamp(3rem, 8vw, 5rem);
