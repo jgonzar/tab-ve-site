@@ -567,3 +567,18 @@ for (const locale of ["en", "es"]) {
     expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(1245);
   });
 }
+
+// The stack band's heading gets the highlighter sweep the feature cards' titles
+// get, on hover; both use the one shared keyframes in global.css
+for (const locale of ["en", "es"]) {
+  test(`/${locale}/ the stack band sweeps its heading on hover`, async ({ page }) => {
+    await page.goto(`/${locale}/`);
+    const hl = page.locator(".built__title .hl");
+    await expect(hl).toHaveCSS("animation-name", "none");
+    await page.locator(".built").hover();
+    await expect(hl).toHaveCSS("animation-name", "sweep");
+    const card = page.locator(".card__title .hl").first();
+    await card.hover();
+    await expect(card).toHaveCSS("animation-name", "sweep");
+  });
+}

@@ -58,6 +58,15 @@
     font-size: var(--text-2xs);
   }
 
+  /* Pointed at, the band's heading gets the sweep the feature cards' titles
+     get (global.css). Hover only where there is hover. The band holds no
+     link or control, so there is no focus to follow */
+  @media (hover: hover) {
+    .built:hover .built__title .hl {
+      animation: sweep var(--dur-2xl) var(--ease-out);
+    }
+  }
+
   @media (min-width: 720px) {
     .built {
       display: grid;

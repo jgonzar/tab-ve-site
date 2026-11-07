@@ -187,16 +187,6 @@
     }
   }
 
-  @keyframes sweep {
-    from {
-      background-size: 0% 100%;
-    }
-
-    to {
-      background-size: 100% 100%;
-    }
-  }
-
   /* Each card arrives at its own angle and settles straight as it scrolls
      into view. The individual rotate and translate properties, so it never
      fights the hover's transform. Scroll-driven, so the visitor sets the
