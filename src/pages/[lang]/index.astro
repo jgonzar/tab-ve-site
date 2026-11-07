@@ -119,6 +119,9 @@ const mark = await picture(icon, { width: 96, sizes: "(min-width: 720px) 96px, 5
   .ground {
     --fade: radial-gradient(ellipse 72% 90% at 50% 40%, #000 20%, transparent 100%);
     --dot-alpha: 0.18;
+    /* Both dot layers melt out over the last quarter, so the field has no
+       straight edge above the next section, faint dots or pointer dots */
+    --feather: 25%;
   }
 
   /* Stacked, the copy sits above the art: the dots gather around the art, not
