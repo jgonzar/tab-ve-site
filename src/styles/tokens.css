@@ -97,7 +97,10 @@
   --tap-min: 44px;
   --gutter: clamp(20px, 4.3vw, 48px);
   --page-max: 1120px;
-  --edge: 6px; /* the thick bottom edge under cards */
+  --edge: 6px; /* the thick bottom edge: cards, the settle-up total, a hovered demo button */
+  --edge-press: 5px; /* the demo button at rest (a press sinks it this far), the receipt slot */
+  /* JagrStrip.astro keeps raw sizes on purpose: it is the pinned JAGR strip,
+     copied unchanged into sites that don't share these tokens */
 
   /* Radii, smallest first, each named by its job */
   --radius-tape: 3px; /* the receipt's strip of tape */

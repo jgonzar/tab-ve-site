@@ -40,7 +40,7 @@
     font-size: var(--text-sm);
     font-weight: 700;
     text-decoration: none;
-    box-shadow: 0 5px 0 var(--violet);
+    box-shadow: 0 var(--edge-press) 0 var(--violet);
     transition:
       transform var(--dur-xs) var(--ease-out),
       box-shadow var(--dur-xs) var(--ease-out);
@@ -48,7 +48,7 @@
 
   .demo:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 0 var(--violet);
+    box-shadow: 0 var(--edge) 0 var(--violet);
   }
 
   /* The ring clears the pressed edge instead of merging with it */
@@ -58,7 +58,7 @@
 
   /* The press: the button sinks onto its edge */
   .demo:active {
-    transform: translateY(5px);
+    transform: translateY(var(--edge-press));
     box-shadow: 0 0 0 var(--violet);
   }
 
