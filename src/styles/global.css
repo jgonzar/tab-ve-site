@@ -104,6 +104,19 @@ a {
   box-decoration-break: clone;
 }
 
+/* The highlighter sweeping in again, from the left: a card title or the stack
+   band's heading, on hover (see FeatureCard and Built). Global, so the two
+   share one set of keyframes; a component's own @keyframes get renamed. */
+@keyframes sweep {
+  from {
+    background-size: 0% 100%;
+  }
+
+  to {
+    background-size: 100% 100%;
+  }
+}
+
 /* A dot field: still dots, and where the pointer goes they clear and brand
    coloured ones take their place. The two layers are masked by a circle
    around --mx and --my, which src/scripts/dots.ts feeds with the pointer; with
