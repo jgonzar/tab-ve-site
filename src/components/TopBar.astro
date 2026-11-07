@@ -26,6 +26,8 @@ const { locale, page = "home" } = Astro.props;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-4);
+    /* Full width as well as capped: the body is a flex column (global.css) */
+    width: 100%;
     max-width: var(--page-max);
     margin: 0 auto;
     padding: var(--space-3-5) var(--gutter) 0;
