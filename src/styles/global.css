@@ -123,11 +123,15 @@ a {
    no pointer, or under reduced motion, it is just still dots. Set --fade to a
    gradient to thin the dots toward an edge, and --dot-alpha for their weight.
    The colour dots sit on the same 18px lattice as the faint ones: three
-   layers, one colour per column. Decoration only. */
+   layers, one colour per column. Decoration only. Set --feather (a length or
+   a percentage) to melt both layers out over the last stretch of the box, so
+   neither ends on a straight edge; it is 0 by default, a box with a visible
+   edge of its own (a band) needs none. */
 .dots {
   --mx: -999px;
   --my: -999px;
   --r: 0px;
+  --edge-fade: linear-gradient(#000 calc(100% - var(--feather, 0%)), transparent);
   position: relative;
   isolation: isolate;
 }
@@ -148,23 +152,23 @@ a {
   );
   background-size: 18px 18px;
   -webkit-mask-image:
-    var(--fade, linear-gradient(#000, #000)),
+    var(--fade, linear-gradient(#000, #000)), var(--edge-fade),
     radial-gradient(
       circle var(--r) at var(--mx) var(--my),
       transparent 0,
       transparent 40%,
       #000 100%
     );
-  -webkit-mask-composite: source-in;
+  -webkit-mask-composite: source-in, source-in;
   mask-image:
-    var(--fade, linear-gradient(#000, #000)),
+    var(--fade, linear-gradient(#000, #000)), var(--edge-fade),
     radial-gradient(
       circle var(--r) at var(--mx) var(--my),
       transparent 0,
       transparent 40%,
       #000 100%
     );
-  mask-composite: intersect;
+  mask-composite: intersect, intersect;
 }
 
 .dots::after {
@@ -177,12 +181,14 @@ a {
     0 0,
     18px 0,
     36px 0;
-  -webkit-mask-image: radial-gradient(
-    circle var(--r) at var(--mx) var(--my),
-    #000 0,
-    transparent 100%
-  );
-  mask-image: radial-gradient(circle var(--r) at var(--mx) var(--my), #000 0, transparent 100%);
+  -webkit-mask-image:
+    var(--edge-fade),
+    radial-gradient(circle var(--r) at var(--mx) var(--my), #000 0, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    var(--edge-fade),
+    radial-gradient(circle var(--r) at var(--mx) var(--my), #000 0, transparent 100%);
+  mask-composite: intersect;
 }
 
 /* Visually hidden, still read by screen readers */

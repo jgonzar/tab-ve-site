@@ -582,3 +582,15 @@ for (const locale of ["en", "es"]) {
     await expect(card).toHaveCSS("animation-name", "sweep");
   });
 }
+
+// The hero's dot field melts out at its bottom: both layers (the faint dots
+// and the pointer's coloured ones) carry the bottom fade in their mask
+for (const pseudo of ["::before", "::after"]) {
+  test(`the hero dot field's ${pseudo} layer is masked by the bottom fade`, async ({ page }) => {
+    await page.goto("/en/");
+    const mask = await page
+      .locator(".ground")
+      .evaluate((el, p) => getComputedStyle(el, p).maskImage, pseudo);
+    expect(mask).toMatch(/linear-gradient\(rgb\(0, 0, 0\) 75%/);
+  });
+}
