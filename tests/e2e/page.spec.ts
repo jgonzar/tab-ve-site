@@ -553,3 +553,17 @@ test.describe("the receipt fits its paper", () => {
     }
   }
 });
+
+// A page shorter than the window keeps its footer at the bottom of it: the
+// credits are short, so a tall window used to show a white band under it
+for (const locale of ["en", "es"]) {
+  test(`/${locale}/credits/ keeps the footer at the bottom of a tall window`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1245 });
+    await page.goto(`/${locale}/credits/`);
+    const bottom = await page
+      .locator("footer")
+      .evaluate((el) => Math.round(el.getBoundingClientRect().bottom));
+    expect(bottom).toBe(1245);
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(1245);
+  });
+}
