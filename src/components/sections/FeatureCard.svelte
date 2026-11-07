@@ -229,8 +229,9 @@
         --tilt: 3deg;
       }
 
-      /* The receipt card leans as its paper does */
-      .card--receipt {
+      /* The receipt card leans as its paper does, wherever it sits: the
+         doubled class matches the positional rules above and comes later */
+      .card.card--receipt {
         --tilt: -1.6deg;
       }
     }

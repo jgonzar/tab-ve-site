@@ -104,7 +104,7 @@
     margin-inline: auto;
     border-radius: var(--radius-slot);
     background: var(--ink);
-    box-shadow: 0 5px 0 var(--violet);
+    box-shadow: 0 var(--edge-press) 0 var(--violet);
   }
 
   /* Hides the paper above the slot while it feeds out. One track that can

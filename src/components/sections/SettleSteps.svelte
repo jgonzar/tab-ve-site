@@ -105,7 +105,7 @@
     padding: var(--space-5-5) var(--space-6) var(--space-6-5);
     border-radius: var(--radius-tile);
     background: var(--ink);
-    box-shadow: 0 6px 0 var(--violet);
+    box-shadow: 0 var(--edge) 0 var(--violet);
     color: var(--on-ink);
   }
 
