@@ -4,8 +4,8 @@ The landing page for [Tab](https://tab-ve-demo.vercel.app), a household ride tra
 JAGR, Ángel's portfolio. Its one job is to lead to the demo.
 
 A static [Astro](https://astro.build) site: no client framework, almost no JavaScript (three small files),
-no third-party requests, and a strict CSP. Production lives at `tab-ve-site.vercel.app` once the
-first production deploy is made.
+no third-party requests, and a strict CSP. Production is live at `tab-ve-site.vercel.app` (first
+production deploy: 2026-11-10, by the CLI).
 
 ## Where things are
 
