@@ -7,6 +7,23 @@ A static [Astro](https://astro.build) site: no client framework, almost no JavaS
 no third-party requests, and a strict CSP. Production lives at `tab-ve-site.vercel.app` once the
 first production deploy is made.
 
+## Where things are
+
+```text
+src/i18n/{en,es}.json   every visible string, one file per language
+src/pages/[lang]/       the landing page and the credits page
+src/components/         layout pieces (top bar, footer, head) and sections/ (Svelte, build time only)
+src/assets/captures/    the phone screens and receipt text, per language
+src/styles/             tokens.css (colours), fonts.css, global.css
+src/site.ts, seo.ts     absolute URLs and the head / sitemap helpers
+public/                 og/ cards, icons, licenses/, .well-known/security.txt
+scripts/                checks, OG renderer, capture harness, local Vercel emulation
+tests/{unit,e2e}/       Vitest and Playwright
+vercel.json             redirects, trailing slash and every response header
+```
+
+`TEMPLATE.md` says which of these are reusable on another landing page and which are Tab's own.
+
 ## Run it
 
 CI and Vercel run Node `24.22.2` (`.nvmrc`). Locally, any Node 24 from `24.16.0` matches `engines`
@@ -24,6 +41,22 @@ pnpm build && pnpm test:e2e   # the Playwright suite, against dist/ served like 
 The e2e suite needs Chromium once: `pnpm exec playwright install --only-shell chromium`. To run it
 against a deployment instead, set `PREVIEW_URL` (and `VERCEL_AUTOMATION_BYPASS_SECRET` for a
 protected preview).
+
+## Copy
+
+Every visible string lives in `src/i18n/en.json` and `src/i18n/es.json`. Components read them through
+`strings(locale)` in `src/i18n/index.ts`; none holds text of its own. Both files must hold the same
+keys, and a unit test fails if they drift or if a string is empty or left untranslated.
+
+**The approval rule.** The approved copy (rows 1 to 36, English and Spanish) was signed off by Ángel
+and is recorded in the `tab-landing` plan artifact of Traycer epic `dbf8539d`. Do not change a
+string on your own. To change copy:
+
+1. Draft the new text for both languages.
+2. Show Ángel a side-by-side table: row, current English, new English, current Spanish, new Spanish.
+3. Edit the two JSON files only after Ángel approves the table, then update the plan's row.
+
+Spanish is Venezuelan Spanish. No em or en dashes anywhere: `pnpm check:dashes` fails on them.
 
 ## Languages and routing
 
@@ -100,8 +133,7 @@ scanners grade the final HTML 200.
 page, which `default-src 'none'` alone would block (and the SEO score with it). The page itself
 makes no requests from script.
 
-Hashed assets under `/_astro/` are cached for a year, immutable. Fonts (Poppins, Share Tech Mono)
-are self-hosted from Fontsource; their OFL notices ship in `public/licenses/`.
+Hashed assets under `/_astro/` are cached for a year, immutable.
 `/.well-known/security.txt` gives the security contact.
 
 To check the headers against the build: `pnpm build && pnpm check:headers` (it serves `dist/` the
@@ -125,18 +157,44 @@ grades are proven in two places:
 | securityheaders.com | pending the first preview      |       |      |
 | Mozilla Observatory | pending the production promote |       |      |
 
+## Fonts and licences
+
+| Asset                 | Source and licence                                                                                                                                                                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Poppins 400, 700      | `@fontsource/poppins`, by the Poppins Project Authors. SIL Open Font License 1.1: free for commercial use and redistribution. Notice in `public/licenses/poppins-OFL.txt`.                                                                                                            |
+| Share Tech Mono 400   | `@fontsource/share-tech-mono`, by Carrois Type Design. SIL OFL 1.1. Notice in `public/licenses/share-tech-mono-OFL.txt`. Used by the JAGR strip only.                                                                                                                                 |
+| The "tab." wordmark   | Tab's own artwork, copied as outlines from the Tab repo (`design/brand/wordmark.svg`). The letters derive from a modified Glitz font. Its licence for reuse or resale has not been confirmed, so treat the wordmark as Tab's property: do not reuse it in another project or product. |
+| App icon, app screens | Belong to Jose Angel Gonzalez; the screens show sample data. Stated on the credits page.                                                                                                                                                                                              |
+
+Both fonts are self-hosted as woff2 (`src/styles/fonts.css`); nothing is fetched from a font CDN.
+The credits page (`/en/credits/`, `/es/credits/`) shows the font credits and links the two notices.
+When a font or an image is added, add its licence here, to `public/licenses/` and to the credits page.
+
 ## Deploys
 
 - Every PR gets a Vercel preview, behind Vercel Authentication.
 - Merging to `main` deploys nothing: `vercel.json` turns off Git deployments for `main`.
-- Production is promoted by hand, only on Ángel's explicit go.
+- Production is promoted by hand, only on Ángel's explicit go. Because Git deployments are off
+  for `main`, a production deployment is made by hand: promote a ready preview of the commit
+  (dashboard **Promote to Production**, or `vercel promote <deployment URL>`) or run `vercel --prod`.
+  Check that the CI checks on the commit are green before asking for the go.
+
+### Rollback
+
+Vercel's Instant Rollback points the production domain back at an earlier production deployment in
+seconds, without a rebuild. In the dashboard, open the project, then **Deployments**, pick the
+earlier production deployment and choose **Instant Rollback**. From the terminal:
+`vercel rollback <deployment URL>`. On the Hobby plan, a rollback can only go to the previous
+production deployment. Rolling back does not touch the code: afterwards, fix the cause on a branch,
+and promote a new deployment when it is ready. While a rollback is active, Vercel does not move
+production to newer deployments until you promote one again.
 
 ## Captures and link cards
 
 ### Screenshots
 
 The page's phone screens are raw PNGs in `src/assets/captures/{es,en}/` (Astro resizes and hashes
-them at build). The phone around them is drawn once in CSS, by `src/components/PhoneFrame.astro`, so
+them at build). The phone around them is drawn in CSS by the sections (`.hero__phone` in `src/components/sections/Hero.svelte` and its siblings), so
 the bitmaps carry no frame.
 
 | File             | Shows                                                                      |
